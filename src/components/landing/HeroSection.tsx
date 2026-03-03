@@ -1,49 +1,56 @@
+import Image from "next/image";
 import Button from "@/components/ui/Button";
+
+const stats = [
+  { label: "4 Trails", color: "bg-basecamp" },
+  { label: "20 Lessons", color: "bg-easy" },
+  { label: "Free & Open", color: "bg-medium" },
+];
 
 export default function HeroSection() {
   return (
-    <section className="relative flex min-h-[90vh] flex-col items-center justify-center px-4 text-center">
-      {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-bark via-earth to-earth" />
+    <section className="border-b border-trail/20 bg-bark/50 px-4 py-20 sm:py-32">
+      <div className="mx-auto max-w-6xl">
+        <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-20">
+          <div className="flex-1 text-center lg:text-left">
+            <h1 className="font-display text-4xl font-bold text-cream sm:text-5xl lg:text-6xl">
+              Haku&apos;s{" "}
+              <span className="text-paw">Playground</span>
+            </h1>
 
-      {/* Decorative mountains */}
-      <div className="absolute bottom-0 left-0 right-0 -z-10 h-64 bg-gradient-to-t from-stone/20 to-transparent" />
+            <p className="mt-4 max-w-xl text-lg text-sand">
+              A playful guide to AI — climb New Zealand&apos;s iconic peaks from
+              Rangitoto to Aoraki as you go from understanding the basics to
+              building agentic systems. No coding experience needed.
+            </p>
 
-      <div className="text-6xl sm:text-8xl">🐱</div>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
+              <Button href="/overview" size="lg">
+                Start the climb
+              </Button>
+            </div>
 
-      <h1 className="mt-6 font-display text-4xl font-bold text-cream sm:text-6xl lg:text-7xl">
-        Haku&apos;s{" "}
-        <span className="text-paw">Playground</span>
-      </h1>
+            <div className="mt-8 flex items-center justify-center gap-6 text-sm text-dust lg:justify-start">
+              {stats.map((stat) => (
+                <span key={stat.label} className="flex items-center gap-1.5">
+                  <span className={`h-2 w-2 rounded-full ${stat.color}`} />
+                  {stat.label}
+                </span>
+              ))}
+            </div>
+          </div>
 
-      <p className="mt-4 max-w-2xl text-lg text-sand sm:text-xl">
-        A playful guide to AI — from understanding the basics to building
-        agentic systems. No coding experience needed. Just curiosity and a
-        sense of adventure.
-      </p>
-
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Button href="/overview" size="lg">
-          Start the climb
-        </Button>
-        <Button href="/basecamp" variant="secondary" size="lg">
-          What is AI?
-        </Button>
-      </div>
-
-      <div className="mt-12 flex items-center gap-6 text-sm text-dust">
-        <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-basecamp" />
-          4 Trails
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-easy" />
-          20 Lessons
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-medium" />
-          Free & Open
-        </span>
+          <div className="relative w-full max-w-md lg:max-w-xl">
+            <Image
+              src="/images/hero/haku-playground-hero.webp"
+              alt="Haku the pixel cat looking up at a mountain trail with four colorful zones"
+              width={800}
+              height={450}
+              className="rounded-2xl"
+              priority
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

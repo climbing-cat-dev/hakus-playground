@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
             color: "#C4B89A",
           }}
         >
-          Learn AI from Basecamp to Summit
+          Learn AI from Rangitoto to Aoraki
         </div>
       </div>
     ),

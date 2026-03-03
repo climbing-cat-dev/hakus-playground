@@ -17,7 +17,7 @@ const features = [
     icon: "🎯",
     title: "At your own pace",
     description:
-      "Each trail builds on the last. Take your time at Basecamp or sprint to the Summit.",
+      "Each trail builds on the last. Take your time at Rangitoto or sprint to Aoraki.",
   },
   {
     icon: "🐾",

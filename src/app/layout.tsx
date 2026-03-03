@@ -23,11 +23,15 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Haku's Playground — Learn AI from Basecamp to Summit",
+    default: "Haku's Playground — Learn AI from Rangitoto to Aoraki",
     template: "%s | Haku's Playground",
   },
   description:
     "A playful, climbing-cat-themed course that teaches non-technical people to use AI tools — from understanding AI basics through building agentic systems.",
+  icons: {
+    icon: "/images/logo/haku-logo.webp",
+    apple: "/images/logo/haku-logo.webp",
+  },
 };
 
 export default function RootLayout({

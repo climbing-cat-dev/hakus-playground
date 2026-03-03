@@ -1,202 +1,215 @@
 <LessonObjective items={[
-  "Learn the 8-part prompt framework",
-  "Write structured prompts that get better results",
-  "Understand context, rules, and alignment",
-  "Practice iterative refinement",
+  "Learn the 8-part prompt framework for talking to AI",
+  "Understand why context files beat inline pasting",
+  "Write structured prompts that get great results on the first try",
+  "Know when to use all 8 parts vs. a quick 2-part prompt",
 ]} />
 
 ## Why Prompting Matters
 
-Here is a scenario you have probably already experienced: you ask an AI a question, and the response is... fine. It is not wrong, but it is not really what you wanted. It is too generic, too long, misses the point, or goes in a completely different direction than you intended.
+Here is a scenario you have probably already experienced: you ask an AI a question, and the response is... fine. It is not wrong, but it is not really what you wanted. Too generic, too long, misses the point, or goes in a completely different direction.
 
 The problem is almost never the AI. The problem is the prompt.
 
-Think of it this way: if you walked up to a brilliant consultant and said "Help me with my business," they would have no idea what to do. But if you said "I run a 10-person design agency and I am losing clients to cheaper competitors — help me write a pricing page that communicates our value," now they can actually help.
+If you walked up to a brilliant consultant and said "Help me with my business," they would have no idea what to do. But if you said "I run a 10-person design agency and I am losing clients to cheaper competitors — help me write a pricing page that communicates our value," now they can actually help.
 
-AI works the same way. The quality of what you get out is directly proportional to the quality of what you put in. And that is not about being clever or using magic words. It is about being **structured** and **specific**.
-
-That is what this lesson is about: a practical framework for talking to AI that works every time.
+AI works the same way. The quality of what you get out is directly proportional to the quality of what you put in. Not about being clever or using magic words. It is about being **structured** and **specific**.
 
 ## The 8-Part Prompt Framework
 
-We use an 8-part framework for structuring prompts. You do not need to use all eight parts every time — sometimes a quick question is perfectly fine. But when you need a great result on something that matters, these eight parts give you a reliable system.
+We use an 8-part framework for structuring prompts. You do not need all eight parts every time — sometimes a quick question is fine. But when you need a great result on something that matters, these eight parts give you a reliable system.
 
 <Callout variant="paw" title="Haku says">
 Think of this framework like a packing list for a hike. You do not bring all your gear for a quick walk around the block. But for a serious trail, having a checklist means you never forget the essentials.
 </Callout>
 
-Let us walk through each part.
-
 ### 1. Task
 
-**What you want the AI to do.**
+**Define what you want and what success looks like.**
 
-This is the most important part. Be specific about the output you want. Do not just describe a topic — describe the deliverable.
+Start with a clear statement: "I want to [TASK] so that [SUCCESS CRITERIA]."
+
+That is the whole formula. The task tells AI what to do. The success criteria tells it how you will judge the result. Without success criteria, the AI is guessing at what "good" means to you.
 
 **Weak:** "Help me with onboarding."
 
-**Strong:** "Write a 5-step onboarding checklist for new employees at a marketing agency. Each step should include a brief description of what happens and who is responsible."
+**Strong:** "I want to create a 5-step onboarding checklist for new employees at a marketing agency so that every new hire completes their first week with access to all tools, introductions to their team, and a clear understanding of their first project."
 
-The strong version tells the AI exactly what to produce (a checklist), the format (5 steps with descriptions), the context (marketing agency), and extra detail (include who is responsible).
+<WarningBox>
+Do NOT start prompts with "Act as a senior expert" or "You are a world-class consultant." That era is over. Modern AI models like Claude already bring expertise. Telling them to role-play does not make the output better — it just wastes tokens and can actually make responses more generic. Define the task, not a character.
+</WarningBox>
 
 <TipBox>
-Start your task with an action verb: "Write," "Create," "Analyze," "Compare," "Explain," "List," "Draft," "Review." This forces you to be specific about what you want.
+Start your task with an action verb: "Write," "Create," "Analyze," "Compare," "Explain," "Draft," "Review." This forces you to be specific about the deliverable.
 </TipBox>
 
 ### 2. Context Files
 
-**Background information the AI needs to do the job well.**
+**Upload files with your expertise and rules. Stop explaining yourself in the prompt.**
 
-This is where you paste in or upload relevant documents, data, or examples. The more relevant context you give, the better the output.
+This is the single biggest shift in modern prompting. AI went from reading a sticky note to reading an entire book. Claude can handle 200,000 tokens of context — that is roughly 500 pages.
 
-Examples of good context:
-- "Here is our company's brand voice guide: [paste document]"
-- "Here is the current version of the page I want to improve: [paste text]"
-- "Here are three examples of emails I liked: [paste examples]"
+Instead of trying to explain your company, your standards, and your audience inside the prompt, put all of that into files and upload them.
 
-Context files are the single biggest lever for improving AI output. A prompt with good context beats a "perfect" prompt without context almost every time.
+Start your prompt with: "First, read these files completely before responding:"
+
+Then list what you are giving it:
+- `brand-voice.md` — Our tone, vocabulary, and writing rules
+- `product-overview.md` — What we sell and who we sell it to
+- `audience-research.md` — Customer interviews and pain points
+
+Context files are the single biggest lever for improving AI output. A simple prompt with great context files beats a "perfect" prompt with no context almost every time.
+
+<Callout variant="info" title="Files beat pasting">
+In Claude Desktop, you can upload files directly into a Project or conversation. In Claude.ai, you can paste content or use Projects. Either way, the principle is the same: get your knowledge out of your head and into files the AI can read. We will set this up properly in Tongariro.
+</Callout>
 
 ### 3. Reference
 
-**Examples or standards the AI should follow.**
+**Show AI exactly what you want. Upload an example.**
 
-This is different from context. Context is *background information*. Reference is *this is what good looks like*. You are showing the AI the quality bar and format you expect.
+Context is background information. Reference is "this is what good looks like." You are showing the AI the quality bar, not just describing it.
 
-- "Match the tone and structure of this example: [paste example]"
-- "Follow the format used in this template: [paste template]"
-- "This blog post has the voice I want: [paste post]"
+Upload an example of what you want, then extract the patterns:
+- What makes this reference work?
+- What is the tone, structure, and rhythm?
+- What rules can you pull from it?
 
-When you give the AI a reference, you are essentially saying "do it like this" instead of trying to describe what "this" means in words.
+Format each rule starting with "Always" or "Never":
+- "Always open with a one-sentence hook before the main content"
+- "Never use more than two sentences per paragraph"
+- "Always end sections with a concrete action the reader can take"
+
+Do not just say "give me something like this" and hope the AI figures it out. Reverse-engineer the blueprint and hand it over explicitly.
 
 ### 4. Brief
 
-**Specific requirements, constraints, and parameters.**
+**This is the only part you actually type from scratch. Everything else is files.**
 
-The brief is where you get precise about the details:
+The brief is your success specification:
 
-- Length: "Keep it under 500 words"
-- Format: "Use bullet points, not paragraphs"
-- Audience: "Write for a non-technical executive"
-- Tone: "Professional but approachable, no jargon"
-- Inclusions: "Must mention our 30-day guarantee"
-- Exclusions: "Do not reference competitors by name"
+- **Type of output + length:** "A 500-word product announcement email"
+- **Recipient's reaction:** "After reading, the customer should feel excited to try the new feature and understand exactly how to access it"
+- **Does NOT sound like:** "Generic AI, too casual, too formal, jargon-heavy"
+- **Success means:** "The recipient clicks the CTA button. Open rate above 40%"
 
-Think of the brief as the specifications for the work. The more specific your brief, the fewer revisions you will need.
+The brief is short, sharp, and specific. If your context files are doing their job, the brief itself should only be a few lines.
 
 ### 5. Rules
 
-**Hard constraints the AI must follow no matter what.**
+**Your context file holds your standards, taste, and audience.**
 
-Rules are different from the brief because they are non-negotiable. The brief is "here is what I want." Rules are "here is what you must not violate."
+Rules are the non-negotiable constraints. The difference between the brief and rules: the brief is what the client wants, rules are the legal requirements. You might adjust the brief based on feedback, but rules do not bend.
 
-Examples:
-- "Never use the word 'synergy'"
-- "Always use metric units, never imperial"
-- "Do not make assumptions about the user's gender"
+The best practice is to put your rules in a context file rather than the prompt itself. This way they persist across every conversation.
+
+Then in your prompt, add: "Read my rules file fully before starting. If you are about to break one of my rules, stop and tell me."
+
+Example rules:
+- "Never use the word 'synergy' or 'leverage' as a verb"
+- "Always use metric units"
+- "All statistics must include a source"
+- "Do not make assumptions about the reader's gender"
 - "If you are unsure about a fact, say so rather than guessing"
-- "All code must include error handling"
 
-Rules are especially useful when you are creating reusable prompts or system instructions that will be used many times.
-
-<Callout variant="info" title="Brief vs. Rules: What is the difference?">
-Think of it this way: the **brief** is what the client wants. The **rules** are the legal requirements. You might adjust the brief based on feedback, but rules do not bend. In practice, many people combine these, and that is fine. The distinction is most useful when you are writing system prompts or reusable instructions.
-</Callout>
+<TipBox>
+Rules are especially powerful when you are creating reusable prompts or system instructions. Write them once, save them in a file, and reference them every time.
+</TipBox>
 
 ### 6. Conversation
 
-**The ongoing back-and-forth dialogue.**
+**You spent years prompting AI. Now it prompts you.**
 
-This is the part most people already know: the chat itself. But using it intentionally makes a big difference.
+This is the biggest mindset shift in the framework. Instead of firing off a prompt and accepting whatever comes back, you tell the AI: "DO NOT start executing yet. Ask me clarifying questions so we can refine the approach together step by step."
 
-Key principles for conversation:
-- **Build incrementally.** Do not try to get the perfect result in one shot. Start with a draft, then refine.
-- **Be specific about what to change.** Instead of "make it better," say "the second paragraph is too formal — make it more conversational."
-- **Ask the AI to explain its choices.** "Why did you structure it this way?" helps you learn and helps the AI refine.
-- **Do not start over unnecessarily.** If the AI is 80% of the way there, refine within the same conversation rather than starting a new one.
+Now the AI interviews you. It asks the questions you forgot to answer. It surfaces assumptions you did not realize you were making. It finds gaps in your brief.
+
+This flips the old model on its head. You are no longer the sole prompt engineer. You and the AI are collaborating to build the best possible prompt *together* before any work begins.
+
+Key principles:
+- **Let the AI ask first.** Its questions often reveal what your prompt is missing.
+- **Be specific in your answers.** The AI's follow-up questions are only as useful as your responses.
+- **Build incrementally.** Each round of Q&A sharpens the final output.
+- **Do not start over unnecessarily.** If the conversation is 80% there, refine rather than restart.
 
 ### 7. Plan
 
-**Ask the AI to plan before it executes.**
+**Claude reads your files before writing a single word.**
 
-This is a powerful technique that many people skip. Before asking the AI to produce the final output, ask it to outline its approach.
+Before any execution happens, ask the AI to prove it understood your context:
 
-- "Before writing the full document, give me a brief outline of the sections you would include and why."
-- "Walk me through your approach to this problem before writing any code."
-- "What questions would you want answered before tackling this task?"
+"Before you write anything, list the 3 rules from my context file that matter most for this task. Then give me your execution plan."
 
-When the AI plans first, you can catch misunderstandings early, before it has written 2,000 words in the wrong direction.
+This does two things. First, it forces the AI to actually process your context files rather than skimming them. Second, it gives you a checkpoint — if the AI cites the wrong rules or proposes a plan that misses the point, you catch it before it writes 2,000 words in the wrong direction.
 
-<TipBox>
-Asking for a plan is especially valuable for complex tasks. A two-minute review of an outline can save you twenty minutes of revisions on a full draft.
-</TipBox>
+A two-minute review of a plan saves twenty minutes of revisions on a full draft.
+
+<Callout variant="tip" title="The plan is your safety net">
+For any task that will take the AI more than a few sentences to complete, always ask for a plan first. It is the single most effective way to prevent wasted work.
+</Callout>
 
 ### 8. Alignment
 
-**Check that the AI understood your intent before (or during) the work.**
+**Nothing happens until you both see the same aim.**
 
-Alignment is about making sure you and the AI are on the same page. You can do this proactively:
+This is the final gate. After the conversation and the plan, confirm alignment before the AI starts producing the real output:
 
-- "Before you start, tell me in one sentence what you think I am asking for."
-- "What assumptions are you making about this task?"
-- "On a scale of 1-10, how confident are you in this response? What would make you more confident?"
+"Only begin work once we have aligned."
 
-Or reactively:
+Alignment replaces the old prompting era of "send prompt, hope for the best, revise five times." Instead, you invest the time upfront to make sure both you and the AI understand:
+- What the deliverable is
+- What success looks like
+- What the constraints are
+- What approach will be taken
 
-- "That is not quite what I meant. Let me clarify: [clarification]."
-- "Good direction, but I need you to focus more on [specific aspect]."
+Once aligned, the first draft is dramatically closer to the final version. Often it *is* the final version.
 
-Alignment is the safety net that prevents you from going three rounds of revisions before realizing the AI misunderstood the basic request.
+## The Complete Template
 
-## The Framework in Action
+Here is the full prompt template you can copy and adapt for any task:
 
-Let us see how these parts come together in a real example. Say you need to write a job description.
+<Callout variant="info" title="The Anatomy of a Claude Prompt">
 
-**Without the framework:**
-> "Write a job description for a marketing manager."
+**Task:** I want to [TASK] so that [SUCCESS CRITERIA].
 
-That will give you something generic that could be for any company.
+First, read these files completely before responding:
 
-**With the framework:**
+**Context Files:**
+- `[filename.md]` — [what it contains]
+- `[filename.md]` — [what it contains]
 
-> **Task:** Write a job description for a Senior Marketing Manager at our company.
->
-> **Context:** We are a 50-person B2B SaaS company selling project management software to construction firms. We are based in Austin, TX, but this role is remote. Our current marketing team is 4 people and this hire would be their lead.
->
-> **Reference:** Here is a job description from a similar company that I liked the structure of: [paste example]
->
-> **Brief:** Keep it under 600 words. Include sections for About Us, The Role, Requirements (split into required and nice-to-have), and Benefits. Salary range is $120-150K. Tone should be professional but show personality — we are a startup, not a bank.
->
-> **Rules:** Do not use the phrase "rock star" or "ninja." Do not list more than 6 required qualifications. Must mention that we are an equal opportunity employer.
->
-> **Plan:** Before writing the full JD, outline the key selling points about this role that would attract strong candidates.
+**Reference:** Here is a reference to what I want to achieve: [upload reference file or paste here]
 
-See the difference? The second version gives the AI everything it needs to produce something genuinely useful on the first try.
+Here is what makes this reference work: [paste your reverse-engineered blueprint — patterns, tone, structure as rules. Format each as "Always..." or "Never..."]
 
-<HandsOnExercise title="Build a Structured Prompt">
+**Brief:** Here is what I need for my version:
+- Type of output + length: [contract, memo, report, landing page, post?]
+- Recipient's reaction: [what should they think/feel/do after reading?]
+- Does NOT sound like: [generic AI, too casual, too formal, jargon-heavy?]
+- Success means: [they sign? they approve? they reply? they take action?]
 
-Pick a real task you actually need to do (even something simple like writing an email). Now build a prompt using at least four parts of the framework:
+**Rules:** My context file contains my standards, constraints, and audience. Read it fully before starting. If you are about to break one of my rules, stop and tell me.
 
-1. **Task:** What specific output do you want? Start with an action verb.
-2. **Context:** What background information does the AI need? Paste in any relevant text.
-3. **Brief:** What are the specific requirements (length, tone, format, audience)?
-4. **Rules:** What are the hard constraints?
+**Conversation:** DO NOT start executing yet. Ask me clarifying questions so we can refine the approach together step by step.
 
-Send this prompt to your AI tool and compare the result to what you would have gotten from a one-line ask. Notice the difference in quality.
+**Plan:** Before you write anything, list the 3 rules from my context file that matter most for this task. Then give me your execution plan.
 
-</HandsOnExercise>
+**Alignment:** Only begin work once we have aligned.
+
+</Callout>
 
 ## You Do Not Always Need All Eight
 
-For a quick question like "What is the capital of France?" you obviously do not need a full framework. Here is a rough guide:
+For a quick question, you obviously do not need the full framework. Here is a rough guide:
 
 **Quick questions (1-2 parts):** Task only, maybe some context.
 - "Summarize this article in 3 bullet points: [paste article]"
 
-**Standard tasks (3-4 parts):** Task, context, brief.
-- "Write a follow-up email to a client who missed a deadline. Context: they are a good client, this is their first miss, the project is not urgent. Keep it friendly and under 150 words."
+**Standard tasks (3-4 parts):** Task, context files, brief.
+- "I want to write a follow-up email to a client who missed a deadline so that the relationship stays strong and we get a new date confirmed. Here is the project context: [upload file]. Keep it under 150 words, friendly but direct."
 
 **Important work (5-8 parts):** Use the full framework.
-- A product requirements document, a business proposal, a complex piece of code, or anything where quality really matters.
+- A product requirements document, a business proposal, a complex piece of code, a hiring process — anything where quality really matters and getting it wrong costs real time or money.
 
 The framework scales with the importance of the task. That is the whole point.
 
@@ -204,53 +217,38 @@ The framework scales with the importance of the task. That is the whole point.
 Do not over-engineer simple prompts. If you spend five minutes crafting a perfect prompt for a question that only needs a one-sentence answer, you are wasting time. Match your prompting effort to the importance of the output.
 </WarningBox>
 
-## Iterative Refinement: The Real Skill
-
-Here is the truth that separates good AI users from great ones: **the first response almost never needs to be the final response.**
-
-Prompting is not a one-shot game. It is a conversation. The real skill is not writing the perfect prompt on the first try — it is knowing how to refine the output through follow-up messages.
-
-A typical workflow looks like this:
-
-1. Send a structured prompt and get the first draft.
-2. Read it critically. What is good? What is off?
-3. Give specific feedback: "The introduction is too long. Shorten it to two sentences. Also, add a section about pricing."
-4. Review the revision. Repeat until you are satisfied.
-
-Most people give up after step 1, accept whatever the AI gives them, and walk away thinking "AI is not that useful." The people who get incredible results are the ones who treat step 1 as a starting point, not an endpoint.
-
-<Callout variant="tip" title="The 80/20 rule of prompting">
-A good initial prompt gets you 80% of the way there. Iterative refinement handles the remaining 20%. But that last 20% is often the difference between "meh" and "wow." Do not skip it for anything that matters.
-</Callout>
-
-<HandsOnExercise title="Practice Iterative Refinement">
-
-1. Send the structured prompt you created in the previous exercise.
-2. Read the AI's response critically. Find at least two things you would change.
-3. Write a follow-up message with specific feedback (not "make it better" — explain exactly what to change and why).
-4. Review the revised version. Is it closer to what you wanted?
-5. Do one more round of refinement.
-
-Notice how the output improves with each round. That is the power of iteration.
-
-</HandsOnExercise>
-
 ## Common Prompting Mistakes
 
 Before we wrap up, here are the mistakes we see most often:
 
-- **Being too vague.** "Help me with my resume" vs. "Review my resume and suggest 3 specific improvements to make it stronger for product management roles."
-- **Not providing context.** The AI cannot read your mind. If you have relevant information, share it.
-- **Accepting the first response.** Always review critically and refine.
-- **Starting over instead of refining.** If the AI is heading in the right direction, steer it with follow-ups. Do not start a brand new conversation.
-- **Trying to be clever.** Simple, clear, specific prompts beat clever ones every time. You are not trying to trick the AI. You are trying to communicate with it.
-- **Ignoring the plan step.** For complex tasks, asking for a plan first saves enormous amounts of time.
+- **Role prompting.** "Act as a senior marketing expert" does nothing useful with modern models. Define the task and success criteria instead.
+- **Pasting everything inline.** Stop writing 500-word prompts. Put your knowledge in files and upload them.
+- **No success criteria.** "Write a blog post" vs. "Write a blog post so that readers understand our pricing change and feel confident it benefits them." The difference is night and day.
+- **Skipping the conversation step.** Letting the AI ask clarifying questions before executing catches problems you did not know existed.
+- **Accepting the first response.** Always review critically and refine. The first draft is a starting point, not an endpoint.
+- **Starting over instead of refining.** If the AI is heading in the right direction, steer it with follow-ups. Do not start a new conversation.
+- **Skipping the plan.** For complex tasks, asking for a plan first saves enormous amounts of time.
+
+<HandsOnExercise title="Build Your First Structured Prompt">
+
+Pick a real task you actually need to do. Now build a prompt using the template:
+
+1. **Task:** Write your "I want to [TASK] so that [SUCCESS CRITERIA]" statement.
+2. **Context:** Create a short context file (even a few bullet points in a text file) with relevant background. Upload it.
+3. **Brief:** Define the output type, length, what it should NOT sound like, and what success means.
+4. **Conversation:** Add "DO NOT start executing yet. Ask me clarifying questions first."
+
+Send this to Claude. Answer its questions. Then let it execute.
+
+Compare the result to what you would have gotten from a one-line ask. Notice the difference.
+
+</HandsOnExercise>
 
 <PawPrintCheck items={[
   "Can you name all 8 parts of the prompt framework?",
-  "Do you understand the difference between context and reference?",
-  "Have you practiced writing a structured prompt with at least 4 parts?",
-  "Can you explain why iterative refinement is more important than the perfect first prompt?",
+  "Do you understand why context files beat pasting text inline?",
+  "Can you explain the difference between a brief and rules?",
+  "Have you practiced writing a structured prompt and letting the AI ask you questions first?",
 ]} />
 
 <NextUp

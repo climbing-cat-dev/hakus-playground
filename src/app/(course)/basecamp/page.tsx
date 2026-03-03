@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Metadata } from "next";
 import { getTrail } from "@/content/data/trails";
 import { getLessonsByTrail, getLessonNumber } from "@/content/data/lessons";
@@ -15,7 +16,9 @@ export default function BasecampPage() {
 
   return (
     <div data-trail="basecamp">
-      <div className="mb-4 h-40 rounded-xl" style={{ backgroundColor: trail.colorHex + "20" }} />
+      <div className="relative mb-4 h-40 overflow-hidden rounded-xl">
+        <Image src={trail.image} alt={trail.title} fill className="object-cover" style={{ objectPosition: "bottom" }} />
+      </div>
       <h1 className="font-display text-3xl font-bold text-cream sm:text-4xl">
         {trail.title}
       </h1>

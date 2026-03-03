@@ -1,7 +1,9 @@
 import { cn } from "@/lib/utils";
 
+import type { TrailId } from "@/content/data/lessons";
+
 interface BadgeProps {
-  trail: "basecamp" | "easy-trail" | "medium-trail" | "summit";
+  trail: TrailId;
   children: React.ReactNode;
   className?: string;
 }

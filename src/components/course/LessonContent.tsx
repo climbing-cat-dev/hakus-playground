@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Lesson } from "@/content/data/lessons";
+import { getTrail } from "@/content/data/trails";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 
@@ -26,19 +27,8 @@ export default function LessonContent({
           &larr; Back to trail
         </Link>
         <div className="mt-3 flex items-center gap-3">
-          <Badge
-            trail={
-              lesson.trailId as
-                | "basecamp"
-                | "easy-trail"
-                | "medium-trail"
-                | "summit"
-            }
-          >
-            {lesson.trailId
-              .split("-")
-              .map((w) => w[0].toUpperCase() + w.slice(1))
-              .join(" ")}
+          <Badge trail={lesson.trailId}>
+            {getTrail(lesson.trailId)?.title ?? lesson.trailId}
           </Badge>
           <span className="text-sm text-dust">{lesson.duration}</span>
         </div>

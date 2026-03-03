@@ -46,6 +46,16 @@ const resources = [
     category: "Development",
     items: [
       {
+        title: "Git",
+        description: "Version control system — track changes and collaborate on code.",
+        href: "https://git-scm.com",
+      },
+      {
+        title: "GitHub",
+        description: "Host your repositories and collaborate with others.",
+        href: "https://github.com",
+      },
+      {
         title: "Next.js",
         description: "The React framework for the web.",
         href: "https://nextjs.org",

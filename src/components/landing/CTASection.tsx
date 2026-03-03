@@ -9,7 +9,7 @@ export default function CTASection() {
           Ready to start climbing?
         </h2>
         <p className="mt-3 text-lg text-sand">
-          Begin at Basecamp with the fundamentals, or jump to whichever trail
+          Begin at Rangitoto with the fundamentals, or jump to whichever trail
           matches your experience. Haku will be there every step of the way.
         </p>
         <div className="mt-8">

@@ -1,8 +1,10 @@
+export type TrailId = "basecamp" | "easy-trail" | "medium-trail" | "summit";
+
 export interface Lesson {
   slug: string;
   title: string;
   description: string;
-  trailId: string;
+  trailId: TrailId;
   order: number;
   duration: string;
   objectives: string[];

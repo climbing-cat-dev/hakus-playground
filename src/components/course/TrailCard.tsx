@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Trail } from "@/content/data/trails";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
@@ -18,10 +19,15 @@ export default function TrailCard({ trail }: TrailCardProps) {
   return (
     <Link href={`/${trail.id}`}>
       <Card className={trailBorders[trail.id]}>
-        <div
-          className="mb-4 h-32 rounded-lg"
-          style={{ backgroundColor: trail.colorHex + "20" }}
-        />
+        <div className="relative mb-4 h-32 overflow-hidden rounded-lg">
+          <Image
+            src={trail.image}
+            alt={trail.title}
+            fill
+            className="object-cover"
+            style={{ objectPosition: trail.imagePosition }}
+          />
+        </div>
         <Badge trail={trail.id as "basecamp" | "easy-trail" | "medium-trail" | "summit"}>
           {trail.terrain}
         </Badge>

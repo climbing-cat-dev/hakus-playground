@@ -1,10 +1,10 @@
-import Link from "next/link";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
-      <div className="text-6xl">🧶</div>
+      <Image src="/images/logo/haku-logo-paw.webp" alt="Haku waving" width={96} height={96} className="rounded-2xl" />
       <h1 className="mt-6 font-display text-4xl font-bold text-cream">
         Haku got lost!
       </h1>

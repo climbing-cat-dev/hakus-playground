@@ -27,11 +27,3 @@ export function getSidebarNav(): NavItem[] {
     },
   ];
 }
-
-export const headerNav: NavItem[] = [
-  { label: "Overview", href: "/overview" },
-  { label: "Basecamp", href: "/basecamp" },
-  { label: "Easy Trail", href: "/easy-trail" },
-  { label: "Medium Trail", href: "/medium-trail" },
-  { label: "Summit", href: "/summit" },
-];
