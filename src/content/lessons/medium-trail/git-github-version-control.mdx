@@ -1,0 +1,396 @@
+<LessonObjective items={[
+  "Understand version control with the 'save game' analogy",
+  "Master the 5 essential Git commands: init, add, commit, push, pull",
+  "Create a GitHub account and repository",
+  "Push your first code to GitHub"
+]} />
+
+## Why Version Control Matters
+
+Imagine you are playing a long RPG. You have been exploring for hours, collected rare items, and you are about to fight a boss. What do you do before the boss fight? You **save your game**. If the boss wipes you out, you reload your save and try again. You do not start the entire game over from scratch.
+
+Version control is the "save game" system for your code.
+
+Without version control, every change you make is permanent. If you break something, you have to remember what it looked like before and manually undo your mistakes. If your computer crashes, everything is gone. If you want to try an experimental idea, you risk destroying what already works.
+
+With version control, you take snapshots of your code at any point. You can always go back to a previous snapshot. You can try risky experiments knowing you can undo them instantly. You can work on multiple features simultaneously without them interfering with each other.
+
+The tool that makes this possible is called **Git**, and the platform where your saves live online is called **GitHub**.
+
+<KeyVocabulary terms={[
+  { term: "Git", definition: "A version control system that tracks changes to your files. Think of it as your save game system." },
+  { term: "GitHub", definition: "A website that stores your Git repositories online. Think of it as the cloud where your save files live." },
+  { term: "Repository (repo)", definition: "A project folder that Git is tracking. Contains your code and its entire save history." },
+  { term: "Commit", definition: "A single save point. A snapshot of your code at a specific moment in time." },
+  { term: "Branch", definition: "A parallel version of your code. Like creating a second save slot to try something different." },
+  { term: "Remote", definition: "The online copy of your repository (on GitHub). Your local copy is called 'local'." }
+]} />
+
+## The Save Game Analogy
+
+Let us extend this analogy because it maps almost perfectly:
+
+| Gaming Concept | Git Concept | What It Does |
+|---|---|---|
+| Save game | `git commit` | Takes a snapshot of your current state |
+| Save slot name | Commit message | Describes what changed in this save |
+| Load game | `git checkout` / `git revert` | Goes back to a previous save |
+| Cloud save | `git push` | Uploads your saves to GitHub |
+| Download save | `git pull` | Downloads the latest saves from GitHub |
+| New save slot | `git branch` | Creates a parallel version to experiment in |
+| Start a new game with saves | `git init` | Turns a regular folder into a Git-tracked project |
+
+<Callout variant="info" title="You Will Not Break Anything">
+One of the best things about Git is that it is incredibly hard to permanently lose work. Even if you make mistakes with Git commands, your previous saves (commits) are almost always recoverable. This is your safety net while building.
+</Callout>
+
+## Setting Up Git
+
+Before we learn the commands, let us make sure Git is installed and configured.
+
+### Check If Git Is Installed
+
+Open your terminal and type:
+
+```bash
+git --version
+```
+
+You should see something like `git version 2.44.0`. If you get an error, install Git from [git-scm.com](https://git-scm.com/).
+
+### Configure Your Identity
+
+Git needs to know who you are so it can label your saves with your name. Run these two commands, replacing the placeholders with your real information:
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+
+<TipBox>
+Use the same email address you will use for your GitHub account. This links your local saves to your online profile.
+</TipBox>
+
+### Create a GitHub Account
+
+If you do not already have one, head to [github.com](https://github.com) and create a free account. The free tier gives you unlimited public and private repositories, which is everything you need.
+
+## The 5 Essential Commands
+
+Out of the dozens of Git commands that exist, you really only need five to get started. Let us walk through each one with real examples.
+
+### Command 1: `git init`
+
+**What it does:** Turns a regular folder into a Git-tracked repository. This is like setting up a new game -- it creates the save system.
+
+```bash
+# Navigate to your project folder
+cd my-project
+
+# Initialize Git
+git init
+```
+
+You will see a message like `Initialized empty Git repository in /path/to/my-project/.git/`. Git has created a hidden `.git` folder inside your project that stores all your save history.
+
+<Callout variant="tip" title="One-Time Setup">
+You only run `git init` once per project. After that, the project is tracked and you never need to initialize it again. If you clone a repository from GitHub, it is already initialized for you.
+</Callout>
+
+### Command 2: `git add`
+
+**What it does:** Stages files for your next save. Think of it as selecting which files you want to include in this particular save point.
+
+```bash
+# Stage a specific file
+git add index.js
+
+# Stage multiple specific files
+git add index.js package.json
+
+# Stage all changed files
+git add .
+```
+
+Why does this step exist? Sometimes you change ten files but only want to save five of them right now. `git add` lets you choose exactly what goes into each save.
+
+```bash
+# See which files have changed and which are staged
+git status
+```
+
+The `git status` command is your best friend. It shows you:
+- **Red files:** Changed but not staged (not selected for the next save)
+- **Green files:** Staged and ready to be saved
+- **Untracked files:** New files Git has never seen before
+
+<TipBox>
+Run `git status` constantly. Before every commit, after every commit, whenever you are unsure about the state of things. It is the most informative command in Git.
+</TipBox>
+
+### Command 3: `git commit`
+
+**What it does:** Creates the actual save point. Takes everything you staged with `git add` and saves a permanent snapshot.
+
+```bash
+git commit -m "Add Express server with hello world route"
+```
+
+The `-m` flag stands for "message." Every save needs a description so you (and others) know what changed. Good commit messages are short and descriptive:
+
+```bash
+# Good commit messages
+git commit -m "Add user login page"
+git commit -m "Fix broken navigation on mobile"
+git commit -m "Update dependencies to latest versions"
+git commit -m "Remove unused helper functions"
+
+# Bad commit messages
+git commit -m "stuff"
+git commit -m "changes"
+git commit -m "asdfghj"
+git commit -m "fixed it"
+```
+
+<Callout variant="info" title="The Add-Commit Pattern">
+You will almost always use `git add` and `git commit` together. The rhythm becomes natural very quickly: make changes, stage them, commit them. Make changes, stage them, commit them.
+
+```bash
+# The pattern you will use hundreds of times:
+git add .
+git commit -m "Description of what changed"
+```
+</Callout>
+
+### Command 4: `git push`
+
+**What it does:** Uploads your local saves to GitHub. This is your cloud backup -- if your computer explodes tomorrow, your code is safe on GitHub.
+
+```bash
+git push origin main
+```
+
+This command says "push my commits to the remote called `origin` on the branch called `main`." We will explain what `origin` and `main` mean in a moment, but for now just know this is the command that sends your code to GitHub.
+
+The first time you push a new repository, you might need to set up the connection:
+
+```bash
+# Link your local repo to a GitHub repo (you only do this once)
+git remote add origin https://github.com/yourusername/your-repo-name.git
+
+# Push and set up tracking (first time only)
+git push -u origin main
+```
+
+After the first push, you can simply use `git push` without the extra arguments.
+
+### Command 5: `git pull`
+
+**What it does:** Downloads the latest changes from GitHub to your local machine. This is important when you work from multiple computers or when collaborators make changes.
+
+```bash
+git pull origin main
+```
+
+This grabs any new commits from GitHub and merges them into your local copy. If you are the only person working on a project from one computer, you will use `push` much more often than `pull`. But it is good to know it exists.
+
+<WarningBox>
+Always commit or stash your local changes before pulling. If you have uncommitted work and try to pull, Git might complain about conflicts. The safe pattern is: commit your work first, then pull.
+</WarningBox>
+
+## Putting It All Together
+
+Let us walk through a complete workflow from zero to GitHub.
+
+<HandsOnExercise title="Your First Git Workflow">
+
+1. **Create a project and initialize Git:**
+
+```bash
+mkdir my-git-project
+cd my-git-project
+git init
+```
+
+2. **Create some files** (you can use Claude Code for this, or create them manually):
+
+```bash
+echo '{ "name": "my-git-project", "version": "1.0.0" }' > package.json
+echo 'console.log("Hello, Git!")' > index.js
+echo 'node_modules/' > .gitignore
+```
+
+3. **Check the status:**
+
+```bash
+git status
+```
+
+You should see three untracked files in red.
+
+4. **Stage all files:**
+
+```bash
+git add .
+```
+
+5. **Check status again:**
+
+```bash
+git status
+```
+
+Now the files should appear in green -- staged and ready to commit.
+
+6. **Create your first commit:**
+
+```bash
+git commit -m "Initial commit: project setup with index.js"
+```
+
+7. **Create a repository on GitHub:**
+   - Go to [github.com](https://github.com) and click the "+" icon, then "New repository"
+   - Name it `my-git-project`
+   - Leave it empty (do not add a README or .gitignore -- you already have them)
+   - Click "Create repository"
+
+8. **Connect and push:**
+
+```bash
+git remote add origin https://github.com/yourusername/my-git-project.git
+git branch -M main
+git push -u origin main
+```
+
+9. **Refresh your GitHub page** -- your code is now online.
+
+</HandsOnExercise>
+
+## The Git Workflow with Claude Code
+
+Here is where things get really smooth. Claude Code understands Git natively. You can ask it to handle version control as part of your workflow:
+
+```
+> Create a new Express route for /api/users that returns a list
+  of users, then commit the changes with a descriptive message
+```
+
+Claude Code will write the code, stage the files, and create a commit -- all in one step. You can also ask it to check your Git status, view recent commits, or even help resolve merge conflicts.
+
+```
+> Show me the last 5 commits
+```
+
+```
+> What files have changed since the last commit?
+```
+
+```
+> Push my latest changes to GitHub
+```
+
+<TipBox>
+Even though Claude Code can handle Git for you, it is worth understanding the commands yourself. When something goes wrong (and eventually something will), knowing how Git works lets you diagnose and fix the issue confidently.
+</TipBox>
+
+## Understanding Branches (Bonus Concept)
+
+You do not strictly need branches right now, but understanding the concept will help later. A branch is like a parallel save slot. You create a branch to work on a new feature, and when you are happy with it, you merge it back into your main branch.
+
+```bash
+# Create and switch to a new branch
+git checkout -b add-login-page
+
+# ... make your changes, add, commit ...
+
+# Switch back to main
+git checkout main
+
+# Merge the feature branch into main
+git merge add-login-page
+```
+
+Think of `main` as your stable save file -- the one that always works. Branches are your experimental save slots where you try things. If the experiment succeeds, you merge it in. If it fails, you delete the branch and your `main` is untouched.
+
+<ExpandableSection title="What if I mess up a Git command?">
+Do not panic. Here are the most common escape hatches:
+
+- **I committed but want to undo it:** `git reset --soft HEAD~1` undoes the last commit but keeps your changes.
+- **I changed a file and want to undo the changes:** `git checkout -- filename.js` reverts a file to its last committed state.
+- **Everything is broken and I want to start over:** `git log` shows your commit history. Find the commit hash of a working state and use `git checkout that-hash` to go back to it.
+- **I am totally lost:** Run `git status` and `git log` to understand where you are. You can also ask Claude Code to help diagnose the situation.
+</ExpandableSection>
+
+## The .gitignore File
+
+Not everything in your project should be saved to Git. Some files are generated automatically (like `node_modules/`), some contain secrets (like `.env`), and some are just personal preferences (like editor settings).
+
+The `.gitignore` file tells Git which files to ignore. Here is a solid starter `.gitignore` for a Node.js project:
+
+```
+# Dependencies
+node_modules/
+
+# Environment variables (SECRETS!)
+.env
+.env.local
+.env.production
+
+# Build output
+.next/
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/
+```
+
+<WarningBox>
+The `.env` entry in `.gitignore` is critical for security. Your `.env` file contains API keys and other secrets. If you push it to GitHub, anyone can see your keys. We will cover this in depth in the Security Essentials lesson, but start the habit now: always add `.env` to `.gitignore` before your first commit.
+</WarningBox>
+
+## Common Git Patterns to Remember
+
+Here is a quick-reference card for the workflows you will use most often:
+
+```bash
+# Starting a new project
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/user/repo.git
+git push -u origin main
+
+# Daily workflow
+git add .
+git commit -m "Description of changes"
+git push
+
+# Check what is happening
+git status
+git log --oneline
+
+# Oops, undo last commit (keep changes)
+git reset --soft HEAD~1
+```
+
+---
+
+<PawPrintCheck items={[
+  "What does 'git init' do, and how many times do you run it per project?",
+  "What is the difference between 'git add' and 'git commit'?",
+  "Why are good commit messages important?",
+  "What does .gitignore do, and why should .env always be in it?",
+  "What is the difference between 'git push' and 'git pull'?"
+]} />
+
+<NextUp
+  title="Skills & CLAUDE.md"
+  href="/medium-trail/skills-and-claude-md"
+  description="Learn how to supercharge Claude Code with Skills, slash commands, and project-specific configuration."
+/>

@@ -1,0 +1,278 @@
+<LessonObjective items={[
+  "Understand what Claude Code is and how it differs from Claude Desktop",
+  "Install Claude Code on your machine",
+  "Set up integration with VS Code or Cursor",
+  "Run your first agentic coding session"
+]} />
+
+## What Is Claude Code?
+
+Up until now on this trail, you have been working with Claude through a browser or a desktop app. You type a message, Claude responds, and you copy-paste code into your editor. That workflow works, but it has a ceiling. Every time you want Claude to actually *do* something with your code -- create a file, run a command, fix an error -- you are the middleman. You copy, you paste, you switch windows, you lose context.
+
+Claude Code removes that middleman entirely.
+
+Claude Code is a **terminal-native, agentic AI assistant** that lives directly in your command line. Instead of chatting in a separate window and manually transferring code, Claude Code can read your files, write new ones, run terminal commands, search your codebase, and execute multi-step tasks -- all without you leaving your development environment.
+
+The word **agentic** is important here. A regular chatbot waits for your input and responds. An agentic tool can take initiative. When you tell Claude Code to "add a dark mode toggle to the header," it does not just give you a code snippet. It reads your existing header component, understands your project structure, creates the toggle component, updates the header, adds the necessary CSS, and runs the dev server to make sure nothing broke. It plans, executes, and verifies.
+
+<KeyVocabulary terms={[
+  { term: "Terminal-native", definition: "Runs directly in your command line (Terminal on Mac, PowerShell on Windows), not in a browser window." },
+  { term: "Agentic", definition: "Can plan multi-step tasks, use tools, read/write files, and execute commands autonomously." },
+  { term: "IDE", definition: "Integrated Development Environment -- the application where you write and manage code (VS Code, Cursor, etc.)." },
+  { term: "CLI", definition: "Command Line Interface -- a text-based way to interact with your computer by typing commands." }
+]} />
+
+## Claude Code vs. Claude Desktop
+
+It helps to understand the difference between these two tools, because they serve different purposes and they complement each other well.
+
+**Claude Desktop** is like having a brilliant research partner sitting next to you. You can show it documents, ask questions, brainstorm ideas, and get detailed answers. It is wonderful for planning, writing, analysis, and creative work. It works through a visual interface -- windows, buttons, text fields.
+
+**Claude Code** is like having a skilled developer sitting at your keyboard. It does not just talk about code -- it writes it, runs it, tests it, and fixes it. It works through the terminal, the same place where professional developers spend most of their time.
+
+| Feature | Claude Desktop | Claude Code |
+|---|---|---|
+| Interface | Visual app window | Terminal / command line |
+| File access | Upload files manually | Reads your entire project |
+| Code execution | Shows you code to copy | Writes and runs code directly |
+| Multi-step tasks | One response at a time | Plans and executes sequences |
+| Project awareness | Per-conversation context | Understands full codebase |
+| Best for | Research, writing, planning | Building, debugging, coding |
+
+<Callout variant="info" title="They Work Together">
+You do not have to choose one or the other. Many developers use Claude Desktop for brainstorming and planning, then switch to Claude Code when it is time to build. Think of Desktop as your whiteboard and Claude Code as your workbench.
+</Callout>
+
+## Installing Claude Code
+
+Getting Claude Code running takes just a few minutes. You need two things: Node.js (which you should already have from the earlier trail setup) and an Anthropic account.
+
+### Step 1: Verify Node.js
+
+Open your terminal and check that Node.js is installed:
+
+```bash
+node --version
+```
+
+You should see something like `v20.11.0` or higher. If you get an error, head to [nodejs.org](https://nodejs.org) and install the LTS version first.
+
+### Step 2: Install Claude Code
+
+Run this single command in your terminal:
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+The `-g` flag means "global" -- it installs Claude Code so you can use it from any directory on your machine, not just one project.
+
+### Step 3: Start Claude Code
+
+Navigate to any project folder (or create a new one) and launch it:
+
+```bash
+mkdir my-first-project
+cd my-first-project
+claude
+```
+
+The first time you run `claude`, it will walk you through authentication. You will connect your Anthropic account, which gives Claude Code the ability to use Claude's AI capabilities through your account.
+
+<TipBox>
+If you already have a Claude Pro or Max subscription, Claude Code uses your existing plan. You do not need to pay for a separate subscription.
+</TipBox>
+
+### Step 4: Verify It Works
+
+Once Claude Code starts, you will see a prompt where you can type. Try something simple:
+
+```
+> Create a file called hello.txt that says "Hello from Claude Code!"
+```
+
+If Claude Code creates the file and you can see it in your project folder, you are up and running.
+
+## Setting Up Your IDE Integration
+
+Claude Code runs in the terminal, but that does not mean you need to juggle two separate windows. Both VS Code and Cursor have built-in terminals, which means you can have your code editor and Claude Code side by side in the same application.
+
+### VS Code Setup
+
+VS Code is free, open-source, and the most popular code editor in the world. Here is how to set it up for the best Claude Code experience:
+
+1. **Open VS Code** and navigate to your project folder (`File > Open Folder`)
+2. **Open the integrated terminal** with the keyboard shortcut `` Ctrl+` `` (backtick) on Windows/Linux or `` Cmd+` `` on Mac
+3. **Run `claude`** in the terminal panel
+4. You now have your file explorer on the left, your code in the center, and Claude Code at the bottom
+
+```bash
+# In the VS Code integrated terminal:
+claude
+```
+
+<TipBox>
+You can split your terminal in VS Code. Keep one terminal for Claude Code and another for running your dev server or other commands. Click the split terminal icon (looks like a rectangle split in two) in the terminal panel.
+</TipBox>
+
+### Cursor Setup
+
+Cursor is a code editor built specifically for AI-assisted development. It is based on VS Code, so the setup is almost identical:
+
+1. **Open Cursor** and navigate to your project folder
+2. **Open the integrated terminal** with `` Cmd+` `` or `` Ctrl+` ``
+3. **Run `claude`** in the terminal panel
+
+Cursor also has its own built-in AI features (Cursor Tab, Cmd+K, Composer). These can work alongside Claude Code. Some people use Cursor's inline AI for quick edits and Claude Code for larger, multi-file tasks.
+
+<ExpandableSection title="Which editor should I choose?">
+If you are just starting out, **VS Code** is the safe choice. It is free, has the largest extension ecosystem, and virtually every tutorial on the internet uses it.
+
+If you want the most AI-integrated experience and do not mind paying for a subscription, **Cursor** adds AI features directly into the editing experience that complement Claude Code nicely.
+
+Either way, Claude Code works the same in both. You cannot go wrong.
+</ExpandableSection>
+
+## Your First Agentic Coding Session
+
+Let us put this all together with a real exercise. You are going to ask Claude Code to do something that would normally take you 15 minutes of manual work, and watch it happen in seconds.
+
+<HandsOnExercise title="Create a Project with Claude Code">
+
+1. Open your IDE (VS Code or Cursor)
+2. Open the integrated terminal
+3. Create and navigate to a new project folder:
+
+```bash
+mkdir claude-code-test
+cd claude-code-test
+```
+
+4. Start Claude Code:
+
+```bash
+claude
+```
+
+5. Give it your first real task:
+
+```
+> Initialize a new Node.js project with a package.json, create an
+  index.js file that starts an Express server on port 3000 with a
+  single route that returns "Hello, world!", and add a .gitignore
+  file appropriate for a Node.js project.
+```
+
+6. Watch what happens. Claude Code will:
+   - Create `package.json` with the right configuration
+   - Install Express as a dependency
+   - Write `index.js` with a working server
+   - Create `.gitignore` with Node.js defaults
+   - Possibly even run the server to verify it works
+
+7. When it finishes, test it yourself:
+
+```bash
+node index.js
+```
+
+8. Open your browser to `http://localhost:3000` and you should see "Hello, world!"
+
+</HandsOnExercise>
+
+Notice what just happened. You described what you wanted in plain English, and Claude Code did the rest. It did not just give you code to copy -- it created files, installed packages, and set up a working project. That is the agentic difference.
+
+## How to Talk to Claude Code
+
+Claude Code understands natural language, but there are patterns that get better results. Here are some practical tips:
+
+**Be specific about what you want changed:**
+```
+> Add a /health endpoint to the Express server that returns
+  { status: "ok", timestamp: current time } as JSON
+```
+
+**Reference files by name when you can:**
+```
+> In index.js, add error handling middleware that catches
+  unhandled errors and returns a 500 status
+```
+
+**Ask it to explain what it is doing:**
+```
+> Explain the changes you just made to package.json
+```
+
+**Use it for debugging:**
+```
+> I am getting "Cannot find module express" when I run
+  node index.js. Diagnose and fix the issue.
+```
+
+<WarningBox>
+Claude Code can run terminal commands on your machine. It will always ask for confirmation before running commands, but pay attention to what it wants to execute. Never approve a command you do not understand. You can always ask Claude Code to explain a command before running it.
+</WarningBox>
+
+## The Terminal Is Your Friend
+
+If you have never used a terminal before, Claude Code is actually a wonderful way to learn. Instead of memorizing commands, you can describe what you want in plain language and watch the commands Claude Code runs. Over time, you will start recognizing common patterns.
+
+Here are the terminal basics you will encounter most often:
+
+```bash
+# Navigate into a folder
+cd my-project
+
+# List files in the current folder
+ls
+
+# See where you are
+pwd
+
+# Create a new folder
+mkdir new-folder
+
+# Run a Node.js file
+node filename.js
+
+# Install a package
+npm install package-name
+
+# Start a dev server (varies by project)
+npm run dev
+```
+
+You do not need to memorize these right now. Claude Code will use them for you, and you will pick them up naturally.
+
+<Callout variant="paw" title="A New Way to Build">
+Claude Code changes the relationship between you and your code. You are no longer the typist -- you are the architect. You describe what you want to build, Claude Code builds it, and you review and refine. This is what agentic coding means, and it is the foundation for everything else on this trail.
+</Callout>
+
+## Common Questions
+
+<ExpandableSection title="Does Claude Code cost extra?">
+Claude Code uses your existing Anthropic plan. If you have Claude Pro ($20/month) or Max ($100/month), Claude Code is included. The Max plan gives you significantly more usage, which matters if you are doing heavy development work.
+</ExpandableSection>
+
+<ExpandableSection title="Can Claude Code break my computer?">
+Claude Code asks for permission before running commands. It operates within your project directory and respects standard safety boundaries. That said, always review what it wants to do before approving. If something looks unfamiliar, ask it to explain first.
+</ExpandableSection>
+
+<ExpandableSection title="What if I already know how to code?">
+Claude Code is useful at every skill level. Experienced developers use it to scaffold boilerplate, write tests, refactor code, and handle repetitive tasks. The agentic approach means it handles the tedious parts while you focus on architecture and design decisions.
+</ExpandableSection>
+
+---
+
+<PawPrintCheck items={[
+  "What makes Claude Code 'agentic' compared to a regular chatbot?",
+  "Name two differences between Claude Code and Claude Desktop.",
+  "What command installs Claude Code globally on your machine?",
+  "Why should you review commands before Claude Code runs them?"
+]} />
+
+<NextUp
+  title="Git, GitHub & Version Control"
+  href="/medium-trail/git-github-version-control"
+  description="Learn the 5 essential Git commands and set up your GitHub account so you never lose your work again."
+/>

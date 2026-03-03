@@ -1,0 +1,31 @@
+/* Trail-specific theme overrides */
+/* Applied via data-trail attribute on lesson content */
+
+[data-trail="basecamp"] {
+  --trail-accent: #4CAF50;
+}
+
+[data-trail="easy-trail"] {
+  --trail-accent: #FF9800;
+}
+
+[data-trail="medium-trail"] {
+  --trail-accent: #7C4DFF;
+}
+
+[data-trail="summit"] {
+  --trail-accent: #E91E63;
+}
+
+/* Trail accent utility via CSS variable */
+[data-trail] .trail-accent {
+  color: var(--trail-accent);
+}
+
+[data-trail] .trail-accent-bg {
+  background-color: var(--trail-accent);
+}
+
+[data-trail] .trail-accent-border {
+  border-color: var(--trail-accent);
+}

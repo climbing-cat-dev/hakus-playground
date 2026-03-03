@@ -1,0 +1,380 @@
+# RAG Fundamentals
+
+<LessonObjective items={[
+  "Understand the RAG pipeline and why it exists",
+  "Learn how document chunking works and why chunk strategy matters",
+  "Grasp how embeddings turn text into searchable vectors",
+  "Explore vector databases: Chroma for prototyping, pgvector for production",
+  "See how retrieval and generation work together end-to-end"
+]} />
+
+Large language models are impressively knowledgeable, but they have a fatal flaw: **their knowledge is frozen at training time**. Ask Claude about your company's internal docs, yesterday's meeting notes, or the latest changes to your codebase, and it will either hallucinate an answer or politely tell you it does not know.
+
+Retrieval-Augmented Generation -- RAG -- is the solution. Instead of hoping the model "knows" the answer, you **retrieve** the relevant information from your own data and **feed it into the prompt** so the model can reason over it. It is a deceptively simple idea that unlocks enormous practical value.
+
+## The RAG Pipeline at a Glance
+
+Every RAG system follows the same fundamental flow:
+
+```
+[User Query]
+     ↓
+[Embed the query] → vector representation
+     ↓
+[Search vector DB] → find similar document chunks
+     ↓
+[Retrieve top-K chunks] → relevant context
+     ↓
+[Augment the prompt] → query + retrieved context
+     ↓
+[Generate response] → LLM produces grounded answer
+```
+
+That is the runtime flow -- what happens when a user asks a question. But before any of that works, you need an **ingestion pipeline** that prepares your documents:
+
+```
+[Raw Documents]
+     ↓
+[Load & Parse] → extract text from PDFs, HTML, markdown, etc.
+     ↓
+[Chunk] → split into meaningful segments
+     ↓
+[Embed] → convert each chunk to a vector
+     ↓
+[Store] → save vectors + metadata in a vector database
+```
+
+Let us dig into each stage.
+
+<KeyVocabulary terms={[
+  { term: "RAG", definition: "Retrieval-Augmented Generation -- a pattern that enhances LLM responses by retrieving relevant external documents and including them in the prompt context." },
+  { term: "Embedding", definition: "A dense vector representation of text that captures semantic meaning. Similar texts produce similar vectors." },
+  { term: "Vector Database", definition: "A database optimized for storing and querying high-dimensional vectors using similarity search (e.g., cosine similarity)." },
+  { term: "Chunk", definition: "A segment of a larger document, sized to fit within context limits while preserving enough meaning to be useful." },
+  { term: "Top-K Retrieval", definition: "Fetching the K most similar document chunks to a query based on vector distance." }
+]} />
+
+## Step 1: Document Loading
+
+Before you can search your data, you need to get it into a usable format. Documents come in all shapes: PDFs, Word docs, HTML pages, Markdown files, Notion exports, Slack threads, code repositories.
+
+Document loaders handle the messy work of extracting clean text from these formats. Most RAG frameworks provide loaders out of the box:
+
+```python
+from langchain_community.document_loaders import (
+    PyPDFLoader,
+    UnstructuredHTMLLoader,
+    TextLoader,
+    DirectoryLoader,
+)
+
+# Load a single PDF
+loader = PyPDFLoader("quarterly_report.pdf")
+documents = loader.load()
+
+# Load an entire directory of markdown files
+loader = DirectoryLoader(
+    "docs/",
+    glob="**/*.md",
+    loader_cls=TextLoader,
+)
+documents = loader.load()
+```
+
+Each loaded document typically carries **metadata** -- the source file name, page number, creation date, and any other attributes you want to track. This metadata becomes critical later when you need to cite sources or filter results.
+
+<TipBox>
+Always preserve metadata during ingestion. When your RAG system returns an answer, users will want to know *where* that information came from. Source attribution builds trust.
+</TipBox>
+
+## Step 2: Chunking
+
+Here is where things get interesting -- and where many RAG systems succeed or fail. You cannot just throw entire documents into a vector database. They are too long for embedding models (which have token limits) and too broad for precise retrieval.
+
+Chunking is the art of splitting documents into pieces that are **small enough to be specific** but **large enough to be meaningful**.
+
+### Common Chunking Strategies
+
+**Fixed-size chunking** -- Split every N characters or tokens, with optional overlap.
+
+```python
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,       # characters per chunk
+    chunk_overlap=200,     # overlap between chunks
+    separators=["\n\n", "\n", ". ", " ", ""],
+)
+
+chunks = splitter.split_documents(documents)
+```
+
+**Semantic chunking** -- Split based on meaning shifts, using embeddings to detect when the topic changes.
+
+**Structural chunking** -- Respect document structure: split on headings, sections, paragraphs. This works especially well for technical documentation.
+
+**Code-aware chunking** -- For codebases, split on functions, classes, or logical blocks rather than raw character counts.
+
+<Callout variant="warning" title="The Chunk Size Tradeoff">
+Smaller chunks (200-500 tokens) give you more precise retrieval but less context per chunk. Larger chunks (1000-2000 tokens) carry more context but may dilute relevance. There is no universal right answer -- experiment with your specific data and use case.
+</Callout>
+
+### Overlap Matters
+
+When you split text into chunks, meaning can get lost at the boundaries. Overlap solves this by duplicating some text between adjacent chunks:
+
+```
+Document: "The cat sat on the mat. It was a sunny day. Birds were singing."
+
+Chunk 1 (no overlap):  "The cat sat on the mat."
+Chunk 2 (no overlap):  "It was a sunny day."
+Chunk 3 (no overlap):  "Birds were singing."
+
+Chunk 1 (with overlap): "The cat sat on the mat. It was a"
+Chunk 2 (with overlap): "on the mat. It was a sunny day. Birds"
+Chunk 3 (with overlap): "sunny day. Birds were singing."
+```
+
+A typical overlap of 10-20% of your chunk size works well for most use cases.
+
+## Step 3: Embeddings
+
+This is the magic that makes semantic search possible. An embedding model takes a piece of text and converts it into a dense vector -- a list of numbers (typically 384 to 3072 dimensions) that captures the *meaning* of the text.
+
+The critical property: **texts with similar meanings produce vectors that are close together** in the vector space.
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+def embed_text(text: str) -> list[float]:
+    response = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=text,
+    )
+    return response.data[0].embedding
+
+# These will produce similar vectors:
+v1 = embed_text("How do I reset my password?")
+v2 = embed_text("I forgot my login credentials and need to change them")
+
+# This will produce a different vector:
+v3 = embed_text("What are the quarterly revenue figures?")
+```
+
+### Choosing an Embedding Model
+
+| Model | Dimensions | Speed | Quality | Cost |
+|-------|-----------|-------|---------|------|
+| OpenAI `text-embedding-3-small` | 1536 | Fast | Good | Low |
+| OpenAI `text-embedding-3-large` | 3072 | Medium | Excellent | Medium |
+| Cohere `embed-english-v3.0` | 1024 | Fast | Excellent | Low |
+| Open-source (e.g., `bge-large`) | 1024 | Varies | Good | Free |
+
+<Callout variant="info" title="Consistency Is Key">
+You must use the **same embedding model** for both ingestion and querying. If you embed your documents with `text-embedding-3-small`, you must also embed user queries with `text-embedding-3-small`. Mixing models produces meaningless similarity scores.
+</Callout>
+
+## Step 4: Vector Storage
+
+Once your chunks are embedded, you need somewhere to store and search them efficiently. This is where vector databases come in. They are optimized for **approximate nearest neighbor (ANN)** search -- finding the vectors closest to your query vector.
+
+### Chroma: Great for Prototyping
+
+Chroma is a lightweight, open-source vector database that runs in-process. It is the fastest way to get a RAG prototype running.
+
+```python
+import chromadb
+from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
+
+# Create a client (in-memory for prototyping)
+client = chromadb.Client()
+
+# Or persist to disk
+client = chromadb.PersistentClient(path="./chroma_db")
+
+embedding_fn = OpenAIEmbeddingFunction(
+    api_key="your-key",
+    model_name="text-embedding-3-small",
+)
+
+# Create a collection
+collection = client.create_collection(
+    name="my_documents",
+    embedding_function=embedding_fn,
+)
+
+# Add documents (Chroma handles embedding automatically)
+collection.add(
+    documents=["chunk text 1", "chunk text 2", "chunk text 3"],
+    metadatas=[
+        {"source": "report.pdf", "page": 1},
+        {"source": "report.pdf", "page": 2},
+        {"source": "guide.md", "page": 1},
+    ],
+    ids=["doc1", "doc2", "doc3"],
+)
+
+# Query
+results = collection.query(
+    query_texts=["What were the Q3 results?"],
+    n_results=3,
+)
+```
+
+**Why Chroma for prototyping:**
+- Zero configuration
+- Runs in-memory or on disk with a single line change
+- Built-in embedding function support
+- Python-native API
+
+### pgvector: Production-Ready with Supabase
+
+When you are ready for production, pgvector gives you vector search inside PostgreSQL -- a database your team likely already knows and operates. Supabase makes this especially accessible.
+
+```sql
+-- Enable the pgvector extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Create a table for your document chunks
+CREATE TABLE document_chunks (
+    id BIGSERIAL PRIMARY KEY,
+    content TEXT NOT NULL,
+    metadata JSONB,
+    embedding VECTOR(1536)  -- matches your embedding model dimensions
+);
+
+-- Create an index for fast similarity search
+CREATE INDEX ON document_chunks
+USING ivfflat (embedding vector_cosine_ops)
+WITH (lists = 100);
+
+-- Query for similar documents
+SELECT
+    content,
+    metadata,
+    1 - (embedding <=> '[0.1, 0.2, ...]'::vector) AS similarity
+FROM document_chunks
+ORDER BY embedding <=> '[0.1, 0.2, ...]'::vector
+LIMIT 5;
+```
+
+```python
+# Using Supabase's Python client
+from supabase import create_client
+
+supabase = create_client(url, key)
+
+# Use Supabase's built-in vector search RPC
+results = supabase.rpc(
+    "match_documents",
+    {
+        "query_embedding": query_vector,
+        "match_threshold": 0.7,
+        "match_count": 5,
+    }
+).execute()
+```
+
+**Why pgvector for production:**
+- Leverages existing PostgreSQL infrastructure
+- ACID transactions -- your vectors are as reliable as any other data
+- Combine vector search with traditional SQL filters (metadata, permissions, timestamps)
+- Supabase provides hosting, auth, and Row Level Security out of the box
+
+<WarningBox>
+Do not skip indexing in production. Without an index, pgvector performs a full table scan for every query. With thousands of documents, queries will be unacceptably slow. The `ivfflat` index provides a good balance of speed and accuracy for most use cases. For higher accuracy, consider `hnsw` indexing.
+</WarningBox>
+
+## Step 5: Retrieval and Generation
+
+At query time, the pieces come together:
+
+```python
+async def rag_query(user_question: str) -> str:
+    # 1. Embed the question
+    query_vector = embed_text(user_question)
+
+    # 2. Retrieve relevant chunks
+    results = vector_db.query(
+        query_vector=query_vector,
+        top_k=5,
+    )
+
+    # 3. Build the augmented prompt
+    context = "\n\n---\n\n".join([
+        f"Source: {r.metadata['source']}\n{r.content}"
+        for r in results
+    ])
+
+    prompt = f"""Answer the question based on the provided context.
+If the context doesn't contain enough information, say so.
+
+Context:
+{context}
+
+Question: {user_question}
+
+Answer:"""
+
+    # 4. Generate the response
+    response = await llm.generate(prompt)
+    return response
+```
+
+<Callout variant="tip" title="Ground Your Answers">
+Always instruct the LLM to base its answer on the retrieved context and to say "I don't know" when the context is insufficient. This dramatically reduces hallucination and makes your RAG system trustworthy.
+</Callout>
+
+## Common RAG Pitfalls
+
+Even a well-structured RAG pipeline can produce poor results. Here are the most common issues and how to address them:
+
+<ExpandableSection title="Pitfall 1: Garbage In, Garbage Out">
+If your source documents are poorly formatted, contain errors, or have not been cleaned, your RAG system will retrieve and amplify those issues. Invest time in document preprocessing: strip headers/footers, fix encoding issues, remove boilerplate, and validate that extracted text is actually readable.
+</ExpandableSection>
+
+<ExpandableSection title="Pitfall 2: Wrong Chunk Size">
+If users are asking detailed questions but your chunks are 2000 tokens long, retrieval will be imprecise -- the relevant sentence is buried in irrelevant text. If chunks are too small (50 tokens), retrieved context will lack the surrounding information needed for a good answer. Test different sizes with real queries.
+</ExpandableSection>
+
+<ExpandableSection title="Pitfall 3: No Metadata Filtering">
+Without metadata filters, a query like "What was our Q3 revenue?" might retrieve chunks from Q1, Q2, and Q3 reports. Use metadata (dates, document types, departments) to narrow the search space before vector similarity does its work.
+</ExpandableSection>
+
+<ExpandableSection title="Pitfall 4: Ignoring Hybrid Search">
+Pure vector search misses exact keyword matches. If a user asks about "error code E-4012", semantic search might not find it because the meaning of error codes is not captured well by embeddings. Hybrid search combines vector similarity with keyword (BM25) search for the best of both worlds.
+</ExpandableSection>
+
+<HandsOnExercise title="Map Your RAG Pipeline">
+
+Before you write a single line of code, plan your pipeline:
+
+1. **Choose a data source** -- Pick a set of documents you want to make searchable (your notes, a documentation site, a collection of PDFs).
+2. **Decide on chunking** -- What chunk size makes sense for your data? What overlap? Would structural chunking work better than fixed-size?
+3. **Pick your stack** -- For prototyping, plan to use Chroma locally. For production, sketch out a pgvector/Supabase setup.
+4. **Write 5 test queries** -- Think of questions a user might ask. For each, identify which document and which section should be retrieved.
+5. **Define success criteria** -- How will you know if retrieval is working? What does "good enough" look like for your use case?
+
+Document your plan. You will implement it in the next lesson.
+
+</HandsOnExercise>
+
+<PawPrintCheck items={[
+  "Can you explain the full RAG pipeline from document ingestion to response generation?",
+  "What is an embedding, and why must you use the same model for ingestion and querying?",
+  "What are the tradeoffs of different chunk sizes?",
+  "When would you choose Chroma vs. pgvector for your vector store?",
+  "Why is metadata important in a RAG system?"
+]} />
+
+## Looking Ahead
+
+You now understand the theory behind RAG -- the pipeline, the components, and the decisions you need to make. In the next lesson, we will roll up our sleeves and build a working RAG pipeline from scratch. You will ingest real documents, embed them, store them in a vector database, and query them with natural language.
+
+<NextUp
+  title="Building Your RAG Pipeline"
+  href="/summit/building-your-rag-pipeline"
+  description="Hands-on implementation: ingest documents, embed, store, and query with LangChain"
+/>

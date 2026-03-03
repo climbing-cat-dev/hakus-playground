@@ -1,0 +1,221 @@
+# Setting Up Claude Desktop
+
+<LessonObjective items={[
+  "Download and install Claude Desktop on your computer",
+  "Create your Anthropic account and choose the right plan",
+  "Have your first real conversation with Claude",
+  "Understand the difference between Free, Pro, and Max features"
+]} />
+
+You have been learning about AI concepts, prompt frameworks, and what makes Claude tick. Now it is time to stop reading and start doing. In this lesson, you will install Claude Desktop, set up your account, and have your very first conversation. By the end, you will have a working AI assistant on your machine, ready to help you with real tasks.
+
+Think of this as moving from reading about hiking to actually lacing up your boots. Let's go.
+
+## Why Claude Desktop?
+
+You might be wondering: why not just use claude.ai in a browser? You absolutely can, and it works great. But Claude Desktop gives you a few extra superpowers:
+
+- **It lives on your desktop.** One click to open. No browser tab hunting.
+- **MCP server support.** This is the big one. Desktop can connect to local tools on your machine (we will get into this in a later lesson).
+- **Better file handling.** Drag and drop files directly into your conversation.
+- **Keyboard shortcuts.** Quick access via system-wide hotkeys.
+- **Offline-first feel.** It launches instantly, even if your connection is slow.
+
+If you are on a team or enterprise plan, Desktop also integrates with your organization's settings and policies automatically.
+
+<TipBox>You can use both Desktop and claude.ai at the same time. They share the same account and conversation history. Many people use Desktop for focused work and the browser for quick questions.</TipBox>
+
+## Step 1: Download Claude Desktop
+
+Getting Claude Desktop installed takes about two minutes. Here is what to do based on your operating system.
+
+### macOS
+
+1. Go to [claude.ai/download](https://claude.ai/download)
+2. Click the **Download for Mac** button
+3. Open the downloaded `.dmg` file
+4. Drag Claude into your Applications folder
+5. Open Claude from Applications (or Spotlight search for "Claude")
+
+### Windows
+
+1. Go to [claude.ai/download](https://claude.ai/download)
+2. Click **Download for Windows**
+3. Run the installer `.exe` file
+4. Follow the installation wizard (the defaults are fine)
+5. Claude will appear in your Start menu
+
+### Linux
+
+Claude Desktop is not officially available on Linux at the time of writing. If you are on Linux, you can use [claude.ai](https://claude.ai) in your browser for the same experience, minus MCP server support. Some community projects exist to run Claude Desktop via compatibility layers, but we recommend sticking with the browser version for now.
+
+<Callout variant="tip" title="First Launch">When you first open Claude Desktop, it may take a moment to initialize. On macOS, you might need to approve it in System Settings under Privacy & Security if you see a warning about an unidentified developer.</Callout>
+
+## Step 2: Create Your Account
+
+When Claude Desktop opens for the first time, you will see a sign-in screen. Here is the process:
+
+1. Click **Sign Up** (or **Log In** if you already have an account from claude.ai)
+2. Enter your email address
+3. Check your email for a verification code
+4. Enter the code in Claude Desktop
+5. You are in
+
+That is it. No credit card required for the free tier. You now have access to Claude and can start chatting immediately.
+
+<HandsOnExercise title="Create Your Account">
+1. Open Claude Desktop
+2. Create an account or log in
+3. Verify your email
+4. Once you see the chat interface, type: "Hello! What can you help me with?"
+5. Read Claude's response. Notice how it explains its capabilities clearly.
+</HandsOnExercise>
+
+## Step 3: Your First Conversation
+
+Now that you are logged in, let's have a real conversation. Not just "hello" but something useful.
+
+Here is a good first prompt to try. It uses some of the techniques you learned in the prompting lessons:
+
+> I'm learning to use AI tools effectively. I work as a [your role] and my main tools are [list your tools]. Can you suggest three specific ways you could help me in my daily work? Be concrete and practical.
+
+Replace the bracketed parts with your actual role and tools. For example:
+
+> I'm learning to use AI tools effectively. I work as a product manager and my main tools are Linear, Notion, and Slack. Can you suggest three specific ways you could help me in my daily work? Be concrete and practical.
+
+Notice a few things about Claude's response:
+
+- **It gives structured answers.** Claude naturally organizes information with headers, bullets, and clear sections.
+- **It asks clarifying questions** if your prompt is vague.
+- **It is honest about limitations.** If something is outside its knowledge, it will say so.
+
+### The Chat Interface
+
+Take a moment to explore the interface. Here are the key parts:
+
+- **Message input** at the bottom. This is where you type. You can also paste text, drag in files, or use the attachment button.
+- **Conversation list** on the left sidebar. Each conversation is separate and has its own context.
+- **New chat button** at the top. Start fresh conversations for new topics.
+- **Model selector** (if available on your plan). Choose between different Claude models.
+
+<KeyVocabulary terms={[
+  { term: "Conversation", definition: "A single chat thread with Claude. Each conversation has its own context and memory. Claude does not remember across separate conversations." },
+  { term: "Context window", definition: "The total amount of text Claude can consider at once. Think of it as Claude's working memory for the current conversation." },
+  { term: "Artifact", definition: "A piece of content Claude creates that appears in a separate panel, like code, documents, or diagrams. You can edit and iterate on artifacts." }
+]} />
+
+## Understanding the Plans
+
+Claude offers several plan tiers. Here is what matters for your journey:
+
+### Free
+
+- Access to Claude (Sonnet model)
+- Limited messages per day
+- Basic file uploads
+- No Projects, no connectors, no MCP
+
+This is fine for trying things out, but you will hit limits quickly if you use Claude regularly.
+
+### Pro ($20/month)
+
+This is the sweet spot for most individual users. You get:
+
+- **Much higher usage limits** for Claude Sonnet
+- **Access to Claude Opus** (the most capable model) with limited usage
+- **Projects** with custom instructions and knowledge bases
+- **Connectors** to plug in your existing tools (50+ available)
+- **MCP server support** for local tool connections
+- **Priority access** during high-traffic periods
+
+### Max ($100/month)
+
+For power users who rely on Claude heavily:
+
+- **Significantly higher usage limits** across all models
+- **More Opus usage** than Pro
+- **Higher priority** during peak times
+- Everything in Pro, just more of it
+
+### Team ($30/user/month)
+
+Same as Pro, but with team management features: shared Projects, admin controls, and centralized billing.
+
+### Enterprise (custom pricing)
+
+For organizations: SSO, advanced security, custom data retention policies, and dedicated support.
+
+<Callout variant="info" title="Which Plan Should You Choose?">If you are just getting started, the free tier is fine for the first few lessons. But if you plan to follow this entire trail (especially the Projects and Connectors lessons), you will want Pro at minimum. Most people find that Pro pays for itself within the first week of serious use.</Callout>
+
+## Exploring Artifacts
+
+One of Claude Desktop's standout features is **Artifacts**. When you ask Claude to create something substantial, like a document, a piece of code, an SVG diagram, or even a simple web app, it can render it in a side panel.
+
+Try this prompt:
+
+> Create a simple HTML page with a heading that says "My AI Journey" and three bullet points listing things I want to learn about AI.
+
+Claude will create the HTML and display it as an artifact you can preview, copy, or download. This is incredibly useful for:
+
+- Drafting documents and templates
+- Writing and testing code snippets
+- Creating diagrams and visualizations
+- Building quick prototypes
+
+<HandsOnExercise title="Explore Artifacts">
+1. Ask Claude to create a simple HTML page about a topic you care about
+2. Look at the artifact panel that appears on the right
+3. Click the "Copy" button to copy the code
+4. Try asking Claude to modify the artifact: "Change the heading color to blue and add a footer"
+5. Notice how Claude updates the artifact in place
+</HandsOnExercise>
+
+## Keyboard Shortcuts and Tips
+
+Here are some shortcuts that will make your life easier:
+
+| Shortcut | Action |
+|----------|--------|
+| `Cmd/Ctrl + N` | New conversation |
+| `Cmd/Ctrl + Shift + N` | New conversation in new window |
+| `Cmd/Ctrl + ,` | Open settings |
+| `Enter` | Send message |
+| `Shift + Enter` | New line (without sending) |
+
+### Pro Tips for Better Conversations
+
+**Start new conversations for new topics.** Claude's context window is large but not infinite. Keeping conversations focused means Claude can give you better answers.
+
+**Use follow-ups.** Don't start over when Claude's answer is close but not perfect. Say "That's close, but can you..." and refine.
+
+**Attach files.** Dragging a file into the chat is often faster and more accurate than copy-pasting its contents.
+
+**Name your conversations.** Click the conversation title to rename it. Future you will thank present you when looking for that one conversation from last week.
+
+<WarningBox>Claude does not have access to the internet in regular conversations. It cannot browse websites, check current stock prices, or look up today's news. Its knowledge has a training cutoff date. If you need real-time information, you will need to provide it yourself or use Connectors (which we cover in a later lesson).</WarningBox>
+
+## What You Have Accomplished
+
+Take a step back and appreciate what you have done in this lesson:
+
+1. You downloaded and installed Claude Desktop
+2. You created your Anthropic account
+3. You had your first meaningful conversation
+4. You explored artifacts and the chat interface
+5. You understand the plan tiers and what features each unlocks
+
+This is your foundation. Every lesson going forward builds on having Claude Desktop set up and ready to go.
+
+<PawPrintCheck items={[
+  "Can you open Claude Desktop and start a new conversation?",
+  "Do you know the difference between Free, Pro, and Max plans?",
+  "Have you created at least one artifact (code, document, or diagram)?",
+  "Do you know how to attach a file to a conversation?",
+  "Can you explain why Claude Desktop offers advantages over the browser version?"
+]} />
+
+<NextUp
+  title="Projects & Knowledge"
+  href="/easy-trail/projects-and-knowledge"
+  description="Learn how to create Projects, upload documents, and give Claude persistent context about your work."
+/>

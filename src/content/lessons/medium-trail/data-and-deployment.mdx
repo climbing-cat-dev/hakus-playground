@@ -1,0 +1,359 @@
+<LessonObjective items={[
+  "Set up Supabase for data storage",
+  "Configure the Supabase MCP for Claude Code",
+  "Deploy your app to Vercel",
+  "Manage environment variables safely in development and production"
+]} />
+
+## From Hardcoded to Real Data
+
+Your app works. It has pages, components, and a clean layout. But right now, all the data is hardcoded. Those project cards? The data is written directly in the component file. If you want to add a new project, you have to edit code. If you close the browser, nothing is saved.
+
+This lesson changes that. You are going to connect your app to a real database so data persists, and then deploy it to the internet so anyone with the URL can access it.
+
+Two tools make this straightforward:
+- **Supabase** for your database (where data lives)
+- **Vercel** for hosting (where your app lives online)
+
+Both have generous free tiers, so you will not need to pay anything to get started.
+
+<KeyVocabulary terms={[
+  { term: "Supabase", definition: "An open-source backend-as-a-service built on PostgreSQL. It gives you a database, authentication, and APIs without managing servers." },
+  { term: "Vercel", definition: "A hosting platform optimized for Next.js. It deploys your app from GitHub and gives you a public URL." },
+  { term: "Environment variable", definition: "A configuration value stored outside your code, typically in a .env file. Used for API keys, database URLs, and other secrets." },
+  { term: "MCP (Model Context Protocol)", definition: "The protocol that lets Claude Code interact with external services like Supabase directly." }
+]} />
+
+## Setting Up Supabase
+
+Supabase gives you a full PostgreSQL database with a visual dashboard, authentication system, and auto-generated API -- all for free. It is the easiest way to add real data storage to your app.
+
+### Create Your Supabase Project
+
+1. Go to [supabase.com](https://supabase.com) and create a free account
+2. Click "New Project"
+3. Choose a name (e.g., "my-dashboard-db")
+4. Set a strong database password -- save this somewhere safe
+5. Select the region closest to you
+6. Click "Create new project" and wait about a minute for it to spin up
+
+### Get Your Connection Details
+
+Once your project is ready, go to **Settings > API** in the Supabase dashboard. You will need two values:
+
+- **Project URL**: Something like `https://abcdefgh.supabase.co`
+- **Anon public key**: A long string starting with `eyJ...`
+
+<WarningBox>
+You will also see a **service role key** on this page. That key has full admin access to your database. Never use it in your frontend code. For now, you only need the anon key, which has limited permissions enforced by Row Level Security.
+</WarningBox>
+
+### Add Supabase to Your Project
+
+Back in your terminal with Claude Code running:
+
+```
+> Install @supabase/supabase-js and create a Supabase client
+  configuration at src/lib/supabase.ts. The client should use
+  environment variables for the URL and anon key:
+  NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+```
+
+Claude Code will install the package and create the client file. It will look something like:
+
+```typescript
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+```
+
+Now create your `.env.local` file with the actual values:
+
+```bash
+# Create .env.local (Next.js reads this automatically)
+touch .env.local
+```
+
+Add your Supabase credentials:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+<Callout variant="info" title="NEXT_PUBLIC_ Prefix">
+In Next.js, environment variables prefixed with `NEXT_PUBLIC_` are available in the browser. Variables without this prefix are only available on the server. Since the Supabase client runs in the browser, we need the prefix. For server-only secrets (like the service role key), do not use the prefix.
+</Callout>
+
+Make sure `.env.local` is in your `.gitignore`:
+
+```bash
+# Verify it is there
+cat .gitignore | grep env
+```
+
+If you do not see `.env.local` listed, add it:
+
+```
+> Add .env.local and .env*.local to the .gitignore file
+```
+
+### Create Your First Table
+
+In the Supabase dashboard, go to the **SQL Editor** and run this query to create a projects table:
+
+```sql
+CREATE TABLE projects (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'paused', 'completed')),
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Insert some sample data
+INSERT INTO projects (name, description, status) VALUES
+  ('Personal Website', 'My portfolio and blog', 'active'),
+  ('Budget Tracker', 'Monthly expense tracking app', 'active'),
+  ('Recipe Collection', 'Digital cookbook with favorites', 'paused');
+
+-- Enable Row Level Security
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+
+-- Allow public read access (for now)
+CREATE POLICY "Allow public read" ON projects
+  FOR SELECT USING (true);
+```
+
+Alternatively, ask Claude Code to help you create the table through the Supabase MCP (see the next section).
+
+## Connecting Claude Code to Supabase via MCP
+
+MCP (Model Context Protocol) lets Claude Code interact with Supabase directly. Instead of switching between your terminal and the Supabase dashboard, you can manage your database through conversation.
+
+### Setting Up the Supabase MCP
+
+Add the Supabase MCP configuration to your Claude Code settings. Create or edit `.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server",
+        "--supabase-url",
+        "https://your-project-id.supabase.co",
+        "--supabase-key",
+        "your-service-role-key"
+      ]
+    }
+  }
+}
+```
+
+<WarningBox>
+The MCP server uses the service role key (not the anon key) because it needs full database access. This key should only be in your local settings file, never committed to Git. Make sure `.claude/` is in your `.gitignore` or that `settings.json` does not get committed.
+</WarningBox>
+
+### Using Supabase Through Claude Code
+
+With MCP configured, you can talk to your database through Claude Code:
+
+```
+> Show me all tables in my Supabase database
+```
+
+```
+> Create a new table called "tasks" with columns: id (uuid),
+  title (text), completed (boolean), project_id (uuid
+  referencing projects), created_at (timestamp)
+```
+
+```
+> Insert 5 sample tasks linked to existing projects
+```
+
+```
+> Query all active projects with their task counts
+```
+
+This is incredibly powerful. Instead of writing SQL by hand or clicking through a dashboard, you describe what you want and Claude Code handles the database operations.
+
+<HandsOnExercise title="Connect Your Projects Page to Real Data">
+
+1. Make sure your Supabase project is set up with the projects table and sample data.
+
+2. Ask Claude Code to update the Projects page to use real data:
+
+```
+> Update src/app/projects/page.tsx to fetch projects from
+  Supabase instead of using hardcoded data. Use the Supabase
+  client from src/lib/supabase.ts. Make it a server component
+  that fetches data at request time. Handle loading and error
+  states gracefully.
+```
+
+3. Verify it works by checking your browser. You should see the same project cards, but now they are pulling from the database.
+
+4. Test it further -- go to the Supabase dashboard, add a new project to the table, and refresh your page. The new project should appear.
+
+5. Commit your changes:
+
+```bash
+git add .
+git commit -m "Connect Projects page to Supabase for real data"
+```
+
+</HandsOnExercise>
+
+## Deploying to Vercel
+
+Your app runs on `localhost:3000`. That means only you can see it, only on your computer. Deploying to Vercel gives it a real URL that anyone in the world can visit.
+
+### Step 1: Push Your Code to GitHub
+
+If you have not already, make sure your code is on GitHub (you learned this in the Git lesson):
+
+```bash
+# If you have not set up the remote yet
+git remote add origin https://github.com/yourusername/my-first-app.git
+git push -u origin main
+```
+
+### Step 2: Connect Vercel to GitHub
+
+1. Go to [vercel.com](https://vercel.com) and sign up with your GitHub account
+2. Click "Add New Project"
+3. Select your `my-first-app` repository from the list
+4. Vercel auto-detects that it is a Next.js project -- the defaults are correct
+5. **Before clicking Deploy**, add your environment variables
+
+### Step 3: Add Environment Variables in Vercel
+
+This is critical. Your `.env.local` file does not get uploaded to Vercel (because it is in `.gitignore`). You need to set the same variables in Vercel's dashboard:
+
+1. In the deployment configuration, expand "Environment Variables"
+2. Add each variable:
+
+```
+NEXT_PUBLIC_SUPABASE_URL = https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY = eyJhbGciOi...
+```
+
+3. Click "Deploy"
+
+<Callout variant="tip" title="Environment Variables Are Your Bridge">
+Your code references `process.env.NEXT_PUBLIC_SUPABASE_URL`. Locally, this reads from `.env.local`. On Vercel, it reads from the environment variables you set in the dashboard. Same code, different environments, different secret storage. This is the correct pattern.
+</Callout>
+
+### Step 4: Verify Your Deployment
+
+Vercel will build and deploy your app in about a minute. When it finishes, you get a URL like `https://my-first-app-abc123.vercel.app`.
+
+Open it in your browser. You should see the exact same app that was running on localhost, but now it is live on the internet. The projects are loading from Supabase. Everything works.
+
+```bash
+git add .
+git commit -m "Configure project for Vercel deployment"
+```
+
+### Automatic Deployments
+
+Here is something wonderful: every time you push to GitHub, Vercel automatically rebuilds and redeploys your app. The workflow becomes:
+
+1. Make changes locally with Claude Code
+2. Test on localhost
+3. Commit and push to GitHub
+4. Vercel deploys automatically
+5. Your live site updates in about a minute
+
+```bash
+# Make a change, commit, and push
+git add .
+git commit -m "Update dashboard layout"
+git push
+# Vercel deploys automatically -- check your URL in ~60 seconds
+```
+
+<TipBox>
+Vercel also creates "preview deployments" for branches. If you push to a branch other than `main`, Vercel deploys a separate preview URL for that branch. This is fantastic for testing changes before they go live.
+</TipBox>
+
+## Managing Environment Variables Across Environments
+
+You now have secrets in two places: `.env.local` for development and Vercel's dashboard for production. Here is a clean system for managing this:
+
+```
+.env.example          # Template (committed to Git, no real values)
+.env.local            # Your actual dev values (NOT committed)
+Vercel dashboard      # Production values (set in the UI)
+```
+
+Create a `.env.example` file that shows what variables are needed without revealing actual values:
+
+```bash
+# .env.example - Copy this to .env.local and fill in real values
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+```
+
+Commit this file so collaborators (or your future self) know what environment variables are required:
+
+```bash
+git add .env.example
+git commit -m "Add .env.example template for required environment variables"
+```
+
+<ExpandableSection title="What if I need to add a new environment variable later?">
+The process is the same every time:
+
+1. Add the variable to `.env.local` for local development
+2. Add it to Vercel's dashboard for production (Settings > Environment Variables)
+3. Update `.env.example` so the template stays current
+4. Reference it in your code with `process.env.VARIABLE_NAME`
+
+If the variable is needed in the browser (client-side), prefix it with `NEXT_PUBLIC_`. If it is only for server-side code (API routes, server components), leave the prefix off.
+</ExpandableSection>
+
+<ExpandableSection title="Can I use Claude Code to deploy?">
+Yes. If you have the Vercel CLI installed (`npm i -g vercel`), you can ask Claude Code to deploy:
+
+```
+> Deploy the current project to Vercel
+```
+
+But for most workflows, pushing to GitHub and letting Vercel auto-deploy is simpler and more reliable.
+</ExpandableSection>
+
+## What You Have Built
+
+Take a moment to appreciate what you have accomplished. You now have:
+
+- A **Next.js application** with multiple pages and reusable components
+- A **real database** on Supabase storing and serving your data
+- A **live deployment** on Vercel accessible from any browser
+- **Automatic deployments** triggered by Git pushes
+- **Environment variables** properly managed across development and production
+- A **Git history** with clean commits you can revert to at any time
+
+This is not a tutorial project. This is a real, production-grade setup that professional developers use. And you built it by having conversations with Claude Code.
+
+---
+
+<PawPrintCheck items={[
+  "What two values do you need from Supabase to connect your app?",
+  "Why should you NEVER commit .env.local to Git?",
+  "How do environment variables work differently on localhost vs. Vercel?",
+  "What happens automatically when you push code to GitHub with Vercel connected?"
+]} />
+
+<NextUp
+  title="Security Essentials"
+  href="/medium-trail/security-essentials"
+  description="Learn the 5 security rules every AI-assisted developer must follow, and complete the security checklist before shipping."
+/>

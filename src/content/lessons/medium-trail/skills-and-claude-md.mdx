@@ -1,0 +1,360 @@
+<LessonObjective items={[
+  "Understand the SKILL.md format and slash commands",
+  "Install Skills from the marketplace",
+  "Write an effective CLAUDE.md for your project",
+  "Configure hooks for automated workflows"
+]} />
+
+## Teaching Claude Code How to Work on Your Project
+
+Out of the box, Claude Code is smart. It can read your files, understand your code, and make reasonable changes. But "reasonable" is not the same as "exactly how you want it." Every project has conventions, preferences, and patterns that are not obvious from the code alone.
+
+This lesson covers three powerful systems that let you customize Claude Code's behavior: **CLAUDE.md** files for project context, **Skills** for reusable capabilities via slash commands, and **Hooks** for automated workflows that run at specific trigger points.
+
+Think of it this way: Claude Code is a talented new developer joining your team. CLAUDE.md is the onboarding document that tells them how your team works. Skills are the playbooks that teach them specific procedures. Hooks are the automated quality checks that run without anyone having to remember them.
+
+<KeyVocabulary terms={[
+  { term: "CLAUDE.md", definition: "A markdown file in your project root that gives Claude Code context about your project, conventions, and preferences." },
+  { term: "Skill", definition: "A reusable bundle of instructions packaged as a SKILL.md file that adds capabilities accessible via slash commands." },
+  { term: "Slash command", definition: "A shortcut that triggers a Skill, typed as /command-name in your Claude Code session." },
+  { term: "Hook", definition: "An automated script or action that runs at a specific trigger point, like before a commit or after a file changes." }
+]} />
+
+## CLAUDE.md: Your Project's Instruction Manual
+
+The CLAUDE.md file is the single most impactful thing you can add to a project that uses Claude Code. It is a plain markdown file that lives in the root of your repository, and Claude Code reads it automatically every time you start a session.
+
+### What Goes in CLAUDE.md
+
+Think about everything a new team member would need to know on their first day. That is what goes in CLAUDE.md.
+
+Here is a practical template:
+
+```markdown
+# CLAUDE.md
+
+## Project Overview
+This is a Next.js 14 app that serves as a personal dashboard.
+It uses the App Router, TypeScript, and Tailwind CSS.
+
+## Tech Stack
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS
+- **Database:** Supabase (PostgreSQL)
+- **Deployment:** Vercel
+
+## Project Structure
+- `src/app/` — Pages and API routes (App Router)
+- `src/components/` — Reusable UI components
+- `src/lib/` — Utility functions and configurations
+- `src/types/` — TypeScript type definitions
+
+## Coding Conventions
+- Use functional components with arrow functions
+- Prefer named exports over default exports
+- Use `cn()` from `@/lib/utils` for conditional class merging
+- All components go in `src/components/` with PascalCase names
+- API routes go in `src/app/api/` following REST conventions
+
+## Commands
+- `npm run dev` — Start development server
+- `npm run build` — Build for production
+- `npm run lint` — Run ESLint
+- `npm test` — Run tests
+
+## Important Notes
+- NEVER commit .env files
+- Always use server components by default, add "use client"
+  only when needed
+- All database queries go through the Supabase client in
+  `src/lib/supabase.ts`
+```
+
+<Callout variant="info" title="Claude Code Reads This Automatically">
+You do not need to tell Claude Code to read CLAUDE.md. When you start a session in a directory that contains this file, Claude Code loads it into its context automatically. It is like a system prompt specifically for your project.
+</Callout>
+
+### CLAUDE.md at Different Levels
+
+You can place CLAUDE.md files at multiple levels of your project, and Claude Code will read all of them:
+
+- **Repository root** (`/CLAUDE.md`): Project-wide rules and conventions
+- **Subdirectory** (`/src/components/CLAUDE.md`): Rules specific to that part of the codebase
+- **Home directory** (`~/.claude/CLAUDE.md`): Personal preferences that apply to all your projects
+
+```
+my-project/
+├── CLAUDE.md                    # Project-wide rules
+├── src/
+│   ├── components/
+│   │   └── CLAUDE.md            # Component-specific conventions
+│   └── app/
+│       └── api/
+│           └── CLAUDE.md        # API route conventions
+```
+
+<TipBox>
+Start with a single CLAUDE.md at the root. You can add more granular ones later as your project grows. Keeping it simple at first means you actually maintain it.
+</TipBox>
+
+### Writing Effective CLAUDE.md Content
+
+The best CLAUDE.md files are concise, specific, and opinionated. Compare these:
+
+**Vague (not helpful):**
+```markdown
+## Style
+Write good code. Follow best practices.
+```
+
+**Specific (very helpful):**
+```markdown
+## Style
+- Use 2-space indentation (enforced by .prettierrc)
+- Maximum line length: 80 characters
+- Always destructure props in component parameters
+- Use early returns to reduce nesting
+- Error messages must be user-friendly, not technical
+```
+
+The more specific you are, the more consistently Claude Code follows your patterns.
+
+## Skills: Reusable Capabilities
+
+Skills are packaged instructions that give Claude Code new abilities. Each Skill is defined in a `SKILL.md` file and is triggered by a slash command.
+
+### The SKILL.md Format
+
+A Skill file has a straightforward structure:
+
+```markdown
+---
+name: create-component
+description: Scaffold a new React component with tests and stories
+command: /create-component
+---
+
+# Create Component Skill
+
+When the user runs `/create-component <ComponentName>`:
+
+1. Create `src/components/<ComponentName>/<ComponentName>.tsx`
+   with this template:
+   - Functional component with TypeScript props interface
+   - Named export
+   - Use cn() for className merging
+
+2. Create `src/components/<ComponentName>/<ComponentName>.test.tsx`
+   with basic render tests
+
+3. Create `src/components/<ComponentName>/index.ts`
+   as a barrel export
+
+4. Add the component to the nearest barrel export if one exists
+
+## Template
+
+The component should follow this pattern:
+
+```tsx
+interface <ComponentName>Props {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export function <ComponentName>({ className, children }: <ComponentName>Props) {
+  return (
+    <div className={cn("", className)}>
+      {children}
+    </div>
+  );
+}
+```
+```
+
+### Using Slash Commands
+
+Once a Skill is available, you invoke it with its slash command in Claude Code:
+
+```
+> /create-component UserProfile
+```
+
+Claude Code reads the Skill's instructions and follows them precisely. Instead of explaining what you want every time, the Skill encodes your exact procedure.
+
+### Installing Skills from the Marketplace
+
+Claude Code has a growing marketplace of community-created Skills. You can browse and install them directly:
+
+```bash
+# Browse available Skills
+claude skills browse
+
+# Install a Skill
+claude skills install @username/skill-name
+
+# List installed Skills
+claude skills list
+```
+
+<HandsOnExercise title="Create Your First Skill">
+
+1. In your project root, create a `.claude/skills/` directory by running `mkdir -p .claude/skills`
+
+2. Create a file called `.claude/skills/add-page.md` with frontmatter fields for name ("add-page"), description, and command ("/add-page"). In the body, describe what the skill should do: create a new Next.js page at the given route with a default export, heading, and TypeScript types.
+
+3. Start Claude Code and test your skill by typing `/add-page dashboard`
+
+4. Check that the file was created correctly at `src/app/dashboard/page.tsx`
+
+</HandsOnExercise>
+
+### Useful Skills to Consider
+
+Here are some Skills that many developers find valuable:
+
+- **`/create-component`**: Scaffolds a new component with consistent structure
+- **`/add-api-route`**: Creates an API endpoint with error handling and types
+- **`/write-tests`**: Generates tests for a specific file
+- **`/refactor`**: Applies specific refactoring patterns you prefer
+- **`/review`**: Reviews code against your project's conventions
+- **`/commit`**: Creates a well-formatted commit with conventional commit messages
+
+<Callout variant="paw" title="Skills Compound">
+The real power of Skills shows up over time. Each Skill you create or install saves you from repeating instructions. After a few weeks of building Skills, your Claude Code sessions become dramatically more productive because you have encoded all your patterns once.
+</Callout>
+
+## Hooks: Automated Workflows
+
+Hooks are scripts or commands that run automatically at specific points in your workflow. They are the guardrails that catch mistakes before they become problems.
+
+### What Are Hooks?
+
+Hooks respond to trigger points -- specific events that happen during your development workflow. Common triggers include:
+
+- **Pre-commit**: Runs before a Git commit is finalized
+- **Notification**: Runs when Claude Code sends a notification
+- **Post-tool-use**: Runs after Claude Code uses a specific tool
+
+### Configuring Hooks
+
+Hooks are configured in your project's `.claude/settings.json` file:
+
+```json
+{
+  "hooks": {
+    "pre-commit": [
+      {
+        "command": "npm run lint",
+        "description": "Run linter before committing"
+      },
+      {
+        "command": "npm run type-check",
+        "description": "Check TypeScript types"
+      }
+    ]
+  }
+}
+```
+
+With this configuration, every time Claude Code (or you) makes a commit, the linter and type checker run automatically. If either fails, the commit is blocked until the issues are fixed.
+
+### Practical Hook Examples
+
+**Lint on commit:**
+```json
+{
+  "hooks": {
+    "pre-commit": [
+      {
+        "command": "npx eslint --fix src/",
+        "description": "Auto-fix lint errors"
+      }
+    ]
+  }
+}
+```
+
+**Format code after changes:**
+```json
+{
+  "hooks": {
+    "post-tool-use": [
+      {
+        "tool": "write_file",
+        "command": "npx prettier --write $FILE",
+        "description": "Format files after Claude edits them"
+      }
+    ]
+  }
+}
+```
+
+<TipBox>
+Start with just a pre-commit linting hook. It catches the most common issues with almost zero setup. You can add more hooks later as you identify repetitive checks you want automated.
+</TipBox>
+
+### Why Hooks Matter for AI-Assisted Development
+
+When Claude Code writes code for you, hooks serve as an automated quality layer. Even if Claude Code produces code with a minor style issue or a type error, the hooks catch it immediately. This creates a feedback loop:
+
+1. Claude Code writes code
+2. Hook runs and catches an issue
+3. Claude Code sees the error and fixes it
+4. Hook runs again and passes
+5. Clean code is committed
+
+This all happens automatically without you needing to manually review every line for style consistency.
+
+<WarningBox>
+Hooks run commands on your machine. Only configure hooks with commands you understand and trust. Do not install third-party hook configurations without reviewing what they execute.
+</WarningBox>
+
+## Bringing It All Together
+
+Here is how CLAUDE.md, Skills, and Hooks work as a system:
+
+- **CLAUDE.md** tells Claude Code *about* your project (the what and the why)
+- **Skills** tell Claude Code *how to do* specific tasks (the procedures)
+- **Hooks** *enforce quality* automatically (the guardrails)
+
+A well-configured project might have:
+
+```
+my-project/
+├── CLAUDE.md                          # Project context
+├── .claude/
+│   ├── settings.json                  # Hook configurations
+│   └── skills/
+│       ├── create-component.md        # Component scaffolding
+│       ├── add-api-route.md           # API route creation
+│       └── write-tests.md             # Test generation
+├── src/
+│   ├── components/
+│   │   └── CLAUDE.md                  # Component conventions
+│   └── ...
+```
+
+<ExpandableSection title="How do CLAUDE.md files differ from Skills?">
+CLAUDE.md provides passive context -- Claude Code reads it but you do not explicitly invoke it. It shapes how Claude Code behaves across all interactions. Skills are active procedures -- you invoke them with a slash command and they follow specific steps. Think of CLAUDE.md as "how we do things here" and Skills as "do this specific thing now."
+</ExpandableSection>
+
+<ExpandableSection title="Can I use Skills across different projects?">
+Yes. Skills installed globally (from the marketplace or placed in your home directory's `.claude/skills/` folder) are available in every project. Project-specific Skills in `.claude/skills/` only work in that project. Start with project-specific Skills and promote frequently-used ones to global.
+</ExpandableSection>
+
+---
+
+<PawPrintCheck items={[
+  "What is the purpose of CLAUDE.md and where does it live?",
+  "How do you trigger a Skill in Claude Code?",
+  "What is the difference between CLAUDE.md (passive context) and Skills (active procedures)?",
+  "Name one practical use for a pre-commit hook in AI-assisted development."
+]} />
+
+<NextUp
+  title="Building Your First App"
+  href="/medium-trail/building-your-first-app"
+  description="Scaffold a complete Next.js application with Claude Code, learning the art of the scaffolding prompt."
+/>

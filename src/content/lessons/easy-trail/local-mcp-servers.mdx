@@ -1,0 +1,393 @@
+# Local MCP Servers
+
+<LessonObjective items={[
+  "Understand what MCP (Model Context Protocol) is and why it matters",
+  "Locate and edit the claude_desktop_config.json file",
+  "Set up a local MCP server for filesystem access or Obsidian",
+  "Troubleshoot common MCP issues when things go wrong"
+]} />
+
+In the last lesson, you connected Claude to cloud services using Connectors. That is great for tools like Google Drive, Notion, and Slack that live on the internet. But what about the files on your actual computer? Your notes, your code, your local documents?
+
+That is where MCP comes in. MCP stands for **Model Context Protocol**, and it is the technology that lets Claude talk to tools and data sources on your local machine. If Connectors are like giving Claude phone lines to cloud services, MCP servers are like plugging USB cables directly into your computer.
+
+This lesson is a bit more hands-on than the previous ones. You will be editing a configuration file in a text editor. But do not worry; the process is straightforward and we will walk through every step.
+
+<KeyVocabulary terms={[
+  { term: "MCP (Model Context Protocol)", definition: "An open protocol created by Anthropic that standardizes how AI models connect to external tools and data sources. Think of it as a universal adapter system." },
+  { term: "MCP Server", definition: "A small program that runs on your computer and exposes specific capabilities (like reading files or accessing a database) to Claude through the MCP protocol." },
+  { term: "MCP Client", definition: "The application that connects to MCP servers. Claude Desktop is an MCP client. So is Claude Code." },
+  { term: "claude_desktop_config.json", definition: "The configuration file where you tell Claude Desktop which MCP servers to connect to. This file lives in a specific location on your computer." }
+]} />
+
+## The USB Port Analogy
+
+Here is the simplest way to think about MCP:
+
+Your computer has USB ports. You can plug in a keyboard, a mouse, a camera, an external drive. Each device has its own purpose, but they all use the same standard connector (USB). Your computer does not need to know in advance what you will plug in. It just needs to support the USB protocol.
+
+MCP works the same way for AI:
+
+- **Claude Desktop** is your computer (the MCP client)
+- **MCP servers** are the USB devices you plug in
+- **The MCP protocol** is the USB standard that makes everything work together
+
+Just like USB, MCP is an **open standard**. Anyone can build an MCP server for any tool or data source. Anthropic created the protocol, but the community builds the servers. There are already MCP servers for filesystems, databases, APIs, note-taking apps, browsers, and much more.
+
+<Callout variant="info" title="Why Is This Exciting?">Before MCP, every AI tool had to build custom integrations for every service. With MCP, a single standard means any AI client can connect to any MCP server. It is the difference between every phone needing a proprietary charger (old world) and everyone using USB-C (MCP world).</Callout>
+
+## Finding Your Config File
+
+Before you can add MCP servers, you need to know where Claude Desktop keeps its configuration file. The location depends on your operating system.
+
+### macOS
+
+```
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+To open this in Finder:
+1. Open Finder
+2. Press `Cmd + Shift + G` (Go to Folder)
+3. Paste: `~/Library/Application Support/Claude/`
+4. Look for `claude_desktop_config.json`
+
+### Windows
+
+```
+%APPDATA%\Claude\claude_desktop_config.json
+```
+
+To find this:
+1. Press `Win + R` to open Run
+2. Type `%APPDATA%\Claude` and press Enter
+3. Look for `claude_desktop_config.json`
+
+<TipBox>If the file does not exist yet, you can create it. Make sure you name it exactly `claude_desktop_config.json` and place it in the correct directory. Start with an empty JSON object: `{}`</TipBox>
+
+### What the Config File Looks Like
+
+If you have never edited this file before, it might be empty or contain just `{}`. Here is what a config file with MCP servers looks like:
+
+```json
+{
+  "mcpServers": {
+    "server-name": {
+      "command": "command-to-run",
+      "args": ["arg1", "arg2"]
+    }
+  }
+}
+```
+
+Each entry inside `mcpServers` is a server you want Claude Desktop to connect to when it starts up. Let's set one up.
+
+## Setting Up the Filesystem MCP Server
+
+The filesystem MCP server is the most common starting point. It gives Claude the ability to read and write files in specific directories on your computer. This is incredibly useful for working with local documents, code, and notes.
+
+### Prerequisites
+
+You need **Node.js** installed on your computer. To check:
+
+1. Open your terminal (Terminal on macOS, Command Prompt or PowerShell on Windows)
+2. Type: `node --version`
+3. If you see a version number (like `v20.11.0`), you are good
+4. If you get an error, download Node.js from [nodejs.org](https://nodejs.org) (choose the LTS version)
+
+You will also need **npx**, which comes bundled with Node.js. Verify with `npx --version`.
+
+### Step-by-Step Setup
+
+<HandsOnExercise title="Set Up the Filesystem MCP Server">
+
+1. Open the config file in your text editor. On macOS, you can use this terminal command:
+
+```bash
+code ~/Library/Application\ Support/Claude/claude_desktop_config.json
+```
+
+(Replace `code` with `nano`, `vim`, or whatever editor you prefer if you do not have VS Code.)
+
+2. Replace the contents with this configuration:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/yourname/Documents",
+        "/Users/yourname/Desktop"
+      ]
+    }
+  }
+}
+```
+
+3. **Important:** Replace `/Users/yourname/Documents` and `/Users/yourname/Desktop` with actual paths on your computer. These are the directories Claude will be able to access.
+
+4. Save the file.
+
+5. **Restart Claude Desktop.** Completely quit the application and reopen it. MCP servers are loaded at startup.
+
+6. Start a new conversation and ask: "What MCP tools do you have available?"
+
+Claude should list the filesystem tools, which include reading files, writing files, listing directories, and searching.
+
+7. Test it: "List the files in my Documents folder" or "Read the file at /Users/yourname/Documents/some-file.txt"
+
+</HandsOnExercise>
+
+<WarningBox>Be careful about which directories you expose to Claude. Only give access to folders you want Claude to read and potentially modify. Avoid pointing it at your entire home directory or system folders. Start with specific project folders or document directories.</WarningBox>
+
+## Setting Up the Obsidian MCP Server
+
+If you use Obsidian for note-taking, there is an MCP server that gives Claude direct access to your vault. This is powerful because Claude can search your notes, read specific pages, and help you write new ones, all without leaving the conversation.
+
+### Configuration
+
+Add this to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "obsidian-mcp-server",
+        "/path/to/your/obsidian/vault"
+      ]
+    }
+  }
+}
+```
+
+Replace `/path/to/your/obsidian/vault` with the actual path to your Obsidian vault folder. If you are unsure where it is, open Obsidian, go to Settings, and look at the vault path.
+
+### Multiple Servers at Once
+
+You can run multiple MCP servers simultaneously. Here is what a config file with both filesystem and Obsidian looks like:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/yourname/Projects"
+      ]
+    },
+    "obsidian": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "obsidian-mcp-server",
+        "/Users/yourname/ObsidianVault"
+      ]
+    }
+  }
+}
+```
+
+Each server runs independently. Claude can use tools from all connected servers in the same conversation.
+
+<TipBox>After editing the config file, you always need to restart Claude Desktop for changes to take effect. Get in the habit of quitting and reopening the app after any config change.</TipBox>
+
+## Other Popular MCP Servers
+
+The MCP ecosystem is growing rapidly. Here are some other servers worth knowing about:
+
+### Database Access
+
+```json
+{
+  "mcpServers": {
+    "sqlite": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sqlite",
+        "/path/to/your/database.db"
+      ]
+    }
+  }
+}
+```
+
+This lets Claude query SQLite databases directly. Great for analyzing local data.
+
+### Git Integration
+
+```json
+{
+  "mcpServers": {
+    "git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git",
+        "--repository",
+        "/path/to/your/repo"
+      ]
+    }
+  }
+}
+```
+
+Claude can read git history, diffs, branches, and more.
+
+### Web Search
+
+```json
+{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic/mcp-server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+Notice the `env` field. Some MCP servers need API keys or other environment variables. These go in the `env` object inside the server configuration.
+
+<ExpandableSection title="Finding More MCP Servers">
+The best places to discover MCP servers:
+
+- **GitHub:** Search for "mcp-server" on GitHub. Most servers are open source.
+- **Anthropic's MCP documentation:** [modelcontextprotocol.io](https://modelcontextprotocol.io) has a growing list of community servers.
+- **npm:** Search npm for `@modelcontextprotocol/server-` to find official servers, or search for `mcp-server` for community ones.
+- **The MCP Specification:** If you are technically inclined, the spec itself is at [spec.modelcontextprotocol.io](https://spec.modelcontextprotocol.io).
+
+When evaluating a community MCP server, check:
+- How many stars and recent commits does the repo have?
+- Is it maintained and documented?
+- What permissions does it need?
+- Do you trust the author?
+</ExpandableSection>
+
+## Troubleshooting
+
+MCP is still relatively new, and things can go wrong. Here are the most common issues and how to fix them.
+
+### "Server not found" or "Failed to start"
+
+**Cause:** Usually a problem with the command path or Node.js installation.
+
+**Fix:**
+1. Open your terminal and run the command manually. For example: `npx -y @modelcontextprotocol/server-filesystem /Users/yourname/Documents`
+2. If you get an error, Node.js or npx might not be in your PATH
+3. Try using the full path to npx. Find it with `which npx` on macOS or `where npx` on Windows
+4. Update your config to use the full path:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "/usr/local/bin/npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/yourname/Documents"
+      ]
+    }
+  }
+}
+```
+
+### "Permission denied"
+
+**Cause:** Claude (via the MCP server) does not have permission to access the specified directory.
+
+**Fix:**
+- Make sure the directory exists
+- Make sure your user account has read access to the directory
+- On macOS, you may need to grant Terminal (or Node.js) Full Disk Access in System Settings > Privacy & Security
+
+### Claude does not show MCP tools
+
+**Cause:** The config file is not being read properly.
+
+**Fix:**
+1. Double-check the file name: it must be exactly `claude_desktop_config.json`
+2. Verify it is valid JSON (no trailing commas, proper quoting). You can paste it into [jsonlint.com](https://jsonlint.com) to validate.
+3. Check the file location matches your OS (see the paths above)
+4. Make sure you fully quit and restarted Claude Desktop (not just closed the window)
+
+### Server crashes after a few minutes
+
+**Cause:** Often a memory or timeout issue with the MCP server.
+
+**Fix:**
+- Update the MCP server package: `npx -y @modelcontextprotocol/server-filesystem@latest`
+- Check for open issues on the server's GitHub repository
+- Try limiting the scope (fewer directories, smaller database)
+
+<HandsOnExercise title="Troubleshoot Your Setup">
+1. Open your terminal
+2. Run your MCP server command manually (copy it from your config file)
+3. If it starts successfully, you should see it waiting for connections. Press `Ctrl+C` to stop it.
+4. If it fails, read the error message carefully. Most issues are path-related or permission-related.
+5. Once the manual test works, restart Claude Desktop and verify in a conversation
+</HandsOnExercise>
+
+## MCP Security Considerations
+
+MCP servers run on your local machine with your user permissions. This means:
+
+- A filesystem MCP server can read any file you can read
+- A database MCP server can query any database you point it at
+- A server with write access can modify files
+
+This is powerful but requires responsibility.
+
+**Best practices:**
+
+- Only install MCP servers from trusted sources
+- Limit directory access to specific folders (never your entire disk)
+- Review the server's code on GitHub if you are unsure
+- Be cautious with MCP servers that request write access
+- On shared machines, be aware that your config file contains your server setup
+
+<Callout variant="tip" title="The Principle of Least Privilege">Give each MCP server access to only what it needs. If you only want Claude to read files in your project folder, do not give it access to your entire Documents directory. You can always expand access later if needed.</Callout>
+
+## How MCP Fits Into Your Toolkit
+
+Let's recap where MCP sits alongside the other tools you have learned:
+
+| Layer | What | When to Use |
+|-------|------|-------------|
+| Custom Instructions | Text in your Project settings | Persistent rules and context |
+| Knowledge Base | Uploaded documents | Static reference materials |
+| Connectors | Cloud service integrations | Live data from web services |
+| **MCP Servers** | **Local tool connections** | **Files, databases, and tools on your machine** |
+
+Together, these four layers give Claude comprehensive access to your world. Custom instructions tell Claude who you are. The knowledge base gives it reference material. Connectors pipe in live cloud data. And MCP servers connect it to your local environment.
+
+You do not need all four layers for every task. But knowing they exist and when to reach for each one is what separates a casual Claude user from someone who has built a truly effective AI workflow.
+
+<PawPrintCheck items={[
+  "Can you explain MCP using the USB port analogy?",
+  "Do you know where to find claude_desktop_config.json on your operating system?",
+  "Have you successfully configured at least one MCP server?",
+  "Can you troubleshoot common MCP issues (wrong path, permissions, invalid JSON)?",
+  "Do you understand the security implications of giving an MCP server access to your files?"
+]} />
+
+<NextUp
+  title="Your Daily Workflow"
+  href="/easy-trail/your-daily-workflow"
+  description="Pull everything together into a practical daily system that makes you more productive with Claude."
+/>

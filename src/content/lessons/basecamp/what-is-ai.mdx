@@ -1,0 +1,150 @@
+<LessonObjective items={[
+  "Explain what a large language model (LLM) is in plain language",
+  "Understand tokens, context windows, and temperature",
+  "Recognize what AI can and cannot do",
+  "Define key vocabulary: LLM, prompt, context, hallucination",
+]} />
+
+## So What Is AI, Actually?
+
+You have probably heard people throw around the term "AI" like it explains everything and nothing at the same time. Self-driving cars? AI. Chatbots? AI. That weird photo filter that ages your face? Also AI, apparently.
+
+But the AI we are going to work with throughout this course is a specific kind: **large language models**, or LLMs. And they are both simpler and stranger than most people think.
+
+Here is the most honest way to describe what an LLM does: it predicts the next word.
+
+That is it. Seriously. When you type a message to Claude or ChatGPT, the model reads what you wrote and then generates a response one word (well, one *token*) at a time, each time asking itself: "Given everything so far, what word is most likely to come next?"
+
+### The Library Analogy
+
+Imagine someone who has read every book in the largest library in the world. Every novel, every textbook, every manual, every blog post, every forum thread. Billions and billions of pages.
+
+Now imagine you walk up to this person and say, "Hey, can you write me a marketing email for a dog walking service?"
+
+They have never run a dog walking business. They have never sent a marketing email. But they have *read* thousands of marketing emails and thousands of things about dogs. So they can produce something that *looks and sounds* exactly like what you asked for, because they have seen the patterns so many times.
+
+That is essentially what an LLM does. It was trained on an enormous amount of text from the internet, books, code repositories, and more. It learned patterns: how sentences are structured, how arguments are built, how code follows syntax rules, how emails are formatted. When you ask it something, it draws on all those patterns to generate a plausible response.
+
+<Callout variant="paw" title="Haku says">
+Think of me like a very well-read golden retriever. I have "sniffed" a lot of text, and I am great at fetching things that match the patterns I have learned. But I have never actually *experienced* any of it. I have never eaten a steak, even though I can write a recipe for one.
+</Callout>
+
+### Pattern Recognition, Not Understanding
+
+This is the most important thing to internalize early: LLMs do not "understand" things the way you do. They recognize and reproduce patterns. When an LLM writes a correct Python function, it is not because it understands programming logic the way a software engineer does. It is because it has seen millions of Python functions and learned the patterns of what correct code looks like.
+
+This distinction matters because it explains both why AI is shockingly good at some things and surprisingly bad at others.
+
+## What AI Can Do (Really Well)
+
+Let us be concrete about the things LLMs genuinely excel at:
+
+- **Writing and editing text** — Drafts, emails, summaries, rewrites, tone adjustments. This is where LLMs feel almost magical.
+- **Answering questions** — Especially when the answer exists somewhere in their training data.
+- **Writing code** — From simple scripts to complex applications, LLMs can generate functional code across dozens of programming languages.
+- **Brainstorming** — Need 20 ideas for a product name? 10 ways to restructure your team? LLMs are tireless brainstorming partners.
+- **Explaining concepts** — They can break down complicated topics into simple language (which is basically what this lesson is doing right now).
+- **Translating and reformatting** — Between languages, between formats (turn this CSV into JSON), between styles (make this formal email casual).
+- **Analyzing and summarizing** — Give it a long document and ask for the key points. This works remarkably well.
+
+## What AI Cannot Do (Yet)
+
+Now the part most AI hype ignores:
+
+- **Access real-time information** — Unless specifically connected to the internet or tools, LLMs only know what was in their training data. They do not know today's weather or yesterday's stock price.
+- **Do math reliably** — This surprises people. LLMs can *look like* they are doing math, but they are actually pattern-matching, not calculating. They frequently get arithmetic wrong, especially with large numbers.
+- **Remember previous conversations** — Each conversation starts fresh unless you are using a tool with memory features. The AI does not remember what you told it last Tuesday.
+- **Guarantee accuracy** — This is the big one. LLMs can and do produce confident, well-written, completely wrong answers. This is called *hallucination*, and we will talk about it more in the safety lesson.
+- **Reason about novel situations** — If a problem requires genuine reasoning about something truly new (not a variation of something in the training data), LLMs struggle.
+- **Replace human judgment** — They can inform your decisions, but they should not make them for you. Especially for anything high-stakes.
+
+<WarningBox>
+Never blindly trust AI output. Always verify important facts, double-check code before running it in production, and use your own judgment for decisions that matter. AI is a powerful assistant, not an infallible oracle.
+</WarningBox>
+
+## The Key Vocabulary
+
+Before we go further, let us nail down the terms you will hear constantly throughout this course. You do not need to memorize these right now; they will become second nature as you practice.
+
+<KeyVocabulary terms={[
+  { term: "LLM", definition: "Large Language Model — an AI system trained on massive amounts of text to generate human-like responses. Examples: Claude, GPT-4, Gemini." },
+  { term: "Prompt", definition: "The message or instruction you send to an AI. Everything you type in the chat box is your prompt. Better prompts lead to better results." },
+  { term: "Context", definition: "The information available to the AI during a conversation. This includes your messages, any uploaded files, and system instructions. Think of it as the AI's short-term memory for this conversation." },
+  { term: "Token", definition: "The smallest unit of text an LLM processes. Roughly speaking, one token is about three-quarters of a word. 'Hello world' is two tokens. This matters because models have token limits." },
+  { term: "Context Window", definition: "The maximum number of tokens an LLM can process at once — both your input and its output combined. Claude's context window is about 200,000 tokens, which is roughly 500 pages of text." },
+  { term: "System Prompt", definition: "Hidden instructions that shape how the AI behaves. When you set up a project with custom instructions, you are writing a system prompt. The user never sees these during the conversation." },
+  { term: "Temperature", definition: "A setting that controls how 'creative' or 'random' the AI's responses are. Low temperature (close to 0) means more predictable, focused answers. High temperature means more varied, surprising (but potentially less accurate) outputs." },
+  { term: "Hallucination", definition: "When an AI generates information that sounds confident and plausible but is factually wrong. This is not the AI 'lying' — it is a pattern-matching failure. The model produced text that fits the pattern of a correct answer but is not actually correct." },
+]} />
+
+## How Tokens Actually Work
+
+Let us dig a little deeper into tokens because they affect how you use AI in practice.
+
+When you send a message to Claude, your text gets broken into tokens before the model processes it. The word "hamburger" might become three tokens: "ham", "bur", "ger". Simple words like "the" or "cat" are usually one token each. A number like "2847" might be one or two tokens.
+
+Why does this matter? Because every model has a **context window** — a maximum number of tokens it can handle at once. That window has to fit *everything*: your prompt, any documents you uploaded, the conversation history so far, and the response the model is generating.
+
+<TipBox>
+Think of the context window like a desk. You can only have so many papers spread out at once. If you pile on too many documents, the oldest ones start "falling off" the edge and the AI can no longer see them. This is why long conversations sometimes feel like the AI "forgot" what you said earlier — it literally cannot see those earlier messages anymore.
+</TipBox>
+
+Claude currently has one of the largest context windows available at about 200,000 tokens, which is roughly 500 pages of text. That is a very big desk. But it is still finite, and being mindful of it will make you a better AI user.
+
+## Temperature: The Creativity Dial
+
+Temperature is a setting you will not interact with directly very often, but understanding it helps you make sense of AI behavior.
+
+At **low temperature** (close to 0), the model almost always picks the most likely next token. This produces consistent, predictable, focused responses. Great for factual questions, code generation, and tasks where accuracy matters.
+
+At **high temperature** (close to 1 or higher), the model is more willing to pick less likely tokens. This produces more creative, varied, and sometimes surprising responses. Useful for brainstorming, creative writing, and when you want diverse options.
+
+Most AI tools set a reasonable default temperature for you. But if you ever notice that an AI is giving you the same answer every time and you want more variety, or it is being too "wild" and you want it to settle down, temperature is the concept behind that behavior.
+
+<Callout variant="info" title="Why does the same prompt sometimes give different answers?">
+This is temperature at work. Unless temperature is set to exactly zero, there is some randomness in which token gets selected at each step. So the same prompt can produce different responses each time. This is a feature, not a bug — it means you can regenerate a response if you do not like the first one.
+</Callout>
+
+## The "Stochastic Parrot" Debate
+
+You might hear critics call LLMs "stochastic parrots" — fancy words meaning "random repeaters." The argument is that LLMs are just remixing their training data without any real understanding.
+
+There is truth in this critique, and it is healthy to keep it in mind. But here is the practical reality: whether or not an LLM truly "understands" anything is a philosophical question. What matters for us is whether it can help us get useful work done. And the answer to that is a resounding yes — *as long as you know its limits*.
+
+Throughout this course, we will treat AI as a powerful tool: incredibly useful when used well, potentially misleading when used carelessly. That is the right framing.
+
+<HandsOnExercise title="Try It Yourself: Test the Boundaries">
+
+If you already have access to an AI tool (Claude, ChatGPT, or Gemini), try these quick experiments:
+
+1. Ask it a factual question you know the answer to (like "What year was the Eiffel Tower completed?") and check if it gets it right.
+2. Ask it to solve a math problem: "What is 3,847 multiplied by 291?" Then check with a calculator.
+3. Ask it something from today's news and see how it responds.
+4. Ask it to write a short email about a topic you know well, and evaluate the quality.
+
+Notice the pattern: it will probably nail the email, get the historical fact right, struggle with the math, and either admit it does not know current events or confidently make something up.
+
+</HandsOnExercise>
+
+## Putting It All Together
+
+Here is your mental model for the rest of this course:
+
+**AI is a pattern-matching engine with a massive training set.** It is extraordinarily good at producing text that matches the patterns it learned. It does not understand, reason, or know things the way humans do. But its pattern-matching ability is so powerful that for many practical tasks — writing, coding, brainstorming, analyzing — it produces results that are genuinely useful.
+
+Your job as an AI user is to learn how to give it the right patterns to match against (that is what prompting is), how to verify its outputs (that is what critical thinking is), and how to integrate it into your work in ways that make you more productive without making you sloppy.
+
+That is what the rest of Basecamp is all about.
+
+<PawPrintCheck items={[
+  "Can you explain what an LLM is to someone who has never heard the term?",
+  "Do you understand why AI is great at writing but bad at math?",
+  "Can you define token, context window, and hallucination in your own words?",
+  "Do you know why the same prompt can give different answers each time?",
+]} />
+
+<NextUp
+  title="Meet Your AI Tools"
+  href="/basecamp/meet-your-ai-tools"
+  description="Get to know Claude, Gemini, and ChatGPT — and find out which one to start with."
+/>

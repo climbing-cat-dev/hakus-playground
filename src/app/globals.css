@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+:root {
+  --earth: #1A1612;
+  --bark: #2C2418;
+  --stone: #3D3528;
+  --pebble: #5C4F3D;
+  --trail: #7A6B55;
+  --cream: #F5F0E8;
+  --sand: #C4B89A;
+  --dust: #8C7E68;
+  --basecamp: #4CAF50;
+  --easy: #FF9800;
+  --medium: #7C4DFF;
+  --summit: #E91E63;
+  --paw: #FF6B35;
+  --alert: #F44336;
+  --success: #66BB6A;
+}
+
+@theme inline {
+  --color-earth: var(--earth);
+  --color-bark: var(--bark);
+  --color-stone: var(--stone);
+  --color-pebble: var(--pebble);
+  --color-trail: var(--trail);
+  --color-cream: var(--cream);
+  --color-sand: var(--sand);
+  --color-dust: var(--dust);
+  --color-basecamp: var(--basecamp);
+  --color-easy: var(--easy);
+  --color-medium: var(--medium);
+  --color-summit: var(--summit);
+  --color-paw: var(--paw);
+  --color-alert: var(--alert);
+  --color-success: var(--success);
+  --font-display: var(--font-fredoka);
+  --font-body: var(--font-nunito);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+body {
+  background: var(--earth);
+  color: var(--cream);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+/* Trail-specific accent overrides */
+[data-trail="basecamp"] {
+  --trail-accent: var(--basecamp);
+}
+
+[data-trail="easy-trail"] {
+  --trail-accent: var(--easy);
+}
+
+[data-trail="medium-trail"] {
+  --trail-accent: var(--medium);
+}
+
+[data-trail="summit"] {
+  --trail-accent: var(--summit);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--trail);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dust);
+}
+
+/* Selection */
+::selection {
+  background: color-mix(in srgb, var(--paw) 30%, transparent);
+  color: var(--cream);
+}
+
+/* Skip to content */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--paw);
+  color: white;
+  font-weight: 700;
+}
+
+.skip-to-content:focus {
+  left: 0;
+}

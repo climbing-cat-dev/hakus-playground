@@ -1,0 +1,254 @@
+# Connectors: Plugging In Your World
+
+<LessonObjective items={[
+  "Browse and understand the Connectors directory at claude.ai/directory",
+  "Connect Claude to tools you already use like Linear, Notion, Slack, and Google Drive",
+  "Understand which plans support Connectors and what limits apply",
+  "Use Interactive Apps for richer, more dynamic outputs"
+]} />
+
+So far you have set up Claude Desktop, created Projects with custom instructions, and uploaded documents to your knowledge base. That is already powerful, but there is a catch: every time your work changes (a new Notion page, a Linear ticket update, a Slack message), you have to manually bring that information to Claude. You are the messenger between your tools and your AI.
+
+Connectors eliminate that problem. They let Claude reach directly into the tools you already use, pulling in live data and context without you having to copy-paste a thing.
+
+Think of it this way: Projects gave Claude a briefing folder. Connectors give Claude a phone line to your actual workspace.
+
+## What Are Connectors?
+
+Connectors are integrations that allow Claude to read from (and sometimes write to) third-party services. When you connect a service, Claude can:
+
+- **Pull data** from that service into your conversations
+- **Search** across your connected tools
+- **Reference live information** instead of stale uploads
+- **Take actions** in some cases (like creating a document or posting a message)
+
+Anthropic maintains an official directory of connectors at [claude.ai/directory](https://claude.ai/directory). As of now, there are **50+ connectors** available, covering categories like project management, documentation, communication, cloud storage, development tools, and more.
+
+<KeyVocabulary terms={[
+  { term: "Connector", definition: "An integration that lets Claude access data from a third-party service like Notion, Slack, or Google Drive. Connectors bring live data into your conversations." },
+  { term: "Interactive App", definition: "A richer output format that Claude can generate. Instead of plain text, Interactive Apps can include clickable elements, forms, and dynamic content." },
+  { term: "OAuth", definition: "The authorization standard that Connectors use. When you connect a service, you grant Claude specific permissions through the service's own login flow. Claude never sees your password." },
+  { term: "Connector Directory", definition: "The catalog at claude.ai/directory where you can browse, search, and enable available connectors." }
+]} />
+
+## Which Plans Support Connectors?
+
+This is important to know upfront:
+
+| Plan | Connectors Available? |
+|------|----------------------|
+| Free | No |
+| Pro | Yes |
+| Max | Yes |
+| Team | Yes |
+| Enterprise | Yes (with admin controls) |
+
+If you are on the Free plan, you will not see the Connectors option. This is one of the key reasons to upgrade to Pro when you are ready to build a real workflow.
+
+<Callout variant="info" title="Enterprise Controls">On Team and Enterprise plans, administrators can control which connectors are available to team members. If you are on a company plan and do not see a connector you expect, check with your admin.</Callout>
+
+## Browsing the Connector Directory
+
+Let's explore what is available.
+
+<HandsOnExercise title="Explore the Directory">
+1. Go to [claude.ai/directory](https://claude.ai/directory) in your browser
+2. Browse the available connectors by category
+3. Notice the categories: Productivity, Development, Communication, Storage, and more
+4. Search for a tool you currently use in your daily work
+5. Click on it to see what permissions it requires and what Claude can do with it
+6. Make a mental note of 2-3 connectors that would be useful for your work
+</HandsOnExercise>
+
+Here are some of the most popular connectors and what they enable:
+
+### Google Drive
+
+Connect your Google Drive and Claude can:
+
+- Search across your documents, spreadsheets, and slides
+- Read and reference specific files in conversations
+- Understand the context of your work without manual uploads
+- Pull data from Google Sheets for analysis
+
+This is especially powerful if your organization lives in Google Workspace. Instead of downloading a doc, uploading it to Claude, and hoping it is the latest version, you just say "look at the Q1 Planning doc in my Drive."
+
+### Notion
+
+If Notion is your second brain, this connector makes Claude an extension of it:
+
+- Search your Notion workspace
+- Read pages and databases
+- Reference your notes, docs, and wikis in conversations
+- Help you draft new Notion content with full awareness of what already exists
+
+### Slack
+
+The Slack connector lets Claude:
+
+- Search your Slack messages and channels
+- Understand conversations and threads
+- Help you draft responses with full context
+- Summarize long threads or channels
+
+### Linear
+
+For product and engineering teams using Linear:
+
+- View issues, projects, and cycles
+- Understand your team's current work
+- Help write ticket descriptions with context from existing issues
+- Track progress across projects
+
+### Other Notable Connectors
+
+- **GitHub** -- repositories, issues, pull requests, code search
+- **Jira** -- issues, projects, boards
+- **Confluence** -- documentation and knowledge bases
+- **Dropbox** -- file access and search
+- **Asana** -- tasks and projects
+- **Intercom** -- customer conversations and tickets
+- **Salesforce** -- CRM data and records
+
+And many more. The directory is growing regularly.
+
+## Setting Up Your First Connector
+
+Let's walk through connecting a service. The process is similar for all connectors, so once you have done one, you can do them all.
+
+<StepByStep steps={[
+  { title: "Open Settings", content: "In Claude Desktop or claude.ai, go to your account settings. Look for the 'Connectors' or 'Integrations' section." },
+  { title: "Choose a Connector", content: "Pick a service you actively use. Google Drive and Notion are great starting points because most people have documents there." },
+  { title: "Authorize Access", content: "Click 'Connect' and you will be redirected to the service's login page. Sign in with your account and approve the permissions Claude is requesting. Read the permissions carefully." },
+  { title: "Configure Scope", content: "Some connectors let you choose which workspaces, folders, or channels Claude can access. Start narrow. You can always expand access later." },
+  { title: "Test It", content: "Start a new conversation and ask Claude something that requires data from the connected service. For example: 'Search my Google Drive for documents about Q1 planning.'" }
+]} />
+
+<WarningBox>When you authorize a connector, you are granting Claude access to your data in that service. Be thoughtful about this. Only connect services where you are comfortable with Claude reading the content. On Team and Enterprise plans, your admin may have policies about which connectors are approved.</WarningBox>
+
+## Using Connectors in Conversations
+
+Once a connector is active, you do not need to do anything special to use it. Just reference the service naturally in your conversation:
+
+**With Google Drive:**
+> "Find the budget spreadsheet from last quarter in my Drive and summarize the top 3 expense categories."
+
+**With Notion:**
+> "Look at our product roadmap in Notion and tell me which features are marked as P0 for this quarter."
+
+**With Slack:**
+> "Search our #engineering channel for discussions about the database migration from the past two weeks and give me a summary."
+
+**With Linear:**
+> "Show me all open bugs assigned to the frontend team in Linear and group them by severity."
+
+Claude will search the connected service, pull in the relevant data, and use it to answer your question. It feels natural because it is. You talk to Claude the same way you would talk to a colleague who has access to these tools.
+
+<TipBox>You can combine multiple connectors in a single conversation. For example: "Look at the feature request in Linear issue FE-234, find the related design doc in Notion, and draft a technical spec that references both." Claude will pull from both sources to give you a comprehensive answer.</TipBox>
+
+## Interactive Apps
+
+Beyond standard connectors, Claude can also generate **Interactive Apps**. These are richer output formats that go beyond plain text and code blocks.
+
+Interactive Apps can include:
+
+- **Dynamic charts and visualizations** built from your data
+- **Interactive forms** for structured input
+- **Clickable prototypes** for UI concepts
+- **Data tables** with sorting and filtering
+- **Calculators** and interactive tools
+
+For example, if you ask Claude to analyze a spreadsheet from your Google Drive, instead of just listing numbers in text, it might create an Interactive App with a sortable table and a chart showing trends over time.
+
+To get Interactive Apps, you do not need to enable anything special. Just ask for what you need and Claude will choose the best format:
+
+> "Create an interactive chart showing our monthly revenue growth based on the data in my Q1 finance spreadsheet."
+
+> "Build me a calculator that estimates project timelines based on team size and complexity."
+
+<HandsOnExercise title="Connect and Query">
+1. Connect at least one service using the steps above (Google Drive or Notion are recommended starters)
+2. Start a new conversation in Claude
+3. Ask Claude to search your connected service for something specific
+4. Follow up with a question that requires Claude to analyze or summarize what it found
+5. Try combining the connected data with a creative task: "Based on what you found, draft a..."
+</HandsOnExercise>
+
+## Managing Your Connectors
+
+### Reviewing Permissions
+
+Periodically review which connectors you have active and what permissions they have:
+
+1. Go to Settings in Claude
+2. Find the Connectors section
+3. Review each connected service
+4. Disconnect any services you no longer use
+
+### Troubleshooting Connection Issues
+
+If a connector is not working as expected:
+
+- **Re-authorize:** Disconnect and reconnect the service. OAuth tokens can expire.
+- **Check permissions:** Make sure you granted the right level of access. Some connectors need read access to specific workspaces or folders.
+- **Verify the service:** Make sure the data you are asking about actually exists and is accessible with your account.
+- **Check your plan:** Remember, connectors require Pro, Max, Team, or Enterprise plans.
+
+<ExpandableSection title="Privacy and Data Handling">
+A common question is "what does Claude do with my connected data?" Here is how it works:
+
+- Claude accesses data **on-demand** when you ask a question that requires it
+- Data pulled via connectors is used only for your current conversation
+- Anthropic's data retention policies apply (check your plan's specific terms)
+- On Enterprise plans, organizations can set custom data retention policies
+- You can disconnect a service at any time to revoke access
+- Claude does not proactively scan or index your connected services
+
+If your organization has strict data governance requirements, talk to your IT team about the Enterprise plan's controls.
+</ExpandableSection>
+
+## Connectors vs. Knowledge Base vs. MCP
+
+At this point you might be wondering: when do I use a Connector vs. uploading to the Knowledge Base vs. using an MCP server (which we cover next)?
+
+Here is a simple framework:
+
+| Method | Best For | Updates | Setup |
+|--------|----------|---------|-------|
+| Knowledge Base | Static docs that rarely change | Manual re-upload | Upload files to Project |
+| Connectors | Live data in cloud services | Automatic (real-time) | One-click OAuth |
+| MCP Servers | Local files and custom tools | Automatic (local) | Config file editing |
+
+**Use the Knowledge Base** when you have reference documents like style guides, templates, or specifications that do not change often.
+
+**Use Connectors** when you need live data from cloud services that updates frequently.
+
+**Use MCP Servers** (next lesson) when you need Claude to access files on your local machine or connect to tools that do not have an official Connector.
+
+<Callout variant="tip" title="Layer Them Together">The most powerful setup uses all three. Your Project has custom instructions and a knowledge base for stable reference material. Connectors bring in live data from your cloud tools. And MCP servers (up next) connect your local environment. Each layer serves a different purpose.</Callout>
+
+## Building Your Connected Workspace
+
+Here is a practical approach to rolling out connectors:
+
+**Week 1:** Connect your primary documentation tool (Google Drive, Notion, or Confluence). Get comfortable searching and referencing documents in conversations.
+
+**Week 2:** Add your project management tool (Linear, Jira, or Asana). Start using Claude to help you write tickets, summarize progress, and plan sprints.
+
+**Week 3:** Add your communication tool (Slack). Use Claude to catch up on conversations, draft responses, and summarize threads.
+
+**Week 4:** Evaluate. Which connectors do you actually use? Which feel like they add real value? Disconnect anything that does not help and consider adding new ones.
+
+<PawPrintCheck items={[
+  "Can you find and browse the Connector directory at claude.ai/directory?",
+  "Do you know which plans support Connectors?",
+  "Have you connected at least one service and successfully queried it?",
+  "Can you explain the difference between Connectors, Knowledge Base uploads, and MCP servers?",
+  "Do you understand what Interactive Apps are and when Claude might generate them?"
+]} />
+
+<NextUp
+  title="Local MCP Servers"
+  href="/easy-trail/local-mcp-servers"
+  description="Learn how MCP works as 'USB ports for AI' and set up your first local server to give Claude access to your files."
+/>

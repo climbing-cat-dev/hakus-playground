@@ -1,0 +1,351 @@
+<LessonObjective items={[
+  "Understand the scaffolding prompt philosophy",
+  "Create a Next.js app from scratch with Claude Code",
+  "Build components iteratively, one at a time",
+  "Test and refine your application"
+]} />
+
+## The Scaffolding Mindset
+
+You are about to build a real web application. Not a tutorial demo, not a toy example -- a real app that runs in a browser and does something useful. And you are going to do it by talking to Claude Code in plain English.
+
+But before you write a single prompt, there is an important concept to understand: **scaffolding**.
+
+In construction, scaffolding is the temporary structure that supports workers while they build a building. You do not build the entire building at once -- you start with the frame, then the walls, then the wiring, then the paint. Each layer builds on the one before it.
+
+Software works the same way. The biggest mistake new builders make is trying to describe their entire application in one massive prompt. "Build me a dashboard with authentication, a database, real-time updates, dark mode, and a notification system." That is like telling a contractor to build you a finished house in one day.
+
+Instead, you scaffold. You build the frame first. Then you add one room at a time. Each step is small, testable, and builds on what already works.
+
+<Callout variant="paw" title="The Golden Rule of Scaffolding">
+Every prompt should result in something you can see and test in your browser. If you cannot verify it works, the step was too big. Break it down further.
+</Callout>
+
+## Why Next.js?
+
+For this lesson, we are using **Next.js** -- a React framework that handles most of the complexity of building a modern web app. Here is why:
+
+- **React** is the most popular frontend library, so Claude Code has seen millions of React examples and writes excellent React code
+- **Next.js** provides routing, server-side rendering, and API routes out of the box -- things you would otherwise have to set up manually
+- **Vercel** (which we will use for deployment later) was built by the same team, so deployment is seamless
+- **Tailwind CSS** integrates perfectly with Next.js for styling
+
+You do not need to understand how React or Next.js work internally. Claude Code handles the technical details. You just need to understand the building blocks at a high level.
+
+<KeyVocabulary terms={[
+  { term: "Next.js", definition: "A React framework that provides routing, server-side rendering, and API routes. Think of it as React with batteries included." },
+  { term: "Component", definition: "A reusable piece of UI. A button, a navigation bar, a card -- each is a component that can be combined to build pages." },
+  { term: "Route", definition: "A URL path in your application. '/about' is a route, '/dashboard' is a route. In Next.js, routes map to files." },
+  { term: "Scaffold", definition: "To create the basic structure of an application that you will build upon. Like framing a house before adding walls." }
+]} />
+
+## Step 1: The Initial Scaffold
+
+Let us start by creating the foundation. Open your terminal, navigate to where you want your project, and start Claude Code.
+
+```bash
+mkdir my-first-app
+cd my-first-app
+claude
+```
+
+Now give it the scaffolding prompt. Notice how specific this prompt is while staying focused on just the foundation:
+
+```
+> Create a new Next.js 14 app with the App Router, TypeScript,
+  and Tailwind CSS. Use the src/ directory structure. The app
+  should have:
+  - A root layout with a simple header that says "My Dashboard"
+  - A home page that shows "Welcome to your dashboard"
+  - A clean, dark theme using Tailwind
+
+  Do NOT add authentication, databases, or any complex features
+  yet. Just the bare foundation.
+```
+
+<TipBox>
+Notice the "Do NOT" section. Telling Claude Code what to exclude is just as important as telling it what to include. Without those boundaries, it might add features you are not ready for.
+</TipBox>
+
+Claude Code will run `npx create-next-app`, configure TypeScript and Tailwind, set up the directory structure, and create the initial files. When it finishes, start the development server:
+
+```bash
+npm run dev
+```
+
+Open your browser to `http://localhost:3000`. You should see a simple page with "My Dashboard" in the header and "Welcome to your dashboard" on the page. If you see this, your scaffold is working. Commit it.
+
+```bash
+git init
+git add .
+git commit -m "Initial scaffold: Next.js with TypeScript and Tailwind"
+```
+
+<WarningBox>
+Always verify the scaffold works before moving on. If the dev server throws errors or the page looks broken, fix it now. Building on a broken foundation leads to frustration later. Ask Claude Code to diagnose and fix any issues.
+</WarningBox>
+
+## Step 2: The Navigation Component
+
+Now we add the first real component. Instead of describing the whole app, we focus on one thing: navigation.
+
+```
+> Create a navigation sidebar component at src/components/Sidebar.tsx.
+  It should have:
+  - Links to Home ("/"), Projects ("/projects"), and Settings ("/settings")
+  - An active state that highlights the current page
+  - Dark background matching the theme
+  - Icons are optional but welcome
+
+  Update the root layout to include the sidebar on the left side
+  with the main content on the right.
+```
+
+After Claude Code makes the changes, check your browser. You should see a sidebar on the left. Click the links -- they should navigate between routes (even though the pages do not exist yet, you will see 404s for `/projects` and `/settings`). That is fine; we will add those pages next.
+
+```bash
+git add .
+git commit -m "Add navigation sidebar with active state highlighting"
+```
+
+See the pattern? One component, one commit, one verified step forward.
+
+## Step 3: Building Pages Component by Component
+
+Now you add content pages. Each one is a focused prompt:
+
+```
+> Create a Projects page at src/app/projects/page.tsx. It should
+  display a grid of project cards. For now, use hardcoded sample
+  data with 3 example projects. Each card should show:
+  - Project name
+  - A short description
+  - A status badge (Active, Paused, Completed)
+  - Created date
+
+  Create a reusable ProjectCard component in src/components/ProjectCard.tsx
+```
+
+Test it. See the cards? Good. Commit.
+
+```bash
+git add .
+git commit -m "Add Projects page with ProjectCard grid layout"
+```
+
+Now the Settings page:
+
+```
+> Create a Settings page at src/app/settings/page.tsx with a
+  simple form that has:
+  - A text input for "Display Name"
+  - A select dropdown for "Theme" (Dark, Light, System)
+  - A save button
+
+  The form does not need to actually save anything yet. Just
+  the UI.
+```
+
+Test, verify, commit. Every step is small and verified.
+
+<HandsOnExercise title="Build Your Dashboard Home Page">
+
+Now it is your turn to write the prompt. You are going to replace the placeholder home page with something more useful.
+
+1. Think about what you want on your dashboard home page. Some ideas:
+   - A greeting with the current date
+   - A summary of recent projects
+   - Quick action buttons
+   - A stats overview (total projects, active projects, etc.)
+
+2. Write a prompt for Claude Code that describes exactly what you want. Remember the rules:
+   - Be specific about layout and content
+   - Reference existing components if relevant
+   - State what you do NOT want
+   - Keep the scope manageable
+
+3. Run your prompt and verify the result in the browser.
+
+4. If something is not right, iterate. Ask Claude Code to adjust:
+
+```
+> The greeting section is too large. Make the text smaller and
+  add the current date below it in a lighter color. Also move
+  the quick actions to the right side of the greeting.
+```
+
+5. When you are happy, commit:
+
+```bash
+git add .
+git commit -m "Build dashboard home page with greeting and project summary"
+```
+
+</HandsOnExercise>
+
+## The Iterative Refinement Loop
+
+Building an app is not a straight line from prompt to finished product. It is a loop:
+
+1. **Describe** what you want (prompt)
+2. **Review** what Claude Code built (check the browser)
+3. **Refine** what needs to change (follow-up prompt)
+4. **Verify** it works (test again)
+5. **Save** your progress (commit)
+
+This loop repeats for every feature, every component, every page. The key insight is that steps 2 and 3 are where the real building happens. Your first prompt gets you 80% there. Your refinement prompts handle the remaining 20%.
+
+```
+> The ProjectCard status badge should use different colors:
+  Active = green, Paused = yellow, Completed = blue.
+  Also add a subtle hover effect to the cards.
+```
+
+```
+> The sidebar should collapse to just icons on screens
+  smaller than 768px wide. Add a toggle button to
+  expand/collapse it.
+```
+
+```
+> Add a loading skeleton to the Projects page that shows
+  placeholder cards while data would be loading. Show 6
+  skeleton cards in the same grid layout.
+```
+
+Each of these is a small, focused refinement. Together, they transform a basic scaffold into a polished application.
+
+<Callout variant="tip" title="The 80/20 Rule of Prompting">
+Your initial prompt does the heavy lifting -- it gets the structure and major elements in place. But the polish comes from focused follow-up prompts that tweak colors, adjust spacing, add interactions, and handle edge cases. Do not try to get everything perfect in one prompt.
+</Callout>
+
+## Creating Reusable Components
+
+As your app grows, you will notice patterns. Multiple pages might use the same card layout, the same button style, or the same section heading. This is where reusable components shine.
+
+Ask Claude Code to extract repeated patterns:
+
+```
+> I notice several pages use a similar section header with a
+  title and a subtitle. Extract this into a reusable
+  SectionHeader component in src/components/SectionHeader.tsx
+  that accepts title and subtitle props. Then update the
+  existing pages to use it.
+```
+
+Good components to create early:
+
+```
+> Create a reusable Button component at src/components/Button.tsx
+  with these variants:
+  - primary (filled, blue background)
+  - secondary (outlined, border only)
+  - danger (filled, red background)
+  - ghost (no background, just text)
+
+  Each variant should have hover and active states. The component
+  should accept an optional "loading" prop that shows a spinner
+  and disables the button.
+```
+
+```
+> Create a Badge component at src/components/Badge.tsx that
+  accepts a "variant" prop with options: success (green),
+  warning (yellow), info (blue), error (red), neutral (gray).
+  Use it to replace the status badges in ProjectCard.
+```
+
+<TipBox>
+A good rule of thumb: if you use the same UI pattern three times, extract it into a component. This keeps your code consistent and makes future changes easier -- update the component once, and every page that uses it updates automatically.
+</TipBox>
+
+## Handling Common Issues
+
+Things will go wrong. That is normal. Here are the most common issues and how to handle them:
+
+### The dev server shows an error
+
+```
+> I am getting this error in the browser: [paste the error].
+  Diagnose the issue and fix it.
+```
+
+Claude Code can read error messages and fix them. Always paste the exact error text -- do not paraphrase.
+
+### A component looks wrong
+
+```
+> The sidebar is overlapping the main content on mobile.
+  Fix the layout so the sidebar pushes the content to the
+  right instead of overlapping.
+```
+
+Be specific about what looks wrong and how it should look instead.
+
+### You want to undo changes
+
+If Claude Code made changes you do not like, use Git:
+
+```bash
+# See what changed
+git diff
+
+# Undo all uncommitted changes (go back to last commit)
+git checkout .
+```
+
+This is why we commit after every working step. Your last commit is always your safety net.
+
+<ExpandableSection title="What if Claude Code creates files in the wrong place?">
+Tell it where things should go. "Move the component from where you created it to `src/components/ui/Button.tsx` instead." You can also update your CLAUDE.md with directory conventions so it gets it right next time: "All UI components go in `src/components/ui/`. Page-specific components go in `src/components/pages/`."
+</ExpandableSection>
+
+<ExpandableSection title="What if the app works but looks ugly?">
+Design refinement is iterative. Start with layout and structure, then refine colors, spacing, and typography. You can also give Claude Code a reference: "Make this page look more like the Vercel dashboard -- clean, minimal, lots of whitespace, dark background." Visual references are much more effective than abstract descriptions.
+</ExpandableSection>
+
+## Project Structure So Far
+
+After completing this lesson, your project should look something like this:
+
+```
+my-first-app/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx          # Root layout with sidebar
+│   │   ├── page.tsx            # Dashboard home page
+│   │   ├── projects/
+│   │   │   └── page.tsx        # Projects page
+│   │   └── settings/
+│   │       └── page.tsx        # Settings page
+│   ├── components/
+│   │   ├── Sidebar.tsx         # Navigation sidebar
+│   │   ├── ProjectCard.tsx     # Project card component
+│   │   ├── SectionHeader.tsx   # Reusable section header
+│   │   ├── Button.tsx          # Button with variants
+│   │   └── Badge.tsx           # Status badge
+│   └── lib/
+│       └── utils.ts            # Utility functions
+├── CLAUDE.md                   # Project context for Claude Code
+├── package.json
+├── tailwind.config.ts
+├── tsconfig.json
+└── .gitignore
+```
+
+Every file was created by Claude Code through focused, iterative prompts. Every major step was committed to Git. The app runs, looks good, and is ready for the next phase: connecting it to real data and deploying it to the internet.
+
+---
+
+<PawPrintCheck items={[
+  "Why should you break your app into small, focused prompts instead of one large prompt?",
+  "What is the scaffolding prompt philosophy in one sentence?",
+  "What should you do after every successfully verified change?",
+  "How do you handle it when Claude Code produces something that does not look right?"
+]} />
+
+<NextUp
+  title="Data & Deployment"
+  href="/medium-trail/data-and-deployment"
+  description="Connect your app to a real database with Supabase and deploy it to the internet with Vercel."
+/>

@@ -1,0 +1,263 @@
+<LessonObjective items={[
+  "Write a complete Product Requirements Document with AI",
+  "Use the 'prompt AI to help you prompt' technique",
+  "Create reusable context files",
+  "Practice iterative refinement on a real task",
+]} />
+
+## Time to Get Your Hands Dirty
+
+In the last lesson, you learned the 8-part prompt framework. Now we are going to use it for real. Not on a toy example — on an actual task that produces something you could use in your work or projects.
+
+We are going to write a **Product Requirements Document (PRD)** together with AI. Even if you are not a product manager, a PRD is a fantastic first exercise because it is a real document that people actually write, it requires clear thinking, and it is complex enough to stretch the framework.
+
+But here is the twist: we are going to start with one of the most powerful techniques in AI-assisted work.
+
+## The "Prompt AI to Help You Prompt" Technique
+
+This technique sounds circular, but it is genuinely one of the most useful things you will learn in this entire course.
+
+The idea is simple: **before asking AI to do the work, ask AI to help you write the prompt for the work.**
+
+Why? Because the AI often knows what information it would need to do a great job. It can ask you the right questions, identify gaps in your thinking, and help you structure your request before you send the actual prompt.
+
+Here is how it works:
+
+<HandsOnExercise title="Step 1: Ask AI to Interview You">
+
+Open your AI tool (Claude recommended) and send this message:
+
+"I want to write a Product Requirements Document for a new project. Before I give you the details, I want you to interview me. Ask me the questions you would need answered to write an excellent PRD. Ask them one at a time, and wait for my answer before asking the next question."
+
+Now let the AI interview you. It will ask things like:
+- What is the product or feature?
+- Who is the target user?
+- What problem does it solve?
+- What are the success metrics?
+- Are there any technical constraints?
+- What is the timeline?
+
+Answer each question honestly. If you do not have a real project in mind, make one up. Something like a mobile app for tracking houseplants, a tool for organizing book clubs, or a dashboard for freelancers to track invoices.
+
+After 8-10 questions, the AI will have a much richer understanding of your project than if you had tried to write a prompt from scratch.
+
+</HandsOnExercise>
+
+<Callout variant="paw" title="Haku says">
+This is like when I tilt my head and look at you before we go for a walk. I am figuring out: are we going to the park? The beach? A quick loop around the block? The more I understand the plan, the better walk buddy I can be. Let the AI tilt its head at your project first.
+</Callout>
+
+### Why This Works So Well
+
+The interview technique works because of a simple truth: **you do not know what you do not know.** When you sit down to write a prompt, you naturally include the information that is top of mind. But you often forget to mention things that seem obvious to you but are not obvious to the AI.
+
+The AI, having been trained on thousands of PRDs and project descriptions, knows the *shape* of a complete brief. It knows what questions to ask because it has seen what information matters. By letting it interview you, you fill in gaps you did not know existed.
+
+This technique works for almost any complex task:
+- "Interview me before writing my business plan"
+- "Ask me questions before designing this database schema"
+- "What would you need to know to write a great cover letter for me?"
+- "Before building this feature, what questions should we answer first?"
+
+## Building Your Context File
+
+Now that the AI has interviewed you, we are going to do something that levels up your entire workflow: create a **context file**.
+
+A context file is a document that captures all the important information about your project in one place. You can paste it into any AI conversation to instantly give the AI full context, without repeating yourself every time.
+
+<HandsOnExercise title="Step 2: Create Your Context File">
+
+After the interview, send this message to the AI:
+
+"Based on everything I just told you, create a structured context document that I can reuse in future conversations. Include sections for: Project Overview, Target Users, Problem Statement, Key Features, Technical Constraints, Success Metrics, and Timeline. Format it clearly with headers and bullet points."
+
+The AI will synthesize all your interview answers into a clean, organized document.
+
+Copy this output and save it somewhere — a text file, a note, a Google Doc. This is your project context file. You will use it again and again.
+
+</HandsOnExercise>
+
+### What Makes a Good Context File
+
+A good context file is:
+
+- **Comprehensive but concise.** It covers all the important details without rambling. Aim for 1-2 pages.
+- **Well-structured.** Clear sections with headers so you (and the AI) can scan it quickly.
+- **Factual, not aspirational.** It describes what is true and what is decided, not vague wishes. "Our budget is $5,000" is better than "We want to keep costs reasonable."
+- **Updated regularly.** As your project evolves, update the context file. An outdated context file leads to outdated AI responses.
+
+<TipBox>
+Keep a context file for every significant project you work on. Over time, you will build a library of context files that let you spin up productive AI conversations in seconds instead of minutes. This is one of the highest-leverage habits you can build.
+</TipBox>
+
+## Writing the PRD
+
+Now we have everything we need. The AI has interviewed you, you have a context file, and you understand the 8-part framework. Let us write the PRD.
+
+<HandsOnExercise title="Step 3: Write the PRD">
+
+Start a new conversation with your AI tool (or continue the existing one). Send a prompt using the framework:
+
+**Task:**
+"Write a Product Requirements Document for [your project name]."
+
+**Context:**
+Paste your entire context file here.
+
+**Reference:**
+"Follow a standard PRD format with these sections: Executive Summary, Problem Statement, Target Users, User Stories, Functional Requirements, Non-Functional Requirements, Success Metrics, Timeline and Milestones, Open Questions."
+
+**Brief:**
+"The PRD should be thorough but readable. Use clear language that both technical and non-technical team members can understand. Each section should be substantive — not just a single sentence. Total length should be 1,500-2,500 words."
+
+**Rules:**
+"Do not use generic filler language. Every requirement should be specific and testable. If there are gaps in the information I provided, call them out in an Open Questions section rather than making assumptions."
+
+Send this prompt and let the AI generate the full PRD.
+
+</HandsOnExercise>
+
+## The Refinement Loop
+
+You now have a first draft. It is probably pretty good — maybe 70-80% of the way there. Now comes the part that separates casual AI users from power users: **iterative refinement**.
+
+Read through the PRD carefully. As you read, note things that are:
+- **Missing** — important aspects of your project that the AI did not include
+- **Wrong** — assumptions the AI made that do not match reality
+- **Vague** — sections that need more specificity
+- **Off-tone** — language that does not sound right for your audience
+
+Now address these one category at a time.
+
+<HandsOnExercise title="Step 4: Refine the PRD">
+
+Go through at least three rounds of refinement:
+
+**Round 1 — Fill the gaps:**
+"The PRD is missing [specific thing]. Add a section about [topic]. Also, the User Stories section only covers the happy path — add stories for edge cases like [example]."
+
+**Round 2 — Fix the specifics:**
+"In the Functional Requirements section, requirement #3 is too vague. Make it more specific: instead of 'users can manage their data,' specify exactly what management actions are supported (create, read, update, delete) and any limits."
+
+**Round 3 — Polish the tone:**
+"The Executive Summary reads too formally for our team. Rewrite it in a more conversational tone while keeping the substance. Also, the timeline section feels optimistic — add a note about potential risks that could push dates."
+
+After three rounds, your PRD should be significantly better than the first draft. This is normal. This is the process.
+
+</HandsOnExercise>
+
+<Callout variant="info" title="How many rounds is enough?">
+There is no magic number. For a casual document, one round of refinement might be plenty. For something that will guide a team's work for months, you might do five or six rounds. The rule of thumb: stop when you would be comfortable sharing it with a colleague. If you would feel the need to apologize for any section, it needs another round.
+</Callout>
+
+## The Meta-Prompt Technique
+
+Here is another advanced technique while we are on a roll. After your PRD is done, try this:
+
+> "Review this PRD as if you were a senior product manager. What is missing? What is weak? What questions would you ask before approving this?"
+
+This is a **meta-prompt** — you are asking the AI to critique its own output. And it is surprisingly good at this. The AI will often identify weaknesses it introduced in the first draft, because the skills needed to evaluate a document are different from the skills needed to write one.
+
+Use the AI's self-critique to fuel one more round of refinement. This technique alone can take your output from "good" to "great."
+
+<TipBox>
+The meta-prompt technique works for almost anything: "Review this code for bugs," "Critique this email before I send it," "What would a skeptic say about this proposal?" Always ask the AI to play devil's advocate on its own work.
+</TipBox>
+
+## Reusable Patterns
+
+Now that you have been through the full process, let us extract some patterns you can reuse:
+
+### The Interview-First Pattern
+
+For any complex task:
+1. Ask the AI to interview you first
+2. Answer its questions
+3. Have it synthesize your answers into a context document
+4. Use that context document for the actual task
+
+This adds five minutes to your process but saves thirty minutes of revisions.
+
+### The Context File Pattern
+
+For any ongoing project:
+1. Create a context file early
+2. Paste it at the start of every new conversation about that project
+3. Update it as the project evolves
+4. Share it with teammates so they get consistent AI outputs
+
+### The Plan-Draft-Critique Pattern
+
+For any important document:
+1. Ask for a plan or outline first
+2. Review and adjust the plan
+3. Ask for the full draft
+4. Ask the AI to critique its own work
+5. Incorporate the critique in a final revision
+
+<WarningBox>
+Even with all these techniques, the AI's output is a starting point, not a finished product. You are still the one responsible for the final quality. Read everything critically, verify facts, and make sure the output actually matches what your project needs — not just what sounds good.
+</WarningBox>
+
+## What You Just Built
+
+Take a step back and appreciate what just happened. You used AI to:
+
+1. **Interview yourself** — surfacing information you might have missed
+2. **Create a context file** — a reusable asset for your project
+3. **Write a full PRD** — a document that would normally take hours
+4. **Iteratively refine it** — using specific, targeted feedback
+5. **Self-critique it** — catching weaknesses you might have overlooked
+
+The total time? Probably 30-45 minutes. The equivalent without AI? Several hours, minimum. And the quality is arguably better because the AI helped you think more systematically about your project than you might have on your own.
+
+This is the workflow. This is what using AI well actually looks like. Not magic, not one-shot prompts, not "make me a PRD." It is a structured, iterative process where you and the AI collaborate to produce something better than either of you would create alone.
+
+<ExpandableSection title="Bonus: Save your prompt as a reusable template">
+
+Once you have a prompt that works well, save it as a template. Here is the format we recommend:
+
+```
+# PRD Generator Prompt Template
+
+## Task
+Write a Product Requirements Document for [PROJECT NAME].
+
+## Context
+[PASTE CONTEXT FILE HERE]
+
+## Reference
+Follow a standard PRD format with these sections:
+Executive Summary, Problem Statement, Target Users,
+User Stories, Functional Requirements, Non-Functional
+Requirements, Success Metrics, Timeline, Open Questions.
+
+## Brief
+- Thorough but readable
+- Clear language for technical and non-technical readers
+- Each section should be substantive
+- 1,500-2,500 words total
+
+## Rules
+- No generic filler language
+- Every requirement must be specific and testable
+- Call out information gaps in Open Questions
+```
+
+Replace the bracketed sections with your specific details each time. Over time, build a library of templates for tasks you do regularly.
+
+</ExpandableSection>
+
+<PawPrintCheck items={[
+  "Have you used the 'prompt AI to help you prompt' interview technique?",
+  "Did you create a context file for your project?",
+  "Have you written a PRD (or similar complex document) using the full framework?",
+  "Did you go through at least two rounds of iterative refinement?",
+  "Have you tried the meta-prompt technique (asking AI to critique its own work)?",
+]} />
+
+<NextUp
+  title="AI Safety & Ethics"
+  href="/basecamp/ai-safety-ethics"
+  description="Learn about hallucinations, bias, and when NOT to trust AI — essential knowledge for responsible use."
+/>

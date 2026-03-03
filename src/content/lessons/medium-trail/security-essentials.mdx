@@ -1,0 +1,404 @@
+<LessonObjective items={[
+  "Understand the 5 security rules for AI-assisted development",
+  "Protect API keys with .env files and .gitignore",
+  "Run npm audit and fix vulnerabilities",
+  "Complete the security deployment checklist"
+]} />
+
+## Why Security Matters More Than Ever
+
+Here is a statistic that should get your attention: studies have found that nearly half of all AI-generated code contains security vulnerabilities. Not because the AI is malicious -- because security requires intentional, defensive thinking that AI does not always prioritize. AI optimizes for "does it work?" not "is it safe?"
+
+When you write code with Claude Code, the code works. It runs, it does what you asked, and it often looks clean and professional. But "working" and "secure" are two different things. A door with no lock works perfectly fine -- until someone walks through it who should not.
+
+This lesson is the most important one on the trail. The concepts here are not optional best practices you can skip. They are rules. Follow them every time, and your projects will be safe. Skip them once, and you risk exposing your API keys, your data, or your users' information.
+
+<Callout variant="warning" title="This Is Not Theoretical">
+Real people have had their AWS accounts drained of thousands of dollars because they accidentally committed an API key to a public GitHub repository. Bots constantly scan GitHub for exposed secrets. If your key is public for even a few minutes, assume it has been compromised.
+</Callout>
+
+## The 5 Security Rules
+
+These five rules cover the vast majority of security issues you will encounter as a builder using AI tools. Memorize them. Follow them without exception.
+
+### Rule 1: AI-Generated Code Is Untrusted Code
+
+Just because Claude Code wrote it does not mean it is safe. Just because it runs does not mean it is secure. Just because it looks right does not mean there are no vulnerabilities hiding inside.
+
+This is not a criticism of AI -- it is a fundamental truth about all code. Professional developers review each other's code before it ships. You should review AI-generated code the same way.
+
+**What to do:**
+- Read the code changes before accepting them
+- If you do not understand something, ask Claude Code to explain it
+- If the explanation does not make sense, do not ship it
+- Pay special attention to code that handles user input, database queries, or authentication
+
+```
+> Explain the changes you just made to the API route.
+  Are there any security considerations I should know about?
+```
+
+```
+> Review this file for security vulnerabilities:
+  src/app/api/users/route.ts
+```
+
+<TipBox>
+You do not need to understand every line of code at a deep technical level. But you should be able to explain *what* each file does and *why* it exists. If a file is a mystery to you, that is a red flag.
+</TipBox>
+
+### Rule 2: Secrets Are Sacred
+
+API keys, database passwords, tokens, and credentials are **secrets**. They grant access to services that can cost you money, expose your data, or compromise your users. Treat every secret like your bank password.
+
+**The rules for secrets:**
+- NEVER put a secret directly in a code file
+- NEVER commit a secret to Git
+- ALWAYS use environment variables (`.env` files)
+- ALWAYS add `.env` to `.gitignore` before your first commit
+- If you accidentally expose a secret, **revoke it immediately** and generate a new one
+
+Here is the correct pattern:
+
+```bash
+# BAD -- secret is directly in the code
+# src/lib/supabase.ts
+const supabase = createClient(
+  'https://abc123.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI...'
+)
+```
+
+```bash
+# GOOD -- secret comes from environment variable
+# src/lib/supabase.ts
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+```
+
+```bash
+# .env.local (NOT committed to Git)
+NEXT_PUBLIC_SUPABASE_URL=https://abc123.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
+```
+
+```bash
+# .gitignore (committed to Git)
+.env
+.env.local
+.env*.local
+```
+
+<WarningBox>
+If you ever see Claude Code put an actual API key, password, or token directly in a code file, stop immediately and fix it. Move the value to `.env.local` and replace it with `process.env.VARIABLE_NAME`. This is a non-negotiable rule.
+</WarningBox>
+
+### Rule 3: Less Access Is More Safety
+
+The principle of least privilege says: give every tool, user, and service the minimum access it needs to do its job. Nothing more.
+
+**In practice:**
+- If your app only reads from the database, use a read-only database key
+- If an MCP server only needs access to one table, do not give it access to all tables
+- If a feature does not need admin permissions, do not use admin credentials
+- If a user should not see certain data, enforce that at the database level with Row Level Security
+
+```sql
+-- Instead of allowing everything:
+CREATE POLICY "Allow all" ON projects
+  FOR ALL USING (true);
+
+-- Be specific about what is allowed:
+CREATE POLICY "Users can read their own projects" ON projects
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own projects" ON projects
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+```
+
+### Rule 4: Review Every Diff
+
+When Claude Code changes your code, a **diff** shows you exactly what was added, removed, or modified. Read it. Every time.
+
+```bash
+# See what changed since your last commit
+git diff
+
+# See a summary of changed files
+git diff --stat
+```
+
+You are looking for:
+- Hardcoded secrets that should be environment variables
+- New dependencies you did not ask for
+- Changes to files you did not expect to change
+- Code that handles user input without validation
+- Database queries built with string concatenation (a sign of SQL injection risk)
+
+```
+> Show me a summary of all changes since the last commit
+  and flag anything that might be a security concern.
+```
+
+<Callout variant="info" title="Diff Before You Commit">
+Make this a habit: run `git diff` before every `git commit`. It takes 30 seconds and catches problems before they become part of your history. Once something is committed and pushed, it is much harder to fully remove.
+</Callout>
+
+### Rule 5: Commit Often, Revert Freely
+
+Git is your safety net. Commit every time something works. If the next change breaks something, you can revert to the working state instantly.
+
+```bash
+# The safe workflow:
+git add .
+git commit -m "Working state: projects page loads from database"
+
+# Now make a risky change...
+# If it breaks:
+git checkout .
+# You are back to the working state. No damage done.
+```
+
+The opposite of this -- making many changes without committing -- is dangerous. If you go an hour without committing and something breaks, you have to manually figure out what went wrong across dozens of changes. Commit often, and each revert is surgical.
+
+## API Keys: A Deep Dive
+
+API keys deserve special attention because they are the most commonly exposed secret. Let us make sure you understand them completely.
+
+### What Is an API Key?
+
+An API key is like a password for a service. It proves to Supabase, or Claude, or Vercel, or any other service that you are who you say you are. Anyone who has your key can use the service as you, and you get billed for their usage.
+
+### Where API Keys Go
+
+| Where | Safe? | Details |
+|---|---|---|
+| `.env.local` | Yes | Local development, not committed to Git |
+| Vercel dashboard | Yes | Production environment, encrypted storage |
+| Source code files | **NO** | Will be committed to Git and exposed |
+| Git history | **NO** | Even deleted keys persist in history |
+| Chat messages | **NO** | Do not paste keys into Claude conversations |
+| `.env.example` | **NO** | Only placeholder text, never real values |
+
+### What to Do If You Expose a Key
+
+It happens. Even experienced developers accidentally commit a secret. The response needs to be immediate:
+
+1. **Revoke the key immediately.** Go to the service's dashboard and delete or rotate the key. This prevents anyone from using it, even if they found it.
+2. **Generate a new key.** Create a replacement and update your `.env.local` and Vercel dashboard.
+3. **Remove it from Git history.** This is advanced, but important for public repositories. Tools like `git filter-branch` or BFG Repo Cleaner can help.
+4. **Check for unauthorized usage.** Review the service's usage logs for activity you did not perform.
+
+<HandsOnExercise title="Security Audit Your Project">
+
+Run through this audit on your current project. Do not skip any step.
+
+1. **Check for exposed secrets in code:**
+
+```bash
+# Search for common secret patterns in your code
+grep -r "sk-" src/ --include="*.ts" --include="*.tsx"
+grep -r "eyJ" src/ --include="*.ts" --include="*.tsx"
+grep -r "password" src/ --include="*.ts" --include="*.tsx"
+```
+
+If any of these return actual secret values (not `process.env` references), fix them immediately.
+
+2. **Verify .gitignore:**
+
+```bash
+cat .gitignore
+```
+
+Confirm these entries exist:
+```
+.env
+.env.local
+.env*.local
+node_modules/
+```
+
+3. **Run npm audit:**
+
+```bash
+npm audit
+```
+
+This checks all your installed packages for known security vulnerabilities. If it finds any:
+
+```bash
+# Automatically fix what it can
+npm audit fix
+
+# For remaining issues, review them manually
+npm audit
+```
+
+4. **Check your Git history for secrets:**
+
+```bash
+# Search recent commits for potential secrets
+git log --all --oneline -20
+git diff HEAD~5..HEAD
+```
+
+5. **Verify environment variables:**
+
+```bash
+# Make sure .env.local exists and has your secrets
+ls -la .env.local
+
+# Make sure .env.local is NOT tracked by Git
+git status
+```
+
+If `.env.local` appears in the Git status output (not as ignored), you have a problem. Add it to `.gitignore` immediately.
+
+</HandsOnExercise>
+
+## The npm audit Command
+
+When you install packages with npm, you are trusting code written by thousands of different developers. Most of it is excellent. Some of it has vulnerabilities.
+
+`npm audit` is your scanner. It checks every package in your project against a database of known vulnerabilities and tells you what needs attention.
+
+```bash
+# Run the audit
+npm audit
+
+# Example output:
+# found 3 vulnerabilities (1 moderate, 2 high)
+# Run `npm audit fix` to fix them, or `npm audit` for details
+```
+
+The severity levels are:
+- **Low**: Minor issues, fix when convenient
+- **Moderate**: Should fix before deploying
+- **High**: Fix before deploying, these are serious
+- **Critical**: Fix immediately, stop what you are doing
+
+```bash
+# Fix automatically where possible
+npm audit fix
+
+# If some issues require major version updates:
+npm audit fix --force
+```
+
+<WarningBox>
+The `--force` flag can introduce breaking changes by upgrading to major new versions of packages. Use it carefully, and test your app afterward. If things break, revert with `git checkout .` and address the vulnerabilities manually.
+</WarningBox>
+
+<TipBox>
+Make `npm audit` part of your routine. Run it once a week, or every time you install a new package. You can also ask Claude Code to help: "Run npm audit and help me fix any vulnerabilities."
+</TipBox>
+
+## The Security Deployment Checklist
+
+Before you deploy anything to the internet, walk through this checklist. Every item should be checked.
+
+<Callout variant="warning" title="Pre-Deployment Security Checklist">
+
+**Secrets:**
+- .env.local file exists and contains all secrets
+- .env.local is listed in .gitignore
+- No API keys, tokens, or passwords in any code file
+- No secrets in any commit in your Git history
+- Environment variables are set in your deployment platform (Vercel)
+- .env.example exists with placeholder values (no real secrets)
+
+**Dependencies:**
+- `npm audit` shows no high or critical vulnerabilities
+- You can explain what every installed package does
+- No unnecessary packages are installed
+
+**Code quality:**
+- All user inputs are validated (forms, URL parameters, etc.)
+- Database queries use parameterized statements (not string concatenation)
+- You have reviewed the AI-generated code, not just accepted it blindly
+- Error messages do not expose internal details to users
+
+**Infrastructure:**
+- HTTPS is enabled (Vercel handles this automatically)
+- Database has Row Level Security enabled
+- Service role keys are NEVER used in frontend code
+- Admin endpoints (if any) require authentication
+
+</Callout>
+
+## Building Security Habits
+
+Security is not a one-time task. It is a set of habits that become automatic with practice. Here are the habits to build:
+
+**Before every commit:**
+```bash
+git diff          # Review what changed
+git status        # Check no secret files are staged
+```
+
+**Before every deployment:**
+```bash
+npm audit         # Check for vulnerable packages
+```
+
+**When installing new packages:**
+```
+> Before installing this package, are there any known security
+  concerns with it? Is it actively maintained?
+```
+
+**When Claude Code modifies sensitive files:**
+```
+> Show me exactly what changed in the API route and confirm
+  no secrets are hardcoded.
+```
+
+<ExpandableSection title="What about authentication and authorization?">
+Authentication (who are you?) and authorization (what can you do?) are larger topics that deserve their own lesson. For now, the key principles are: never store passwords in plain text, use established authentication libraries (like NextAuth.js or Supabase Auth) instead of building your own, and always check permissions on the server side, not just the client side.
+</ExpandableSection>
+
+<ExpandableSection title="What if npm audit shows vulnerabilities I cannot fix?">
+Sometimes vulnerabilities exist in sub-dependencies (packages your packages depend on) and `npm audit fix` cannot resolve them. In these cases: check if the vulnerability applies to how you use the package (many are theoretical risks for your use case), look for alternative packages that do the same thing without the vulnerability, or pin to a specific version and monitor for updates. You can also ask Claude Code to help evaluate the risk.
+</ExpandableSection>
+
+<ExpandableSection title="How do I scan Git history for accidentally committed secrets?">
+Tools like `git-secrets` (by AWS) and `truffleHog` scan your entire Git history for patterns that look like API keys, tokens, or passwords. Install them as pre-commit hooks so they run automatically:
+
+```bash
+# Install git-secrets
+brew install git-secrets   # macOS
+git secrets --install       # in your repo
+git secrets --register-aws  # adds AWS key patterns
+```
+
+This prevents accidental commits of secrets before they happen.
+</ExpandableSection>
+
+## The Security Mindset
+
+The most important thing this lesson teaches is not any specific command or tool. It is a mindset. Every time you build something, a small voice in the back of your head should ask:
+
+- "What happens if someone sees this code on GitHub?"
+- "What happens if someone sends unexpected input to this form?"
+- "What happens if this API key gets exposed?"
+- "Do I understand what this code does before I ship it?"
+
+That voice is your security instinct. It gets stronger with practice. And it is the difference between building something that works and building something that is safe.
+
+---
+
+<PawPrintCheck items={[
+  "What are the 5 security rules, and can you explain each one in a sentence?",
+  "Where should API keys be stored, and where should they NEVER be stored?",
+  "What does npm audit do, and how often should you run it?",
+  "What should you do immediately if you accidentally commit a secret to GitHub?",
+  "Why is reviewing AI-generated code important even if it works correctly?"
+]} />
+
+<NextUp
+  title="The Agentic Landscape"
+  href="/summit/the-agentic-landscape"
+  description="Move beyond single tools into multi-agent systems, orchestration patterns, and the future of AI-assisted development."
+/>

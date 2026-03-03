@@ -1,0 +1,300 @@
+# Projects & Knowledge
+
+<LessonObjective items={[
+  "Create and organize Projects in Claude",
+  "Upload documents to build a knowledge base",
+  "Write effective custom instructions that shape every response",
+  "Understand the 200K context window and how to use it wisely"
+]} />
+
+In the last lesson, you set up Claude Desktop and had your first conversation. That was great, but here is the problem: every time you start a new conversation, Claude starts from scratch. It does not know who you are, what you are working on, or how you like things done. You have to explain everything over and over again.
+
+Projects fix that. They give Claude persistent memory about a specific area of your work. Think of a Project as a briefing folder you hand to Claude before every conversation: "Here is who I am, here is what we are working on, and here are the documents you need."
+
+This is where Claude goes from "helpful chatbot" to "knowledgeable assistant who understands your world."
+
+## What Is a Project?
+
+A Project in Claude is a container that holds three things:
+
+1. **Custom Instructions** -- persistent rules and context that apply to every conversation in the Project
+2. **Knowledge Base** -- documents you upload that Claude can reference
+3. **Conversations** -- all the chats you have within this Project
+
+When you start a conversation inside a Project, Claude automatically has access to the custom instructions and knowledge base. You do not need to re-explain anything.
+
+<KeyVocabulary terms={[
+  { term: "Project", definition: "A workspace in Claude that bundles custom instructions, uploaded documents, and conversations together. Everything inside a Project shares the same context." },
+  { term: "Custom Instructions", definition: "Persistent text that tells Claude how to behave in every conversation within a Project. Think of it as a standing briefing." },
+  { term: "Knowledge Base", definition: "Documents you upload to a Project. Claude can read and reference these in any conversation within that Project." },
+  { term: "Context Window", definition: "The total amount of text Claude can process at once. Claude's context window is 200K tokens, roughly equivalent to 500 pages of text." }
+]} />
+
+## Creating Your First Project
+
+Let's create a Project right now. This will be your personal workspace for learning.
+
+<HandsOnExercise title="Create a Learning Project">
+1. Open Claude Desktop (or claude.ai)
+2. Look for the **Projects** section in the left sidebar
+3. Click the **+** or **New Project** button
+4. Name it "My AI Learning Lab"
+5. Add a description: "My workspace for learning AI tools and techniques"
+6. Click **Create**
+
+You now have an empty Project. Let's fill it up.
+</HandsOnExercise>
+
+### Adding Custom Instructions
+
+Custom instructions are the secret weapon of Projects. They tell Claude who you are, what you need, and how you want responses formatted. Every single conversation in the Project will follow these instructions.
+
+Click on the Project settings (usually a gear icon or the Project name) and find the **Custom Instructions** field. Here is a template to get you started:
+
+```
+## About Me
+- Name: [Your name]
+- Role: [Your role, e.g., "Product Manager at a startup"]
+- Experience with AI: Beginner, currently learning
+- Main tools I use: [e.g., "Notion, Linear, Google Docs, Slack"]
+
+## How I Want Responses
+- Use plain language, avoid jargon unless you explain it
+- Give concrete examples, not abstract theory
+- When I ask for help with a task, break it into steps
+- If you are unsure about something, say so
+- Keep responses concise unless I ask for detail
+
+## Current Focus
+- Learning to use Claude effectively
+- Building AI-enhanced workflows
+- Following the Haku's Playground curriculum
+```
+
+This is a starting point. You will refine these instructions over time as you learn what works best for you.
+
+<Callout variant="tip" title="The Custom Instructions Sweet Spot">Custom instructions should be specific enough to be useful but general enough to apply to every conversation in the Project. Think "standing orders" not "one-time request." If you find yourself repeating something in every conversation, it probably belongs in your custom instructions.</Callout>
+
+## Uploading Documents to Your Knowledge Base
+
+This is where things get powerful. You can upload documents to your Project, and Claude will be able to reference them in every conversation. This means you can give Claude your company's style guide, your project roadmap, technical documentation, meeting notes, or anything else relevant to your work.
+
+### What Can You Upload?
+
+Claude accepts a variety of file formats:
+
+- **PDF** files (reports, papers, documentation)
+- **Text** files (.txt, .md, .csv)
+- **Code** files (.py, .js, .ts, .html, .css, and many more)
+- **Documents** (.docx)
+- **Images** (Claude can analyze images too)
+
+### How Much Can You Upload?
+
+Here is where the 200K context window comes in. Claude can process approximately **200,000 tokens** at once. In practical terms:
+
+- 1 token is roughly 3/4 of a word
+- 200K tokens is approximately **150,000 words**
+- That is roughly **500 pages** of standard text
+
+This is a lot. You can upload an entire book, a full codebase, or months of meeting notes and Claude can work with all of it in a single conversation.
+
+<WarningBox>While 200K tokens is generous, there are practical limits. Uploading 500 pages does not mean Claude will remember every detail perfectly. Like a person reading a long document, Claude is better at recalling information that is recent, prominent, or directly relevant to your question. For best results, upload the most relevant documents rather than everything you have.</WarningBox>
+
+<HandsOnExercise title="Upload Your First Document">
+1. Open your "My AI Learning Lab" Project
+2. Find the **Knowledge** or **Project Knowledge** section
+3. Click **Upload** or drag a file into the area
+4. Upload something you are currently working with. Ideas:
+   - A document you wrote recently
+   - A set of notes from a meeting
+   - A style guide or template you use
+   - Even just a plain text file with your job description
+5. Once uploaded, start a new conversation in the Project
+6. Ask Claude: "What documents do you have access to? Summarize what you know about my uploaded files."
+</HandsOnExercise>
+
+## Organizing Multiple Projects
+
+As you get comfortable with Projects, you will want more than one. Here is a structure that works well for most people:
+
+### By Work Area
+
+- **"Product Work"** -- PRDs, specs, roadmap docs, product custom instructions
+- **"Writing"** -- Style guide, brand voice docs, writing-specific instructions
+- **"Learning"** -- Course materials, notes, learning-focused instructions
+- **"Personal"** -- Personal tasks, planning, general assistance
+
+### By Client or Project
+
+If you work with multiple clients or on distinct projects:
+
+- **"Client A - Website Redesign"** -- Brand guidelines, sitemap, requirements
+- **"Client B - Marketing Campaign"** -- Campaign brief, audience research, past campaigns
+
+The key is that each Project has a clear purpose and its own set of relevant documents and instructions.
+
+<TipBox>You do not need to create all your Projects at once. Start with one or two and add more as your needs become clear. Projects are free to create and you can always reorganize later.</TipBox>
+
+## Writing Effective Custom Instructions
+
+Let's go deeper on custom instructions, because this is the single most impactful thing you can do to improve your Claude experience.
+
+### The Three Layers
+
+Think of custom instructions as having three layers:
+
+**Layer 1: Identity** -- Who you are and what you do.
+
+```
+I'm a frontend developer at a mid-size SaaS company.
+I work primarily with React, TypeScript, and Tailwind CSS.
+I've been coding for 3 years.
+```
+
+**Layer 2: Preferences** -- How you want Claude to respond.
+
+```
+- Write code in TypeScript, never JavaScript
+- Use functional components, not class components
+- Prefer Tailwind over CSS modules
+- Explain your reasoning when making architectural decisions
+- When showing code, include the file path as a comment at the top
+```
+
+**Layer 3: Context** -- What you are working on right now.
+
+```
+Current project: Customer dashboard redesign
+Tech stack: Next.js 14, Supabase, Tailwind CSS
+Key constraint: Must support mobile viewports
+Timeline: MVP due in 3 weeks
+```
+
+When all three layers work together, Claude's responses feel like they come from a colleague who has been on your team for months.
+
+### Common Mistakes
+
+**Too vague:** "Be helpful and give good answers." This tells Claude nothing it does not already know.
+
+**Too restrictive:** "Never use bullet points. Always write exactly 3 paragraphs. Never use the word 'however.'" This leads to awkward, constrained responses.
+
+**Too long:** Custom instructions that run thousands of words can actually dilute the most important parts. Aim for 200-500 words.
+
+<ExpandableSection title="Example: Custom Instructions for a Marketing Manager">
+Here is a complete example of well-crafted custom instructions:
+
+**About Me:**
+I'm Sarah, a Marketing Manager at a B2B SaaS startup (50 employees). I manage our content calendar, email campaigns, and social media. I report to the VP of Marketing.
+
+**My Tools:**
+- HubSpot for email and CRM
+- Notion for content planning
+- Figma for quick graphics
+- LinkedIn and Twitter for social
+
+**Response Preferences:**
+- Use a professional but approachable tone (we are B2B but not boring)
+- When writing copy, match our brand voice: confident, clear, slightly witty
+- For email campaigns, always suggest a subject line and preview text
+- Structure longer content with headers and short paragraphs
+- Include CTAs (calls to action) in marketing content by default
+
+**Current Context:**
+- Launching a new analytics feature in 4 weeks
+- Target audience: VP/Director-level ops leaders at mid-market companies
+- Key messaging angle: "See what's actually happening, not what you hope is happening"
+- Q1 goal: 500 MQLs from content marketing
+</ExpandableSection>
+
+## The 200K Context Window in Practice
+
+Let's make the 200K context window concrete. Here is what fits and what does not.
+
+### What Fits Comfortably
+
+- A 50-page technical specification
+- An entire codebase for a small to medium application
+- 6 months of weekly meeting notes
+- A full book manuscript
+- 100+ pages of API documentation
+
+### What Might Not Fit
+
+- An entire large enterprise codebase (millions of lines of code)
+- Years of chat logs or email archives
+- Multiple books at once
+- Very large datasets (use a database for that)
+
+### Practical Strategy
+
+You do not need to use all 200K tokens at once. Here is a better approach:
+
+1. **Put permanent context in custom instructions** (200-500 words)
+2. **Upload your most-referenced documents to the knowledge base** (the ones you would keep on your desk)
+3. **Attach additional files per-conversation** when needed for specific tasks
+4. **Summarize and archive** old documents rather than keeping everything loaded
+
+<Callout variant="info" title="Token Math">A quick way to estimate tokens: take your word count and multiply by 1.3. So a 10,000-word document is roughly 13,000 tokens. With a 200K limit, you could fit about 15 such documents plus your custom instructions and conversation history.</Callout>
+
+## Real-World Use Case: The Documentation Project
+
+Let's walk through a practical example. Imagine you are a product manager and you want Claude to help you write a feature specification.
+
+1. **Create a Project** called "Product Specs"
+2. **Custom instructions:**
+   - "I'm a PM at [company]. Our specs follow a standard format: Problem Statement, User Stories, Requirements (P0/P1/P2), Success Metrics, Open Questions."
+   - "When writing specs, always start with the user problem, not the solution."
+   - "Reference our product principles document when making trade-off recommendations."
+3. **Upload to knowledge base:**
+   - Your product principles document
+   - Your spec template
+   - Two or three examples of good specs your team has written
+   - Your current product roadmap
+4. **Start a conversation:**
+   - "I need to write a spec for adding CSV export to the dashboard. Users have been requesting this in support tickets. Here are the top 5 tickets: [paste them]"
+
+Claude now has everything it needs: your format, your principles, examples of good specs, your roadmap for context, and the specific user feedback. The resulting spec will be dramatically better than what you would get from a cold-start conversation.
+
+<HandsOnExercise title="Build a Real Project">
+1. Think about a recurring task in your work (writing reports, answering questions, drafting emails, etc.)
+2. Create a new Project named for that task
+3. Write custom instructions with all three layers (identity, preferences, context)
+4. Upload at least one relevant document (a template, example, or reference)
+5. Start a conversation and give Claude a real task
+6. Compare the quality of the response to what you would get without the Project context
+</HandsOnExercise>
+
+## Sharing and Collaboration
+
+If you are on a Team or Enterprise plan, Projects can be shared with your team. This means:
+
+- Everyone on the team gets the same custom instructions
+- The knowledge base is shared (no more "did you read the brief?")
+- Conversations remain private to each person
+- Admins can manage permissions
+
+Even if you are on an individual plan, you can share the concept. Write up your custom instructions in a document and share it with colleagues so they can create similar Projects on their own accounts.
+
+## Tips for Project Maintenance
+
+Projects are not "set and forget." Here are some habits that keep them useful:
+
+- **Review custom instructions monthly.** Your role, priorities, and preferences evolve.
+- **Rotate knowledge base documents.** Remove outdated docs, add new ones.
+- **Archive old conversations.** They still count against your storage.
+- **Start fresh conversations** when you shift to a new subtopic. Don't let conversations sprawl endlessly.
+
+<PawPrintCheck items={[
+  "Can you create a new Project and add custom instructions?",
+  "Do you understand the three layers of effective custom instructions (identity, preferences, context)?",
+  "Have you uploaded at least one document to a Project's knowledge base?",
+  "Can you explain what 200K tokens means in practical terms?",
+  "Do you know when to put information in custom instructions vs. the knowledge base vs. the conversation?"
+]} />
+
+<NextUp
+  title="Connectors: Plugging In Your World"
+  href="/easy-trail/connectors"
+  description="Connect Claude to your existing tools like Linear, Notion, Slack, and Google Drive for seamless workflows."
+/>

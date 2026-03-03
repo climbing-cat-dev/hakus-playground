@@ -1,0 +1,259 @@
+# Your Daily Workflow
+
+<LessonObjective items={[
+  "Design a personal AI-enhanced workflow that fits your actual work",
+  "Integrate Claude with your documentation tool for a connected system",
+  "Build daily routines that leverage AI at the right moments",
+  "Know when to use AI and when to do things yourself"
+]} />
+
+You have come a long way on this trail. You set up Claude Desktop, created Projects with custom instructions, connected cloud services with Connectors, and wired up local tools with MCP servers. You have all the pieces. Now it is time to assemble them into something that actually helps you every day.
+
+This lesson is different from the others. It is less about learning a new tool and more about building a system. A system that fits into your real workday, not a theoretical "ideal workflow" that falls apart the moment you get busy.
+
+The goal is simple: by the end of this lesson, you will have a daily workflow where Claude is a natural extension of how you already work. Not a novelty you open occasionally, but a tool you reach for instinctively, like your keyboard or your notebook.
+
+## The Foundation: Claude + Your Documentation Tool
+
+Every effective AI workflow needs a hub. A place where your thinking lives, where Claude's outputs land, and where you can find things later. For most people, this is their documentation tool: Notion, Obsidian, Google Docs, or even plain text files.
+
+Here is why the documentation tool matters so much: Claude's conversations are ephemeral. Yes, they are saved in your history, but searching through dozens of conversations to find that one insight from last Tuesday is painful. Your documentation tool is where the good stuff gets captured permanently.
+
+### The Integration Pattern
+
+The most effective pattern looks like this:
+
+1. **Think** in your documentation tool (outline, brain dump, rough notes)
+2. **Process** with Claude (refine, expand, restructure, analyze)
+3. **Capture** back in your documentation tool (save the useful output)
+4. **Iterate** (go back to step 2 when needed)
+
+This creates a loop where your documentation tool is the system of record and Claude is the engine that accelerates your thinking.
+
+<Callout variant="tip" title="Pick One Tool and Commit">If you are not sure which documentation tool to use, just pick one and commit to it for 30 days. Notion is great if you like databases and structure. Obsidian is great if you like markdown and local files. Google Docs is great if you collaborate heavily. The specific tool matters less than having one at all.</Callout>
+
+### Setting Up the Connection
+
+Depending on your documentation tool, you have different options:
+
+**Notion users:** Use the Notion Connector (covered in the Connectors lesson). Claude can read and search your Notion workspace directly. Create a "Claude Outputs" database in Notion to capture useful results.
+
+**Obsidian users:** Use the Obsidian MCP server (covered in the MCP lesson). Claude can read your vault and even create new notes. Set up a "Claude" folder in your vault for AI-generated content.
+
+**Google Docs users:** Use the Google Drive Connector. Claude can read your docs and you can copy outputs directly into new documents.
+
+**Plain text / Markdown users:** Use the filesystem MCP server pointed at your notes directory. Simple but effective.
+
+<HandsOnExercise title="Set Up Your Hub">
+1. Choose your documentation tool (or confirm the one you already use)
+2. Create a dedicated space for AI-related outputs:
+   - Notion: Create a database called "AI Workspace"
+   - Obsidian: Create a folder called "AI-Assisted"
+   - Google Docs: Create a folder called "Claude Outputs"
+3. Make sure Claude can access it (via Connector or MCP server)
+4. Test the connection: ask Claude to find or read something from your documentation tool
+5. Save a Claude output to your new space manually to practice the capture step
+</HandsOnExercise>
+
+## Building Your Morning Routine
+
+The most productive Claude users have built AI into specific moments of their day. Here is a morning routine template you can adapt:
+
+### The Daily Kickoff (10 minutes)
+
+When you sit down to start your day, open Claude and your documentation tool side by side. Then:
+
+**1. Review and orient (3 minutes)**
+
+Open your task manager or project board. Ask Claude:
+
+> "Here are my tasks for today: [paste or reference your task list]. Help me prioritize. Which should I tackle first based on urgency and my energy levels in the morning vs. afternoon?"
+
+This is not about blindly following Claude's advice. It is about having a quick conversation that forces you to think about your priorities before you start reacting to emails and messages.
+
+**2. Prepare for the hard task (5 minutes)**
+
+Pick your most important task for the day. Use Claude to get a head start:
+
+- If it is **writing:** "Help me outline this blog post about [topic]. I want to cover [key points]."
+- If it is **analysis:** "Here is the data from [source]. What are the key trends and what questions should I be asking?"
+- If it is **planning:** "I need to plan [project/event]. What are the key milestones and what am I likely forgetting?"
+- If it is **communication:** "I need to draft an email to [person] about [topic]. The tone should be [professional/casual/urgent]."
+
+**3. Capture the plan (2 minutes)**
+
+Take whatever Claude produced and put it in your documentation tool. This is your starting point for the task. You will refine it as you work.
+
+<TipBox>The morning routine does not need to be exactly 10 minutes or follow this exact structure. The point is having a consistent moment where you use Claude to prepare for your day. Adapt it to your schedule and role.</TipBox>
+
+## Throughout the Day: When to Reach for Claude
+
+Not every task needs AI. Learning when to use Claude and when not to is one of the most important skills you can develop. Here is a practical framework.
+
+### Reach for Claude When...
+
+**You are staring at a blank page.** Claude is exceptional at getting you past the "blank page" problem. Whether it is a document, an email, a plan, or a piece of code, getting that first draft out of Claude and then editing is almost always faster than starting from scratch.
+
+**You need to process information.** Summarizing long documents, extracting key points from meeting notes, comparing options, analyzing data. Claude is fast and thorough at information processing.
+
+**You are doing something repetitive.** Formatting data, writing similar emails, converting between formats, generating variations. If you are doing the same type of task more than twice, Claude can probably help.
+
+**You need a sounding board.** Sometimes you just need to talk through an idea. Claude is patient, available, and will not judge your half-formed thoughts. Use it to think out loud.
+
+**You are learning something new.** Claude is an excellent teacher. It can explain concepts at whatever level you need, provide examples, and answer follow-up questions without getting frustrated.
+
+### Do NOT Reach for Claude When...
+
+**The task requires lived experience.** Claude does not know your company's politics, your team's dynamics, or the unwritten rules of your industry. Use your own judgment for decisions that require institutional knowledge.
+
+**You need guaranteed accuracy.** Claude can hallucinate. For anything where being wrong has serious consequences, like legal advice, medical decisions, financial calculations, or safety-critical systems, always verify Claude's output independently.
+
+**You are procrastinating.** Be honest with yourself. Sometimes "I should ask Claude about this" is just a way to avoid doing the actual work. If you catch yourself spending more time prompting than producing, close Claude and just do the thing.
+
+**The task is faster to just do.** If it takes 30 seconds to write a quick reply, do not spend 2 minutes crafting a prompt to have Claude write it. Use Claude for tasks where the setup time is worth the acceleration.
+
+**You need real-time or private information.** Claude does not have access to the internet by default, does not know today's news, and should not be given highly sensitive personal information (SSNs, passwords, etc.).
+
+<WarningBox>A common trap for new AI users is becoming dependent on Claude for everything. This actually makes you less capable over time. Use Claude to accelerate the things you are already good at and to help you learn things you want to get good at. Do not use it as a crutch that prevents you from developing your own skills.</WarningBox>
+
+## The Afternoon Check-in
+
+Around midday or early afternoon, take 5 minutes for a quick Claude check-in:
+
+**1. Process the morning's work**
+
+If you had meetings, paste your notes into Claude:
+
+> "Here are my notes from this morning's meetings. Summarize the key decisions, action items assigned to me, and any open questions I need to follow up on."
+
+Capture the summary in your documentation tool.
+
+**2. Unblock yourself**
+
+If you are stuck on something, this is a good time to ask Claude for help. Frame it clearly:
+
+> "I'm trying to [do this thing]. I've tried [these approaches]. I'm stuck because [specific problem]. What should I try next?"
+
+**3. Prepare for the afternoon**
+
+Quick scan of your remaining tasks. Any that Claude can help with? Set up the conversation now so you can jump right in.
+
+## The End-of-Day Capture (5 minutes)
+
+This is the most underrated part of the workflow. Before you close your laptop:
+
+**1. Summarize the day**
+
+> "Here is what I worked on today: [brief list]. Summarize my progress and identify any loose ends I should pick up tomorrow."
+
+**2. Prepare tomorrow's context**
+
+> "Based on what I accomplished today and what is still pending, what should my top 3 priorities be tomorrow?"
+
+**3. Save to your documentation tool**
+
+Capture the summary and tomorrow's priorities. When you sit down tomorrow morning, you have a head start.
+
+<HandsOnExercise title="Build Your First Daily Routine">
+1. Write down your current morning routine (even if it is just "open email and react")
+2. Identify one moment where Claude could add value (prioritization, drafting, or preparation)
+3. Create a Claude Project called "Daily Workflow" with custom instructions about your role and typical tasks
+4. Tomorrow morning, try the Daily Kickoff routine described above
+5. At the end of the day, do the End-of-Day Capture
+6. After 3 days, evaluate: what worked? What felt forced? Adjust accordingly.
+</HandsOnExercise>
+
+## Project-Specific Workflows
+
+Beyond your daily routine, you will develop workflows for specific types of projects. Here are templates for common scenarios:
+
+### Writing Projects
+
+1. **Outline** in your documentation tool
+2. **Expand** with Claude: "Here is my outline. Draft the first section."
+3. **Edit** the output yourself (this is critical; never publish raw Claude output)
+4. **Iterate** with Claude on problem sections: "This paragraph feels clunky. Rewrite it to be more conversational."
+5. **Finalize** in your documentation tool
+
+### Research and Analysis
+
+1. **Define the question** clearly
+2. **Gather sources** and upload or connect them to Claude
+3. **Ask Claude to analyze:** "Compare these three approaches based on [criteria]"
+4. **Challenge the output:** "What are the weaknesses of your analysis? What am I missing?"
+5. **Synthesize** the final answer in your documentation tool
+
+### Communication and Emails
+
+1. **Draft with context:** "I need to email [person] about [topic]. They are [context about the relationship/situation]."
+2. **Review** Claude's draft critically
+3. **Adjust tone:** "Make this more direct" or "Soften the second paragraph"
+4. **Send** from your actual email client (do not let Claude send emails for you)
+
+<ExpandableSection title="Example: A Product Manager's Daily Workflow">
+Here is how a product manager might structure their day with Claude:
+
+**Morning (10 min):**
+- Open Claude with the "Product Work" Project active
+- "Pull up my open Linear issues and summarize what is in progress, blocked, or needs my attention"
+- "Based on this week's sprint goal, what should I focus on today?"
+- Save the plan to Notion
+
+**Mid-morning:**
+- Before a stakeholder meeting: "Here is the feature spec. Generate 5 questions a skeptical VP might ask and suggest answers for each."
+- After the meeting: "Here are my notes. Extract action items and draft follow-up emails for each stakeholder."
+
+**Afternoon:**
+- Writing a PRD: "Here is the user problem and the research. Draft a Problem Statement section following our spec template."
+- Reviewing engineering proposals: "Here is the technical proposal. Summarize it in non-technical language and flag any risks to the timeline."
+
+**End of day (5 min):**
+- "Summarize what I accomplished today and what carries over to tomorrow."
+- Update the Notion daily log
+</ExpandableSection>
+
+## Measuring Your Workflow's Effectiveness
+
+After a week of using your new workflow, ask yourself these questions:
+
+- **Am I spending less time on blank-page problems?** If Claude is helping you get started faster, the workflow is working.
+- **Am I capturing useful outputs?** If your documentation tool is filling up with valuable content, great. If it is empty, you are not completing the loop.
+- **Am I using Claude for the right things?** If you notice yourself using Claude for trivial tasks, recalibrate toward higher-value work.
+- **Is the quality of my work improving?** Not just speed, but quality. Better writing, more thorough analysis, fewer missed details.
+- **Do I feel more capable or less capable?** The right answer is more. If you feel dependent, pull back and do more things manually.
+
+<Callout variant="tip" title="The 80/20 Rule of AI Workflows">You will find that about 20% of your Claude usage produces 80% of the value. Pay attention to which tasks benefit most from AI assistance and double down on those. Do not try to force Claude into every corner of your work.</Callout>
+
+## What You Have Built
+
+Let's zoom out and appreciate the full system you have assembled across this trail:
+
+1. **Claude Desktop** installed and configured
+2. **Projects** with custom instructions and knowledge bases for different areas of your work
+3. **Connectors** piping in live data from your cloud tools
+4. **MCP servers** connecting your local files and tools
+5. **A daily workflow** that ties it all together into a practical routine
+
+This is not just a set of tools. It is an AI-enhanced working environment that understands your context, connects to your world, and fits into your actual day. Most people never get this far. You did.
+
+<PawPrintCheck items={[
+  "Do you have a documentation tool connected to Claude (via Connector or MCP)?",
+  "Can you describe your morning routine with Claude in 3 steps or fewer?",
+  "Do you know the difference between tasks that benefit from AI and tasks that do not?",
+  "Have you captured at least one Claude output in your documentation tool?",
+  "Can you explain the Think > Process > Capture > Iterate loop?"
+]} />
+
+## What Comes Next
+
+The Easy Trail focused on Claude as a conversational assistant, enhanced with Projects, Connectors, and MCP. You have built a workflow where Claude helps you think, write, analyze, and organize.
+
+The Medium Trail takes a different path. Instead of just talking to Claude, you will start building with it. You will learn about Claude Code, a terminal-native coding tool that can create entire applications. You will learn Git and GitHub for version control. You will build and deploy your first real app.
+
+You do not need to be a programmer to follow the Medium Trail. That is the whole point: Claude Code makes building accessible to anyone willing to learn. But it is a step up in complexity, and everything you learned here (prompting, Projects, context management) will serve you well.
+
+<NextUp
+  title="Claude Code & Your IDE"
+  href="/medium-trail/claude-code-and-ide"
+  description="Step into the Medium Trail and learn how Claude Code brings agentic AI to your terminal and code editor."
+/>

@@ -1,0 +1,314 @@
+# The Agentic Landscape
+
+<LessonObjective items={[
+  "Understand what multi-agent systems are and why they matter",
+  "Learn the core orchestration patterns: sequential, parallel, and supervisor",
+  "Explore how agent crews collaborate to solve complex problems",
+  "See real-world examples of agentic architectures in production"
+]} />
+
+Welcome to the Summit trail. If you have made it here, you have already built a strong foundation in AI fundamentals, prompt engineering, and working with language models. Now we are going to push into the frontier: **multi-agent systems** -- the architectural pattern that is reshaping how we build intelligent applications.
+
+A single LLM call is powerful. But a single agent, acting alone, hits limits fast. What happens when you need an AI system that can research a topic, write code, test it, review the results, and iterate? That is where multi-agent systems come in.
+
+## What Is an Agent, Really?
+
+Before we talk about *multi*-agent systems, let us nail down what we mean by a single agent. An agent is more than a prompt plus an LLM. An agent is:
+
+- **An LLM** as the reasoning core
+- **A set of tools** the LLM can invoke (APIs, databases, file systems, code execution)
+- **A loop** that allows the LLM to observe results, reason, and take further action
+- **Memory** (short-term context and optionally long-term storage)
+
+The key difference between a chatbot and an agent is that **agents take actions in a loop**. A chatbot responds once. An agent keeps going until the task is done.
+
+```python
+# Pseudocode for a basic agent loop
+while not task_complete:
+    observation = gather_context(tools, memory)
+    thought = llm.reason(observation, goal)
+    action = llm.choose_action(thought, available_tools)
+    result = execute(action)
+    memory.update(result)
+```
+
+<KeyVocabulary terms={[
+  { term: "Agent", definition: "An LLM-powered system that can reason, use tools, and take autonomous action in a loop to accomplish goals." },
+  { term: "Tool Use", definition: "The ability of an agent to call external functions -- APIs, databases, search engines, code interpreters -- as part of its reasoning process." },
+  { term: "Orchestration", definition: "The pattern by which multiple agents coordinate, communicate, and delegate work to solve complex tasks." },
+  { term: "Agent Crew", definition: "A group of specialized agents that collaborate under a defined structure to complete a multi-step workflow." }
+]} />
+
+## Why Multi-Agent Systems?
+
+Imagine you are building an AI-powered code review system. A single agent could technically do it all: read the PR, check for bugs, evaluate style, suggest improvements, and write a summary. But cramming all of that into one agent creates problems:
+
+- **Context window overload** -- one agent trying to hold everything in memory
+- **Conflicting instructions** -- the "be thorough" directive fights with "be concise"
+- **No specialization** -- a jack-of-all-trades agent is master of none
+- **Hard to debug** -- when something goes wrong, where do you look?
+
+Multi-agent systems solve this by applying a principle you already know from software engineering: **separation of concerns**. Each agent has a focused role, a clear set of tools, and a defined scope.
+
+<Callout variant="info" title="The Microservices Analogy">
+Think of multi-agent systems like microservices architecture. Just as monolithic apps evolved into specialized services communicating over APIs, monolithic prompts are evolving into specialized agents communicating through orchestration layers.
+</Callout>
+
+## Orchestration Patterns
+
+There are three foundational patterns for organizing multi-agent systems. Most real-world architectures are combinations of these.
+
+### 1. Sequential (Pipeline)
+
+Agents execute one after another, each passing its output to the next. This is the simplest pattern and works well when tasks have a natural linear order.
+
+```
+[Researcher] → [Writer] → [Editor] → [Publisher]
+```
+
+```python
+# Sequential orchestration
+async def sequential_pipeline(task):
+    research = await researcher_agent.run(task)
+    draft = await writer_agent.run(research)
+    edited = await editor_agent.run(draft)
+    published = await publisher_agent.run(edited)
+    return published
+```
+
+**When to use it:** Content pipelines, data processing workflows, any task with clear stages.
+
+**Strengths:** Simple to reason about, easy to debug, deterministic ordering.
+
+**Weaknesses:** Slow (no parallelism), rigid (hard to adapt to dynamic needs).
+
+### 2. Parallel (Fan-Out / Fan-In)
+
+Multiple agents work simultaneously on different aspects of a problem, and their results are combined.
+
+```
+              ┌─ [Security Reviewer] ─┐
+[PR Input] ──┤─ [Style Checker]     ──├── [Summarizer]
+              └─ [Bug Detector]      ─┘
+```
+
+```python
+# Parallel orchestration
+async def parallel_review(pr_diff):
+    security, style, bugs = await asyncio.gather(
+        security_agent.run(pr_diff),
+        style_agent.run(pr_diff),
+        bug_agent.run(pr_diff),
+    )
+    summary = await summarizer_agent.run(
+        security=security, style=style, bugs=bugs
+    )
+    return summary
+```
+
+**When to use it:** Independent subtasks, reviews, analysis from multiple angles.
+
+**Strengths:** Fast (parallel execution), specialized agents per concern.
+
+**Weaknesses:** Requires a merge step, agents cannot easily communicate mid-flight.
+
+### 3. Supervisor (Hierarchical)
+
+A "boss" agent decides which worker agents to invoke, in what order, and how to combine their results. This is the most flexible and powerful pattern.
+
+```python
+# Supervisor orchestration
+async def supervisor_loop(task):
+    plan = await supervisor.plan(task)
+
+    while not supervisor.is_complete(plan):
+        next_step = supervisor.next_step(plan)
+        agent = supervisor.select_agent(next_step)
+        result = await agent.run(next_step)
+        plan = await supervisor.update_plan(plan, result)
+
+    return await supervisor.synthesize(plan)
+```
+
+**When to use it:** Complex, dynamic tasks where the workflow is not known in advance.
+
+**Strengths:** Adaptive, can handle unexpected situations, mimics real team management.
+
+**Weaknesses:** More complex to build, the supervisor itself can be a bottleneck or point of failure.
+
+<TipBox>
+In practice, most production systems use a **hybrid** approach. A supervisor might kick off parallel workers for one stage and then pipe results sequentially into the next stage. Do not feel locked into a single pattern.
+</TipBox>
+
+## Agent Crews in Practice
+
+The concept of "agent crews" has been popularized by frameworks like CrewAI, AutoGen, and LangGraph. The idea is straightforward: define a team of agents, assign roles, and let them collaborate.
+
+Here is what a crew definition might look like:
+
+```python
+from crewai import Agent, Task, Crew
+
+# Define specialized agents
+researcher = Agent(
+    role="Senior Research Analyst",
+    goal="Find comprehensive, accurate information on the given topic",
+    backstory="You are a meticulous researcher with 10 years of experience.",
+    tools=[web_search, arxiv_search, wikipedia],
+    llm=claude_model,
+)
+
+writer = Agent(
+    role="Technical Writer",
+    goal="Transform research into clear, engaging technical content",
+    backstory="You write for developers who value clarity over jargon.",
+    tools=[markdown_formatter],
+    llm=claude_model,
+)
+
+reviewer = Agent(
+    role="Technical Reviewer",
+    goal="Ensure accuracy, completeness, and clarity of the content",
+    backstory="You have deep domain expertise and high standards.",
+    tools=[fact_checker, code_validator],
+    llm=claude_model,
+)
+
+# Define the workflow
+research_task = Task(
+    description="Research {topic} thoroughly",
+    agent=researcher,
+)
+
+writing_task = Task(
+    description="Write a technical guide based on the research",
+    agent=writer,
+    context=[research_task],  # Sequential dependency
+)
+
+review_task = Task(
+    description="Review and improve the guide",
+    agent=reviewer,
+    context=[writing_task],
+)
+
+# Assemble the crew
+crew = Crew(
+    agents=[researcher, writer, reviewer],
+    tasks=[research_task, writing_task, review_task],
+    verbose=True,
+)
+
+result = crew.kickoff(inputs={"topic": "vector databases"})
+```
+
+<Callout variant="paw" title="Haku's Observation">
+Notice how each agent has a `backstory`. This is not fluff -- it is prompt engineering at the agent level. The backstory shapes how the agent approaches its work, just like a team member's experience shapes their contributions.
+</Callout>
+
+## Real-World Examples
+
+Let us look at how multi-agent patterns show up in production systems.
+
+### Software Development Assistant
+
+A system like Devin or SWE-Agent uses a supervisor pattern where:
+- A **planner agent** breaks down a GitHub issue into subtasks
+- A **coder agent** writes implementation code
+- A **tester agent** generates and runs tests
+- A **debugger agent** diagnoses failures and suggests fixes
+- The **supervisor** coordinates iteration until tests pass
+
+### Customer Support Automation
+
+A support system might use a combination of patterns:
+- **Router agent** (supervisor) classifies the incoming request
+- **Knowledge agent** searches internal docs via RAG (we will cover this next lesson)
+- **Policy agent** checks company guidelines in parallel
+- **Response agent** synthesizes everything into a customer-facing reply
+
+### Data Analysis Pipeline
+
+For automated reporting:
+- **SQL agent** queries databases in parallel across different data sources
+- **Analysis agent** runs statistical analysis on the results
+- **Visualization agent** generates charts
+- **Narrative agent** writes the executive summary
+
+<WarningBox>
+Multi-agent systems add complexity. Do not reach for them when a single well-prompted agent will do. Start simple and add agents only when you have clear evidence that a single agent is struggling with the task. Premature agent decomposition is just as problematic as premature optimization.
+</WarningBox>
+
+## The Communication Problem
+
+The hardest part of multi-agent systems is not the individual agents -- it is how they communicate. There are two main approaches:
+
+### Message Passing
+Agents send structured messages to each other, usually through a shared channel or queue. This is explicit and easy to trace.
+
+### Shared State
+Agents read from and write to a shared memory (like a blackboard pattern). This is more flexible but harder to debug.
+
+```python
+# Shared state example
+class SharedMemory:
+    def __init__(self):
+        self.state = {}
+        self.history = []
+
+    def write(self, agent_id: str, key: str, value: any):
+        self.state[key] = value
+        self.history.append({
+            "agent": agent_id,
+            "action": "write",
+            "key": key,
+            "timestamp": now()
+        })
+
+    def read(self, key: str):
+        return self.state.get(key)
+```
+
+<ExpandableSection title="Deep Dive: LangGraph vs. CrewAI vs. AutoGen">
+**LangGraph** is the most flexible -- it models agent workflows as directed graphs with cycles, giving you fine-grained control over state and transitions. Best for custom, complex workflows.
+
+**CrewAI** is the most opinionated -- it uses the crew/role metaphor and handles orchestration for you. Best for getting started quickly with role-based agent teams.
+
+**AutoGen** (by Microsoft) focuses on conversational agents that can chat with each other. Best for scenarios where agents need to negotiate or debate.
+
+Choose based on your needs: control (LangGraph), speed (CrewAI), or conversation (AutoGen).
+</ExpandableSection>
+
+<HandsOnExercise title="Design an Agent Crew">
+
+Think of a task you do regularly that involves multiple distinct steps. Now design a multi-agent system for it:
+
+1. **Identify the agents** -- What roles do you need? What is each agent's specialty?
+2. **Choose the pattern** -- Would sequential, parallel, or supervisor orchestration work best? Why?
+3. **Define the communication** -- How will agents share information? Message passing or shared state?
+4. **Map the flow** -- Draw (on paper or in a tool) the flow of information between agents.
+5. **Identify failure modes** -- What happens when one agent produces bad output? How does the system recover?
+
+Write your design as pseudocode or a diagram. You will build on this design in the final lesson of this trail.
+
+</HandsOnExercise>
+
+<PawPrintCheck items={[
+  "What is the difference between a chatbot and an agent?",
+  "Can you explain the three core orchestration patterns and when each is appropriate?",
+  "Why might you choose a multi-agent system over a single agent?",
+  "What are the tradeoffs between message passing and shared state for agent communication?",
+  "How does the 'crew' abstraction help organize multi-agent systems?"
+]} />
+
+## Wrapping Up
+
+Multi-agent systems are not just a buzzword -- they are a practical architecture for building AI applications that go beyond what a single prompt can achieve. The key takeaway: **start with the simplest pattern that works**, and add complexity only when needed.
+
+In the next lesson, we will dive into one of the most important capabilities you can give your agents: the ability to retrieve and reason over external knowledge using RAG (Retrieval-Augmented Generation). This is what transforms an agent from a clever text generator into a system that actually *knows* your data.
+
+<NextUp
+  title="RAG Fundamentals"
+  href="/summit/rag-fundamentals"
+  description="Learn how Retrieval-Augmented Generation gives your agents access to real knowledge"
+/>
