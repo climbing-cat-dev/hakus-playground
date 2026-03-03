@@ -12,6 +12,17 @@ export default function HeroSection() {
     <section className="border-b border-trail/20 bg-bark/50 px-4 py-20 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-20">
+          <div className="relative w-full max-w-md lg:max-w-xl">
+            <Image
+              src="/images/hero/haku-playground-hero.webp"
+              alt="Haku the pixel cat looking up at a mountain trail with four colorful zones"
+              width={800}
+              height={450}
+              className="rounded-2xl"
+              priority
+            />
+          </div>
+
           <div className="flex-1 text-center lg:text-left">
             <h1 className="font-display text-4xl font-bold text-cream sm:text-5xl lg:text-6xl">
               Haku&apos;s{" "}
@@ -38,17 +49,6 @@ export default function HeroSection() {
                 </span>
               ))}
             </div>
-          </div>
-
-          <div className="relative w-full max-w-md lg:max-w-xl">
-            <Image
-              src="/images/hero/haku-playground-hero.webp"
-              alt="Haku the pixel cat looking up at a mountain trail with four colorful zones"
-              width={800}
-              height={450}
-              className="rounded-2xl"
-              priority
-            />
           </div>
         </div>
       </div>

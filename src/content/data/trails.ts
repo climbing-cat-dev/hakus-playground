@@ -22,7 +22,7 @@ export const trails: Trail[] = [
     terrain: "Volcanic Island",
     lessonCount: 5,
     image: "/images/trails/basecamp.webp",
-    imagePosition: "center",
+    imagePosition: "center 75%",
     order: 0,
   },
   {
@@ -35,7 +35,7 @@ export const trails: Trail[] = [
     terrain: "Alpine Crossing",
     lessonCount: 5,
     image: "/images/trails/easy-trail.webp",
-    imagePosition: "bottom",
+    imagePosition: "center 86%",
     order: 1,
   },
   {
@@ -48,7 +48,7 @@ export const trails: Trail[] = [
     terrain: "Crater Lake",
     lessonCount: 6,
     image: "/images/trails/medium-trail.webp",
-    imagePosition: "center",
+    imagePosition: "center 45%",
     order: 2,
   },
   {

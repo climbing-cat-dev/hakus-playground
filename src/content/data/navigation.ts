@@ -13,6 +13,10 @@ export function getSidebarNav(): NavItem[] {
       label: "Trail Overview",
       href: "/overview",
     },
+    {
+      label: "Resources",
+      href: "/resources",
+    },
     ...trails.map((trail) => ({
       label: trail.title,
       href: `/${trail.id}`,
@@ -21,9 +25,5 @@ export function getSidebarNav(): NavItem[] {
         href: `/${trail.id}/${lesson.slug}`,
       })),
     })),
-    {
-      label: "Resources",
-      href: "/resources",
-    },
   ];
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getSidebarNav } from "@/content/data/navigation";
@@ -39,13 +39,14 @@ function isActiveInTrail(
 ) {
   return (
     pathname === item.href ||
+    pathname.startsWith(item.href + "/") ||
     (item.children?.some((child) => pathname === child.href) ?? false)
   );
 }
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const nav = getSidebarNav();
+  const nav = useMemo(() => getSidebarNav(), []);
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(
     () => {
@@ -58,6 +59,18 @@ export default function Sidebar() {
       return initial;
     }
   );
+
+  useEffect(() => {
+    setOpenSections((prev) => {
+      const next = { ...prev };
+      for (const item of nav) {
+        if (item.children && isActiveInTrail(pathname, item)) {
+          next[item.href] = true;
+        }
+      }
+      return next;
+    });
+  }, [pathname, nav]);
 
   const toggleSection = (href: string) => {
     setOpenSections((prev) => ({ ...prev, [href]: !prev[href] }));
@@ -101,7 +114,18 @@ export default function Sidebar() {
                   </Link>
                 )}
                 {item.children && isOpen && (
-                  <div className="ml-2 flex flex-col gap-0.5 border-l border-trail/20 pl-3">
+                  <div className="ml-2 mt-1 flex flex-col gap-0.5 border-l border-trail/20 pl-3">
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "block rounded-lg px-3 py-1.5 text-sm transition-colors",
+                        isActive
+                          ? "bg-paw/10 font-medium text-paw"
+                          : "text-sand hover:bg-stone/30 hover:text-cream"
+                      )}
+                    >
+                      Overview
+                    </Link>
                     {item.children.map((child) => {
                       const childActive = pathname === child.href;
                       return (
