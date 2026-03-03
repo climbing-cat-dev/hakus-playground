@@ -10,10 +10,10 @@ interface PixelHakuProps {
 
 const poseEmojis: Record<HakuPose, string> = {
   standing: "🐱",
-  climbing: "🧗",
-  sleeping: "😺",
-  celebrating: "🎉",
-  waving: "👋",
+  climbing: "🐈",
+  sleeping: "💤",
+  celebrating: "😻",
+  waving: "😸",
 };
 
 export default function PixelHaku({
