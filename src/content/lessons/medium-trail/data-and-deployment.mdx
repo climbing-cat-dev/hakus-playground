@@ -42,10 +42,10 @@ Supabase gives you a full PostgreSQL database with a visual dashboard, authentic
 Once your project is ready, go to **Settings > API** in the Supabase dashboard. You will need two values:
 
 - **Project URL**: Something like `https://abcdefgh.supabase.co`
-- **Anon public key**: A long string starting with `eyJ...`
+- **Publishable key**: A long string starting with `eyJ...` (labeled "anon public" in older Supabase dashboards)
 
 <WarningBox>
-You will also see a **service role key** on this page. That key has full admin access to your database. Never use it in your frontend code. For now, you only need the anon key, which has limited permissions enforced by Row Level Security.
+You will also see a **secret key** on this page (labeled "service_role" in older dashboards). That key has full admin access to your database. Never use it in your frontend code. For now, you only need the publishable key, which has limited permissions enforced by Row Level Security.
 </WarningBox>
 
 ### Add Supabase to Your Project
@@ -55,8 +55,8 @@ Back in your terminal with Claude Code running:
 ```
 > Install @supabase/supabase-js and create a Supabase client
   configuration at src/lib/supabase.ts. The client should use
-  environment variables for the URL and anon key:
-  NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+  environment variables for the URL and publishable key:
+  NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ```
 
 Claude Code will install the package and create the client file. It will look something like:
@@ -65,9 +65,9 @@ Claude Code will install the package and create the client file. It will look so
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabasePublishableKey)
 ```
 
 Now create your `.env.local` file with the actual values:
@@ -81,11 +81,11 @@ Add your Supabase credentials:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 <Callout variant="info" title="NEXT_PUBLIC_ Prefix">
-In Next.js, environment variables prefixed with `NEXT_PUBLIC_` are available in the browser. Variables without this prefix are only available on the server. Since the Supabase client runs in the browser, we need the prefix. For server-only secrets (like the service role key), do not use the prefix.
+In Next.js, environment variables prefixed with `NEXT_PUBLIC_` are available in the browser. Variables without this prefix are only available on the server. Since the Supabase client runs in the browser, we need the prefix. For server-only secrets (like the secret key), do not use the prefix.
 </Callout>
 
 Make sure `.env.local` is in your `.gitignore`:
@@ -149,7 +149,7 @@ Add the Supabase MCP configuration to your Claude Code settings. Create or edit 
         "--supabase-url",
         "https://your-project-id.supabase.co",
         "--supabase-key",
-        "your-service-role-key"
+        "your-secret-key"
       ]
     }
   }
@@ -157,7 +157,7 @@ Add the Supabase MCP configuration to your Claude Code settings. Create or edit 
 ```
 
 <WarningBox>
-The MCP server uses the service role key (not the anon key) because it needs full database access. This key should only be in your local settings file, never committed to Git. Make sure `.claude/` is in your `.gitignore` or that `settings.json` does not get committed.
+The MCP server uses the secret key (not the publishable key) because it needs full database access. This key should only be in your local settings file, never committed to Git. Make sure `.claude/` is in your `.gitignore` or that `settings.json` does not get committed.
 </WarningBox>
 
 ### Using Supabase Through Claude Code
@@ -242,7 +242,7 @@ This is critical. Your `.env.local` file does not get uploaded to Vercel (becaus
 
 ```
 NEXT_PUBLIC_SUPABASE_URL = https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY = eyJhbGciOi...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = eyJhbGciOi...
 ```
 
 3. Click "Deploy"
@@ -299,7 +299,7 @@ Create a `.env.example` file that shows what variables are needed without reveal
 ```bash
 # .env.example - Copy this to .env.local and fill in real values
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key_here
 ```
 
 Commit this file so collaborators (or your future self) know what environment variables are required:

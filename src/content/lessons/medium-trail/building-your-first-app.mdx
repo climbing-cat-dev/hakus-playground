@@ -52,9 +52,11 @@ claude
 Now give it the scaffolding prompt. Notice how specific this prompt is while staying focused on just the foundation:
 
 ```
-> Create a new Next.js 14 app with the App Router, TypeScript,
-  and Tailwind CSS. Use the src/ directory structure. The app
-  should have:
+> Create a new Next.js app using the latest version with the
+  App Router, TypeScript, and the latest Tailwind CSS. Use the
+  src/ directory structure. Use the latest stable versions of
+  Next.js and Tailwind, and compatible versions of all other
+  dependencies. The app should have:
   - A root layout with a simple header that says "My Dashboard"
   - A home page that shows "Welcome to your dashboard"
   - A clean, dark theme using Tailwind
@@ -66,6 +68,10 @@ Now give it the scaffolding prompt. Notice how specific this prompt is while sta
 <TipBox>
 Notice the "Do NOT" section. Telling Claude Code what to exclude is just as important as telling it what to include. Without those boundaries, it might add features you are not ready for.
 </TipBox>
+
+<Callout variant="paw" title="Always Specify Latest Versions">
+When scaffolding a project, always tell Claude Code to use the latest versions of your core tech stack (Next.js, Tailwind, React, etc.) and compatible versions of other dependencies. Without this, AI tools tend to default to older versions they were trained on. Your prompt should mention "latest" for the big pieces -- Claude Code will figure out the right compatible versions for everything else.
+</Callout>
 
 Claude Code will run `npx create-next-app`, configure TypeScript and Tailwind, set up the directory structure, and create the initial files. When it finishes, start the development server:
 

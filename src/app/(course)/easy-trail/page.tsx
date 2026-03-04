@@ -23,6 +23,21 @@ export default function EasyTrailPage() {
         {trail.title}
       </h1>
       <p className="mt-2 text-lg text-sand">{trail.description}</p>
+
+      <div className="mt-6 rounded-xl border border-stone/30 bg-bark/50 p-5">
+        <h2 className="font-display text-lg font-bold text-cream">
+          By the end of this trail, you will have:
+        </h2>
+        <ul className="mt-3 flex flex-col gap-2">
+          {trail.takeaways.map((item) => (
+            <li key={item} className="flex gap-2 text-sm text-sand">
+              <span className="mt-0.5 text-easy">&#10003;</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <div className="mt-8 flex flex-col gap-3">
         {lessons.map((lesson) => (
           <LessonCard
