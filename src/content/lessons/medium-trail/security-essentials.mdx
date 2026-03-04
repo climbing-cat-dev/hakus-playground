@@ -57,7 +57,7 @@ Here is the correct pattern:
 # src/lib/supabase.ts
 const supabase = createClient(
   'https://abc123.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI...'
+  'your-supabase-publishable-key-here'
 )
 ```
 
@@ -73,7 +73,7 @@ const supabase = createClient(
 ```bash
 # .env.local (NOT committed to Git)
 NEXT_PUBLIC_SUPABASE_URL=https://abc123.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIs...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key-here
 ```
 
 ```bash

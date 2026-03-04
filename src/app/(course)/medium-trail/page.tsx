@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Metadata } from "next";
-import { getTrail } from "@/content/data/trails";
+import { getTrail, difficultySymbols } from "@/content/data/trails";
 import { getLessonsByTrail, getLessonNumber } from "@/content/data/lessons";
 import LessonCard from "@/components/course/LessonCard";
 
@@ -23,6 +23,7 @@ export default function MediumTrailPage() {
         {trail.title}
       </h1>
       <p className="mt-2 text-lg text-sand">{trail.description}</p>
+      <p className="mt-2 text-sm font-semibold text-dust"><span className="mr-1">{difficultySymbols[trail.difficulty]}</span>{trail.difficulty} &middot; {trail.lessonCount} lessons</p>
 
       <div className="mt-6 rounded-xl border border-stone/30 bg-bark/50 p-5">
         <h2 className="font-display text-lg font-bold text-cream">

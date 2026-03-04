@@ -42,7 +42,7 @@ Supabase gives you a full PostgreSQL database with a visual dashboard, authentic
 Once your project is ready, go to **Settings > API** in the Supabase dashboard. You will need two values:
 
 - **Project URL**: Something like `https://abcdefgh.supabase.co`
-- **Publishable key**: A long string starting with `eyJ...` (labeled "anon public" in older Supabase dashboards)
+- **Publishable key**: A long string (labeled "anon public" in older Supabase dashboards)
 
 <WarningBox>
 You will also see a **secret key** on this page (labeled "service_role" in older dashboards). That key has full admin access to your database. Never use it in your frontend code. For now, you only need the publishable key, which has limited permissions enforced by Row Level Security.
@@ -81,7 +81,7 @@ Add your Supabase credentials:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key-here
 ```
 
 <Callout variant="info" title="NEXT_PUBLIC_ Prefix">
@@ -242,7 +242,7 @@ This is critical. Your `.env.local` file does not get uploaded to Vercel (becaus
 
 ```
 NEXT_PUBLIC_SUPABASE_URL = https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = eyJhbGciOi...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = your-supabase-publishable-key-here
 ```
 
 3. Click "Deploy"

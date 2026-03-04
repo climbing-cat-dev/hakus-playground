@@ -5,6 +5,7 @@ export interface Trail {
   color: string;
   colorHex: string;
   terrain: string;
+  difficulty: string;
   lessonCount: number;
   image: string;
   imagePosition: string;
@@ -21,6 +22,7 @@ export const trails: Trail[] = [
     color: "basecamp",
     colorHex: "#4CAF50",
     terrain: "Volcanic Island",
+    difficulty: "Easy",
     lessonCount: 5,
     image: "/images/trails/basecamp.webp",
     imagePosition: "center 75%",
@@ -41,6 +43,7 @@ export const trails: Trail[] = [
     color: "easy",
     colorHex: "#FF9800",
     terrain: "Alpine Crossing",
+    difficulty: "Moderate",
     lessonCount: 5,
     image: "/images/trails/easy-trail.webp",
     imagePosition: "center 86%",
@@ -61,6 +64,7 @@ export const trails: Trail[] = [
     color: "medium",
     colorHex: "#7C4DFF",
     terrain: "Crater Lake",
+    difficulty: "Hard",
     lessonCount: 6,
     image: "/images/trails/medium-trail.webp",
     imagePosition: "center 45%",
@@ -82,6 +86,7 @@ export const trails: Trail[] = [
     color: "summit",
     colorHex: "#E91E63",
     terrain: "High Peak",
+    difficulty: "Strenuous",
     lessonCount: 4,
     image: "/images/trails/summit.webp",
     imagePosition: "top",
@@ -94,6 +99,13 @@ export const trails: Trail[] = [
     ],
   },
 ];
+
+export const difficultySymbols: Record<string, string> = {
+  "Easy": "●",
+  "Moderate": "●●",
+  "Hard": "●●●",
+  "Strenuous": "●●●●",
+};
 
 export function getTrail(id: string): Trail | undefined {
   return trails.find((t) => t.id === id);

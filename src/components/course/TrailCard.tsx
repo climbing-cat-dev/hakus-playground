@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Trail } from "@/content/data/trails";
+import { Trail, difficultySymbols } from "@/content/data/trails";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 
@@ -36,7 +36,8 @@ export default function TrailCard({ trail }: TrailCardProps) {
         </h2>
         <p className="mt-2 text-sm text-sand">{trail.description}</p>
         <p className="mt-3 text-xs text-dust">
-          {trail.lessonCount} lessons
+          <span className="mr-1">{difficultySymbols[trail.difficulty]}</span>
+          {trail.difficulty} &middot; {trail.lessonCount} lessons
         </p>
       </Card>
     </Link>
