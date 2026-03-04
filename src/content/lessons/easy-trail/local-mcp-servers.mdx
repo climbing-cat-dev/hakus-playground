@@ -67,7 +67,7 @@ To find this:
 
 ### What the Config File Looks Like
 
-If you have never edited this file before, it might be empty or contain just `{}`. Here is what a config file with MCP servers looks like:
+The file may be empty or contain just `{}`. Each entry inside `mcpServers` is a server Claude Desktop will connect to at startup:
 
 ```json
 {
@@ -79,8 +79,6 @@ If you have never edited this file before, it might be empty or contain just `{}
   }
 }
 ```
-
-Each entry inside `mcpServers` is a server you want Claude Desktop to connect to when it starts up. Let's set one up.
 
 ## Setting Up the Filesystem MCP Server
 
@@ -201,67 +199,29 @@ Each server runs independently. Claude can use tools from all connected servers 
 
 ## Other Popular MCP Servers
 
-The MCP ecosystem is growing rapidly. Here are some other servers worth knowing about:
-
-### Database Access
+The MCP ecosystem is growing rapidly. Here are a few examples -- notice how they all follow the same config pattern:
 
 ```json
 {
   "mcpServers": {
     "sqlite": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sqlite",
-        "/path/to/your/database.db"
-      ]
-    }
-  }
-}
-```
-
-This lets Claude query SQLite databases directly. Great for analyzing local data.
-
-### Git Integration
-
-```json
-{
-  "mcpServers": {
+      "args": ["-y", "@modelcontextprotocol/server-sqlite", "/path/to/database.db"]
+    },
     "git": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-git",
-        "--repository",
-        "/path/to/your/repo"
-      ]
-    }
-  }
-}
-```
-
-Claude can read git history, diffs, branches, and more.
-
-### Web Search
-
-```json
-{
-  "mcpServers": {
+      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/path/to/repo"]
+    },
     "brave-search": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@anthropic/mcp-server-brave-search"
-      ],
-      "env": {
-        "BRAVE_API_KEY": "your-api-key-here"
-      }
+      "args": ["-y", "@anthropic/mcp-server-brave-search"],
+      "env": { "BRAVE_API_KEY": "your-api-key-here" }
     }
   }
 }
 ```
 
-Notice the `env` field. Some MCP servers need API keys or other environment variables. These go in the `env` object inside the server configuration.
+The **sqlite** server lets Claude query local databases. The **git** server gives access to history, diffs, and branches. The **brave-search** server demonstrates the `env` field -- some servers need API keys or environment variables passed in their configuration.
 
 <ExpandableSection title="Finding More MCP Servers">
 The best places to discover MCP servers:
@@ -287,21 +247,15 @@ MCP is still relatively new, and things can go wrong. Here are the most common i
 **Cause:** Usually a problem with the command path or Node.js installation.
 
 **Fix:**
-1. Open your terminal and run the command manually. For example: `npx -y @modelcontextprotocol/server-filesystem /Users/yourname/Documents`
-2. If you get an error, Node.js or npx might not be in your PATH
-3. Try using the full path to npx. Find it with `which npx` on macOS or `where npx` on Windows
-4. Update your config to use the full path:
+1. Run the command manually in your terminal to see the actual error: `npx -y @modelcontextprotocol/server-filesystem /Users/yourname/Documents`
+2. If npx is not found, it may not be in your PATH. Find the full path with `which npx` (macOS) or `where npx` (Windows) and use it in your config:
 
 ```json
 {
   "mcpServers": {
     "filesystem": {
       "command": "/usr/local/bin/npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "/Users/yourname/Documents"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/yourname/Documents"]
     }
   }
 }
@@ -365,8 +319,6 @@ This is powerful but requires responsibility.
 
 ## How MCP Fits Into Your Toolkit
 
-Let's recap where MCP sits alongside the other tools you have learned:
-
 | Layer | What | When to Use |
 |-------|------|-------------|
 | Custom Instructions | Text in your Project settings | Persistent rules and context |
@@ -374,9 +326,7 @@ Let's recap where MCP sits alongside the other tools you have learned:
 | Connectors | Cloud service integrations | Live data from web services |
 | **MCP Servers** | **Local tool connections** | **Files, databases, and tools on your machine** |
 
-Together, these four layers give Claude comprehensive access to your world. Custom instructions tell Claude who you are. The knowledge base gives it reference material. Connectors pipe in live cloud data. And MCP servers connect it to your local environment.
-
-You do not need all four layers for every task. But knowing they exist and when to reach for each one is what separates a casual Claude user from someone who has built a truly effective AI workflow.
+Together, these four layers give Claude comprehensive access to your world. You do not need all four for every task, but knowing when to reach for each one is what separates a casual Claude user from someone who has built a truly effective AI workflow.
 
 <PawPrintCheck items={[
   "Can you explain MCP using the USB port analogy?",

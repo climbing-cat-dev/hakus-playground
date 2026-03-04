@@ -111,7 +111,7 @@ We are supporting three file types to keep things focused. In a real project, yo
 
 ### Chunking the Documents
 
-Now we split our documents into chunks. We will implement a recursive character splitter -- the same approach used by LangChain under the hood.
+Now we split documents into overlapping chunks using a recursive character splitter -- the same approach LangChain uses under the hood. The idea: try splitting on paragraph breaks first, then sentences, then words, falling back to harder splits only when necessary.
 
 ```python
 # chunker.py
@@ -127,11 +127,9 @@ def chunk_documents(
     chunks = []
 
     for doc in documents:
-        text = doc["content"]
         doc_chunks = recursive_split(
-            text, chunk_size, chunk_overlap, encoder
+            doc["content"], chunk_size, chunk_overlap, encoder
         )
-
         for i, chunk_text in enumerate(doc_chunks):
             chunks.append({
                 "content": chunk_text,
@@ -146,73 +144,49 @@ def chunk_documents(
     return chunks
 
 
-def recursive_split(
-    text: str,
-    chunk_size: int,
-    overlap: int,
-    encoder,
-    separators: list[str] = None,
-) -> list[str]:
+def recursive_split(text, chunk_size, overlap, encoder, separators=None):
     """Split text recursively, trying larger separators first."""
     if separators is None:
         separators = ["\n\n", "\n", ". ", " ", ""]
 
-    # If text fits in one chunk, return it
     if len(encoder.encode(text)) <= chunk_size:
         return [text.strip()] if text.strip() else []
 
-    # Try each separator
     for sep in separators:
         if sep and sep in text:
             parts = text.split(sep)
-            chunks = []
-            current = ""
+            chunks, current = [], ""
 
             for part in parts:
                 candidate = current + sep + part if current else part
-
                 if len(encoder.encode(candidate)) > chunk_size:
                     if current:
                         chunks.append(current.strip())
                     current = part
                 else:
                     current = candidate
-
             if current:
                 chunks.append(current.strip())
 
-            # Add overlap
+            # Add overlap between adjacent chunks
             if overlap > 0 and len(chunks) > 1:
-                chunks = add_overlap(chunks, overlap, encoder)
+                result = [chunks[0]]
+                for i in range(1, len(chunks)):
+                    prev_tokens = encoder.encode(chunks[i - 1])
+                    overlap_text = encoder.decode(prev_tokens[-overlap:])
+                    result.append(overlap_text + " " + chunks[i])
+                chunks = result
 
             return [c for c in chunks if c]
 
     # Fallback: hard split by tokens
     tokens = encoder.encode(text)
-    chunks = []
-    for i in range(0, len(tokens), chunk_size - overlap):
-        chunk_tokens = tokens[i:i + chunk_size]
-        chunks.append(encoder.decode(chunk_tokens))
-
-    return chunks
-
-
-def add_overlap(
-    chunks: list[str], overlap_tokens: int, encoder
-) -> list[str]:
-    """Add overlap between adjacent chunks."""
-    result = [chunks[0]]
-
-    for i in range(1, len(chunks)):
-        prev_tokens = encoder.encode(chunks[i - 1])
-        overlap_text = encoder.decode(prev_tokens[-overlap_tokens:])
-        result.append(overlap_text + " " + chunks[i])
-
-    return result
+    return [encoder.decode(tokens[i:i + chunk_size])
+            for i in range(0, len(tokens), chunk_size - overlap)]
 ```
 
 <TipBox>
-We use `tiktoken` to count tokens rather than characters. This gives us accurate sizing relative to the model's actual tokenization. A chunk of 500 tokens is roughly 375 words -- enough for a solid paragraph or two of context.
+We use `tiktoken` to count tokens rather than characters. A chunk of 500 tokens is roughly 375 words -- enough for a solid paragraph or two of context.
 </TipBox>
 
 ### Embedding and Storing
@@ -224,15 +198,11 @@ Now we embed our chunks and store them in Chroma:
 import chromadb
 from openai import OpenAI
 
-client = OpenAI()  # Uses OPENAI_API_KEY from environment
+client = OpenAI()
 
 def embed_texts(texts: list[str], model: str = "text-embedding-3-small") -> list[list[float]]:
     """Embed a batch of texts using OpenAI's API."""
-    # OpenAI supports batch embedding -- much faster than one at a time
-    response = client.embeddings.create(
-        model=model,
-        input=texts,
-    )
+    response = client.embeddings.create(model=model, input=texts)
     return [item.embedding for item in response.data]
 
 
@@ -240,7 +210,6 @@ def store_chunks(chunks: list[dict], collection_name: str = "my_docs"):
     """Embed and store chunks in Chroma."""
     chroma_client = chromadb.PersistentClient(path="./chroma_db")
 
-    # Delete existing collection if it exists (for re-ingestion)
     try:
         chroma_client.delete_collection(collection_name)
     except ValueError:
@@ -248,31 +217,24 @@ def store_chunks(chunks: list[dict], collection_name: str = "my_docs"):
 
     collection = chroma_client.create_collection(
         name=collection_name,
-        metadata={"hnsw:space": "cosine"},  # Use cosine similarity
+        metadata={"hnsw:space": "cosine"},
     )
 
-    # Process in batches (OpenAI has a limit of ~8000 tokens per batch)
     batch_size = 50
-
     for i in range(0, len(chunks), batch_size):
         batch = chunks[i:i + batch_size]
         texts = [c["content"] for c in batch]
         metadatas = [c["metadata"] for c in batch]
         ids = [f"chunk_{i + j}" for j in range(len(batch))]
 
-        embeddings = embed_texts(texts)
-
         collection.add(
-            embeddings=embeddings,
+            embeddings=embed_texts(texts),
             documents=texts,
             metadatas=metadatas,
             ids=ids,
         )
+        print(f"Stored {min(i + batch_size, len(chunks))}/{len(chunks)} chunks")
 
-        print(f"Stored batch {i // batch_size + 1} "
-              f"({min(i + batch_size, len(chunks))}/{len(chunks)} chunks)")
-
-    print(f"Done! {len(chunks)} chunks stored in collection '{collection_name}'")
     return collection
 ```
 
@@ -417,7 +379,7 @@ Set `temperature=0.2` or lower for RAG responses. You want the model to stick cl
 
 ## Framework Alternatives: LangChain and LlamaIndex
 
-Building from scratch is educational, but in production you will likely use a framework. Here is how the same pipeline looks in LangChain and LlamaIndex.
+Building from scratch is educational, but in production you will likely use a framework. Both achieve the same load-chunk-embed-query pipeline in far fewer lines:
 
 ### LangChain Approach
 
@@ -428,67 +390,35 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
 from langchain.chains import RetrievalQA
 
-# Load
-loader = DirectoryLoader("./data", glob="**/*.md", loader_cls=TextLoader)
-docs = loader.load()
+docs = DirectoryLoader("./data", glob="**/*.md", loader_cls=TextLoader).load()
+chunks = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200).split_documents(docs)
+vectorstore = Chroma.from_documents(chunks, OpenAIEmbeddings(model="text-embedding-3-small"), persist_directory="./chroma_db")
 
-# Chunk
-splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000, chunk_overlap=200
-)
-chunks = splitter.split_documents(docs)
-
-# Embed and store
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-vectorstore = Chroma.from_documents(
-    chunks, embeddings, persist_directory="./chroma_db"
-)
-
-# Query
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
 qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
+    llm=ChatOpenAI(model="gpt-4o-mini", temperature=0.2),
     retriever=vectorstore.as_retriever(search_kwargs={"k": 5}),
     return_source_documents=True,
 )
-
 result = qa_chain.invoke({"query": "What is the main topic?"})
-print(result["result"])
 ```
 
 ### LlamaIndex Approach
 
 ```python
-from llama_index.core import (
-    VectorStoreIndex,
-    SimpleDirectoryReader,
-    Settings,
-)
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.openai import OpenAI
 
-# Configure
 Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
 Settings.llm = OpenAI(model="gpt-4o-mini", temperature=0.2)
 
-# Load and index (LlamaIndex handles chunking automatically)
-documents = SimpleDirectoryReader("./data").load_data()
-index = VectorStoreIndex.from_documents(documents)
-
-# Query
-query_engine = index.as_query_engine(similarity_top_k=5)
-response = query_engine.query("What is the main topic?")
-
-print(response)
-print(response.source_nodes)  # See which chunks were retrieved
+# LlamaIndex handles chunking automatically
+index = VectorStoreIndex.from_documents(SimpleDirectoryReader("./data").load_data())
+response = index.as_query_engine(similarity_top_k=5).query("What is the main topic?")
 ```
 
 <Callout variant="info" title="LangChain vs. LlamaIndex: When to Use Which">
-**LangChain** gives you more control and composability. It is better when you need to build custom chains, mix different tools, or integrate RAG into a larger agent system.
-
-**LlamaIndex** is more opinionated and higher-level. It is better when your primary focus is document indexing and retrieval, and you want to get there with less code.
-
-Both are excellent choices. Try both and see which fits your mental model.
+**LangChain** gives you more control and composability -- better for custom chains, mixed tools, or integrating RAG into a larger agent system. **LlamaIndex** is more opinionated and higher-level -- better when your primary focus is document indexing and retrieval. Both are excellent choices.
 </Callout>
 
 ## Evaluating RAG Quality
@@ -565,7 +495,7 @@ Build a test set of 20-30 question-answer pairs early in development. Run your p
 
 ## What Comes Next
 
-You now have a working RAG pipeline -- a real, functional system that can answer questions about your documents. But RAG is just one capability. In the final lesson of this trail, we are going to combine everything: multi-agent orchestration from lesson one, RAG from lessons two and three, shared memory, and deployment considerations. You are about to build a complete agentic system.
+You now have a working RAG pipeline. In the final lesson, we combine everything -- multi-agent orchestration, RAG, shared memory, and deployment -- into a complete agentic system.
 
 <NextUp
   title="Your Agentic System"

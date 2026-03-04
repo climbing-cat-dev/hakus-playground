@@ -23,20 +23,12 @@ These five rules cover the vast majority of security issues you will encounter a
 
 ### Rule 1: AI-Generated Code Is Untrusted Code
 
-Just because Claude Code wrote it does not mean it is safe. Just because it runs does not mean it is secure. Just because it looks right does not mean there are no vulnerabilities hiding inside.
-
-This is not a criticism of AI -- it is a fundamental truth about all code. Professional developers review each other's code before it ships. You should review AI-generated code the same way.
+All code needs review before it ships -- AI-generated code is no exception. Professional developers review each other's work, and you should review AI-generated code the same way.
 
 **What to do:**
 - Read the code changes before accepting them
 - If you do not understand something, ask Claude Code to explain it
-- If the explanation does not make sense, do not ship it
 - Pay special attention to code that handles user input, database queries, or authentication
-
-```
-> Explain the changes you just made to the API route.
-  Are there any security considerations I should know about?
-```
 
 ```
 > Review this file for security vulnerabilities:
@@ -44,7 +36,7 @@ This is not a criticism of AI -- it is a fundamental truth about all code. Profe
 ```
 
 <TipBox>
-You do not need to understand every line of code at a deep technical level. But you should be able to explain *what* each file does and *why* it exists. If a file is a mystery to you, that is a red flag.
+You do not need to understand every line at a deep technical level. But you should be able to explain *what* each file does and *why* it exists. If a file is a mystery to you, that is a red flag.
 </TipBox>
 
 ### Rule 2: Secrets Are Sacred
@@ -163,15 +155,7 @@ git checkout .
 
 The opposite of this -- making many changes without committing -- is dangerous. If you go an hour without committing and something breaks, you have to manually figure out what went wrong across dozens of changes. Commit often, and each revert is surgical.
 
-## API Keys: A Deep Dive
-
-API keys deserve special attention because they are the most commonly exposed secret. Let us make sure you understand them completely.
-
-### What Is an API Key?
-
-An API key is like a password for a service. It proves to Supabase, or Claude, or Vercel, or any other service that you are who you say you are. Anyone who has your key can use the service as you, and you get billed for their usage.
-
-### Where API Keys Go
+### Where API Keys Should (and Should Not) Live
 
 | Where | Safe? | Details |
 |---|---|---|
@@ -180,16 +164,15 @@ An API key is like a password for a service. It proves to Supabase, or Claude, o
 | Source code files | **NO** | Will be committed to Git and exposed |
 | Git history | **NO** | Even deleted keys persist in history |
 | Chat messages | **NO** | Do not paste keys into Claude conversations |
-| `.env.example` | **NO** | Only placeholder text, never real values |
 
 ### What to Do If You Expose a Key
 
-It happens. Even experienced developers accidentally commit a secret. The response needs to be immediate:
+Even experienced developers accidentally commit a secret. The response must be immediate:
 
-1. **Revoke the key immediately.** Go to the service's dashboard and delete or rotate the key. This prevents anyone from using it, even if they found it.
-2. **Generate a new key.** Create a replacement and update your `.env.local` and Vercel dashboard.
-3. **Remove it from Git history.** This is advanced, but important for public repositories. Tools like `git filter-branch` or BFG Repo Cleaner can help.
-4. **Check for unauthorized usage.** Review the service's usage logs for activity you did not perform.
+1. **Revoke the key immediately** in the service's dashboard
+2. **Generate a new key** and update `.env.local` and your deployment platform
+3. **Remove it from Git history** using `git filter-branch` or BFG Repo Cleaner
+4. **Check for unauthorized usage** in the service's logs
 
 <HandsOnExercise title="Security Audit Your Project">
 
@@ -260,40 +243,19 @@ If `.env.local` appears in the Git status output (not as ignored), you have a pr
 
 ## The npm audit Command
 
-When you install packages with npm, you are trusting code written by thousands of different developers. Most of it is excellent. Some of it has vulnerabilities.
+When you install packages with npm, you are trusting code written by thousands of developers. `npm audit` checks every package against a database of known vulnerabilities.
 
-`npm audit` is your scanner. It checks every package in your project against a database of known vulnerabilities and tells you what needs attention.
-
-```bash
-# Run the audit
-npm audit
-
-# Example output:
-# found 3 vulnerabilities (1 moderate, 2 high)
-# Run `npm audit fix` to fix them, or `npm audit` for details
-```
-
-The severity levels are:
-- **Low**: Minor issues, fix when convenient
-- **Moderate**: Should fix before deploying
-- **High**: Fix before deploying, these are serious
-- **Critical**: Fix immediately, stop what you are doing
+Severity levels: **Low** (fix when convenient), **Moderate** (fix before deploying), **High** (fix before deploying -- serious), **Critical** (fix immediately).
 
 ```bash
-# Fix automatically where possible
-npm audit fix
-
-# If some issues require major version updates:
-npm audit fix --force
+npm audit              # Check for vulnerabilities
+npm audit fix          # Auto-fix what it can
+npm audit fix --force  # Force major version updates (test afterward!)
 ```
 
 <WarningBox>
-The `--force` flag can introduce breaking changes by upgrading to major new versions of packages. Use it carefully, and test your app afterward. If things break, revert with `git checkout .` and address the vulnerabilities manually.
+The `--force` flag can introduce breaking changes by upgrading to major new versions. Test your app afterward. If things break, revert with `git checkout .` and address vulnerabilities manually.
 </WarningBox>
-
-<TipBox>
-Make `npm audit` part of your routine. Run it once a week, or every time you install a new package. You can also ask Claude Code to help: "Run npm audit and help me fix any vulnerabilities."
-</TipBox>
 
 ## The Security Deployment Checklist
 
@@ -378,14 +340,7 @@ This prevents accidental commits of secrets before they happen.
 
 ## The Security Mindset
 
-The most important thing this lesson teaches is not any specific command or tool. It is a mindset. Every time you build something, a small voice in the back of your head should ask:
-
-- "What happens if someone sees this code on GitHub?"
-- "What happens if someone sends unexpected input to this form?"
-- "What happens if this API key gets exposed?"
-- "Do I understand what this code does before I ship it?"
-
-That voice is your security instinct. It gets stronger with practice. And it is the difference between building something that works and building something that is safe.
+The most important takeaway is not any specific command -- it is the habit of asking: "What happens if someone sees this code on GitHub? What if this key gets exposed? Do I understand what this code does before I ship it?" That security instinct gets stronger with practice.
 
 ---
 

@@ -280,6 +280,8 @@ angles of the topic. Return your queries as a JSON list of strings.""",
 
 ### The Analyst and Writer Agents
 
+The analyst and writer follow the same pattern: override `run()` to build a task-specific prompt from shared memory, call the base LLM, and store results back into memory. The key difference is what they read and write:
+
 ```python
 # analyst_agent.py
 class AnalystAgent(BaseAgent):
@@ -298,53 +300,35 @@ Be thorough but concise. Flag contradictions between sources.""",
         )
 
     async def run(self, question: str, memory: SharedMemory) -> str:
-        # Build context from retrieved chunks
         chunks_text = "\n\n---\n\n".join([
             f"[Source: {c['source']} | Similarity: {c['similarity']:.3f}]\n{c['content']}"
             for c in memory.retrieved_chunks
         ])
 
-        task = f"""Research Question: {question}
-
-Retrieved Document Chunks:
-{chunks_text}
-
-Analyze these chunks and provide a structured synthesis."""
+        task = f"Research Question: {question}\n\nRetrieved Document Chunks:\n{chunks_text}\n\nAnalyze these chunks and provide a structured synthesis."
 
         analysis = await super().run(task, memory)
-        memory.analysis = analysis
+        memory.analysis = analysis  # Analyst writes analysis
         memory.record(self.name, "analysis_complete", "Analysis stored")
         return analysis
+```
 
+The writer is nearly identical -- it reads `memory.analysis` (produced by the analyst) and writes `memory.report`:
 
+```python
 # writer_agent.py
 class WriterAgent(BaseAgent):
     def __init__(self):
         super().__init__(
-            name="writer",
-            role="Technical Writer",
-            system_prompt="""You are a technical writer producing clear,
-well-structured reports. Given an analysis and source materials, you:
-1. Write a report with clear sections and headings
-2. Cite sources throughout
-3. Include a summary at the top
-4. Note any limitations or areas needing further research
-
-Write for a technical audience. Be precise and evidence-based.""",
+            name="writer", role="Technical Writer",
+            system_prompt="You are a technical writer. Write clear reports with sections, citations, a summary, and noted limitations.",
         )
 
     async def run(self, question: str, memory: SharedMemory) -> str:
-        task = f"""Original Research Question: {question}
-
-Analysis:
-{memory.analysis}
-
-Source count: {len(memory.retrieved_chunks)} document chunks
-
-Write a comprehensive research report based on this analysis."""
+        task = f"Research Question: {question}\n\nAnalysis:\n{memory.analysis}\n\nSource count: {len(memory.retrieved_chunks)} chunks\n\nWrite a comprehensive research report."
 
         report = await super().run(task, memory)
-        memory.report = report
+        memory.report = report  # Writer writes report
         memory.status = "complete"
         memory.record(self.name, "report_complete", "Final report generated")
         return report
@@ -469,37 +453,20 @@ import uuid
 
 app = FastAPI()
 supervisor = Supervisor()
-results_store = {}  # In production, use Redis or a database
-
+results_store = {}  # Use Redis or a database in production
 
 class ResearchRequest(BaseModel):
     question: str
 
-
-class ResearchResponse(BaseModel):
-    task_id: str
-    status: str
-
-
-@app.post("/research", response_model=ResearchResponse)
-async def start_research(
-    request: ResearchRequest,
-    background_tasks: BackgroundTasks,
-):
+@app.post("/research")
+async def start_research(request: ResearchRequest, background_tasks: BackgroundTasks):
     task_id = str(uuid.uuid4())
     results_store[task_id] = {"status": "running"}
-
-    background_tasks.add_task(
-        run_research, task_id, request.question
-    )
-
-    return ResearchResponse(task_id=task_id, status="running")
-
+    background_tasks.add_task(run_research, task_id, request.question)
+    return {"task_id": task_id, "status": "running"}
 
 async def run_research(task_id: str, question: str):
-    result = await supervisor.run(question)
-    results_store[task_id] = result
-
+    results_store[task_id] = await supervisor.run(question)
 
 @app.get("/research/{task_id}")
 async def get_result(task_id: str):
@@ -510,63 +477,40 @@ async def get_result(task_id: str):
 
 When agents are making decisions autonomously, you need to see what is happening. Monitoring is not optional -- it is essential.
 
-### What to Log
+### Tracing Agent Execution
+
+The simplest useful pattern is a decorator that logs timing and success/failure for every agent call:
 
 ```python
 # observability.py
-import logging
-import time
+import logging, time
 from functools import wraps
 
 logger = logging.getLogger("agentic_system")
-
 
 def trace_agent(func):
     """Decorator to trace agent execution."""
     @wraps(func)
     async def wrapper(self, *args, **kwargs):
         start = time.time()
-        agent_name = self.name
-
-        logger.info(f"[{agent_name}] Starting task")
-
         try:
             result = await func(self, *args, **kwargs)
-            duration = time.time() - start
-
-            logger.info(
-                f"[{agent_name}] Completed in {duration:.2f}s",
-                extra={
-                    "agent": agent_name,
-                    "duration_ms": int(duration * 1000),
-                    "status": "success",
-                }
-            )
+            logger.info(f"[{self.name}] Completed in {time.time()-start:.2f}s")
             return result
-
         except Exception as e:
-            duration = time.time() - start
-            logger.error(
-                f"[{agent_name}] Failed after {duration:.2f}s: {e}",
-                extra={
-                    "agent": agent_name,
-                    "duration_ms": int(duration * 1000),
-                    "status": "error",
-                    "error": str(e),
-                }
-            )
+            logger.error(f"[{self.name}] Failed after {time.time()-start:.2f}s: {e}")
             raise
-
     return wrapper
 ```
+
+Apply `@trace_agent` to each agent's `run()` method. In production, add structured `extra={}` fields (agent name, duration_ms, status) for your logging stack.
 
 ### Key Metrics to Track
 
 - **Latency per agent** -- Which agents are bottlenecks?
-- **Token usage per request** -- This directly correlates with cost
+- **Token usage per request** -- Directly correlates with cost
 - **Retrieval quality** -- Are the right chunks being found?
-- **Error rates** -- Are agents failing? Which ones and why?
-- **End-to-end success rate** -- What percentage of requests produce useful results?
+- **Error rates and end-to-end success rate** -- What percentage of requests produce useful results?
 
 <ExpandableSection title="Production Observability Tools">
 **LangSmith** (by LangChain) provides tracing, debugging, and evaluation specifically designed for LLM applications. It visualizes the full chain of agent actions and LLM calls.
@@ -580,7 +524,7 @@ Whichever tool you choose, make sure you can trace a single request through ever
 
 ## Handling Failures Gracefully
 
-Agents will fail. LLM calls time out, vector databases go down, and sometimes the model just produces nonsense. Plan for it:
+Agents will fail. LLM calls time out, vector databases go down, and sometimes the model just produces nonsense. The two essential resilience patterns are **retry with backoff** and **timeouts**:
 
 ```python
 # resilience.py
@@ -601,24 +545,10 @@ async def retry_with_backoff(
             if attempt == max_retries - 1:
                 raise
             delay = base_delay * (2 ** attempt)
-            print(f"Attempt {attempt + 1} failed: {e}. "
-                  f"Retrying in {delay}s...")
             await asyncio.sleep(delay)
-
-
-async def with_timeout(
-    func: Callable, timeout: float = 30.0, *args, **kwargs
-) -> Any:
-    """Run a function with a timeout."""
-    try:
-        return await asyncio.wait_for(
-            func(*args, **kwargs), timeout=timeout
-        )
-    except asyncio.TimeoutError:
-        raise TimeoutError(
-            f"Agent timed out after {timeout}s"
-        )
 ```
+
+For timeouts, wrap agent calls with `asyncio.wait_for(func(), timeout=30.0)`. Together, these two patterns handle the vast majority of transient failures in production.
 
 <HandsOnExercise title="Build Your Complete System">
 
@@ -650,22 +580,13 @@ This is the big one. Bring together everything from this trail:
 
 ## You Have Reached Aoraki
 
-Take a moment to appreciate how far you have come. You started this trail learning about multi-agent systems and orchestration patterns. You dove deep into RAG -- understanding embeddings, vector databases, and retrieval pipelines. You built a working RAG system from scratch. And now you have put it all together into a complete, deployable agentic architecture.
-
-You understand things that most developers are still trying to figure out:
-
-- How to decompose complex problems into specialized agents
-- How to give those agents access to real knowledge through RAG
-- How to coordinate agents with shared memory and supervisor patterns
-- How to think about deployment, monitoring, and resilience
-
-This is not just theoretical knowledge. You have the building blocks to create real AI-powered applications -- research assistants, code review systems, document analysis tools, customer support automation, and whatever else you can imagine.
+Take a moment to appreciate how far you have come. From multi-agent orchestration to RAG pipelines to this complete, deployable agentic architecture -- you now have the building blocks to create real AI-powered applications: research assistants, code review systems, document analysis tools, and whatever else you can imagine.
 
 <Callout variant="paw" title="Haku Is Proud of You">
 From Rangitoto to Aoraki, you have climbed the entire trail. The AI landscape will keep evolving -- new models, new frameworks, new patterns. But the fundamentals you have learned here will serve you well no matter what comes next. Keep building, keep experimenting, and keep pushing higher.
 </Callout>
 
-Aoraki is not the end. It is just the best vantage point to see where to go next. Check out the resources below for tools, references, and communities that will support your continued journey.
+Aoraki is not the end. It is just the best vantage point to see where to go next.
 
 <NextUp
   title="Resources"
