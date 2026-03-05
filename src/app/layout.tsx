@@ -24,6 +24,9 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  verification: {
+    google: "f-WyqyoLQGKyRtnCFSQGtPhhp8JoIKzODjloaZ7V8bk",
+  },
   title: {
     default: "Haku's Playground — Learn AI from Rangitoto to Aoraki",
     template: `%s | ${siteName}`,
