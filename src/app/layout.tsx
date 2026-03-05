@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fredoka, Nunito, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { siteUrl, siteName, siteDescription } from "@/lib/metadata";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -22,15 +23,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Haku's Playground — Learn AI from Rangitoto to Aoraki",
-    template: "%s | Haku's Playground",
+    template: `%s | ${siteName}`,
   },
-  description:
-    "A playful, climbing-cat-themed course that teaches non-technical people to use AI tools — from understanding AI basics through building agentic systems.",
-  icons: {
-    icon: "/images/logo/haku-logo.webp",
-    apple: "/images/logo/haku-logo.webp",
+  description: siteDescription,
+  alternates: { canonical: siteUrl },
+  openGraph: {
+    type: "website",
+    siteName,
+    title: "Haku's Playground — Learn AI from Rangitoto to Aoraki",
+    description: siteDescription,
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Haku's Playground — Learn AI from Rangitoto to Aoraki",
+    description: siteDescription,
   },
 };
 
@@ -41,6 +51,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Course",
+              name: "Haku's Playground",
+              description: siteDescription,
+              url: siteUrl,
+              provider: {
+                "@type": "Organization",
+                name: siteName,
+                url: siteUrl,
+              },
+              hasCourseInstance: {
+                "@type": "CourseInstance",
+                courseMode: "online",
+                courseWorkload: "PT5H",
+              },
+            }),
+          }}
+        />
+      </head>
       <body
         className={`${fredoka.variable} ${nunito.variable} ${jetbrainsMono.variable} antialiased`}
       >

@@ -1,12 +1,13 @@
-import { Metadata } from "next";
 import { trails } from "@/content/data/trails";
 import TrailCard from "@/components/course/TrailCard";
+import { createMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createMetadata({
   title: "Trail Overview",
   description:
     "Explore all four trails — from Rangitoto fundamentals to Aoraki agentic systems.",
-};
+  path: "/overview",
+});
 
 export default function OverviewPage() {
   return (

@@ -6,6 +6,7 @@ import {
   getLessonsByTrail,
 } from "@/content/data/lessons";
 import { loadLesson } from "@/lib/mdx";
+import { createMetadata } from "@/lib/metadata";
 import LessonContent from "@/components/course/LessonContent";
 
 const TRAIL_ID = "basecamp";
@@ -24,10 +25,11 @@ export async function generateMetadata({
   const { lessonSlug } = await params;
   const lesson = getLesson(TRAIL_ID, lessonSlug);
   if (!lesson) return {};
-  return {
+  return createMetadata({
     title: lesson.title,
     description: lesson.description,
-  };
+    path: `/${TRAIL_ID}/${lessonSlug}`,
+  });
 }
 
 export default async function BasecampLessonPage({

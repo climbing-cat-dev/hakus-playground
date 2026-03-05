@@ -8,7 +8,10 @@ export default function Footer() {
         <div className="flex items-center gap-2 text-sm text-sand">
           <Image src="/images/logo/haku-logo.webp" alt="Haku" width={24} height={24} className="rounded-full" />
           <span>
-            Haku&apos;s Playground — made with love and pixel art
+            Haku&apos;s Playground — made by{" "}
+            <a href="https://climbingcat.dev" target="_blank" rel="noopener noreferrer" className="text-cream underline decoration-dust/50 hover:decoration-cream transition-colors">
+              climbing cat
+            </a>
           </span>
         </div>
         <nav className="flex gap-4 text-sm text-dust" aria-label="Footer navigation">

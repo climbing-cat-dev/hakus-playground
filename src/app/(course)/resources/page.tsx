@@ -1,10 +1,11 @@
-import { Metadata } from "next";
 import Card from "@/components/ui/Card";
+import { createMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createMetadata({
   title: "Resources",
   description: "Helpful links, tools, and learning resources for your AI journey.",
-};
+  path: "/resources",
+});
 
 const resources = [
   {

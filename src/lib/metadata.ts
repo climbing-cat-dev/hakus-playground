@@ -1,6 +1,9 @@
 import { Metadata } from "next";
 
-const siteUrl = "https://hakus-playground.vercel.app";
+export const siteUrl = "https://hakus-playground.vercel.app";
+export const siteName = "Haku's Playground";
+export const siteDescription =
+  "A playful, climbing-cat-themed course that teaches non-technical people to use AI tools — from understanding AI basics through building agentic systems.";
 
 export function createMetadata({
   title,
@@ -16,11 +19,12 @@ export function createMetadata({
   return {
     title,
     description,
+    alternates: { canonical: url },
     openGraph: {
       title,
       description,
       url,
-      siteName: "Haku's Playground",
+      siteName,
       type: "website",
     },
     twitter: {

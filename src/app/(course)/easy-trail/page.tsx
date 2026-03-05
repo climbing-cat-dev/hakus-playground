@@ -1,15 +1,16 @@
 import Image from "next/image";
-import { Metadata } from "next";
 import { getTrail, difficultySymbols } from "@/content/data/trails";
+import { createMetadata } from "@/lib/metadata";
 import { getLessonsByTrail, getLessonNumber } from "@/content/data/lessons";
 import LessonCard from "@/components/course/LessonCard";
 
 const trail = getTrail("easy-trail")!;
 
-export const metadata: Metadata = {
+export const metadata = createMetadata({
   title: trail.title,
   description: trail.description,
-};
+  path: "/easy-trail",
+});
 
 export default function EasyTrailPage() {
   const lessons = getLessonsByTrail("easy-trail");
