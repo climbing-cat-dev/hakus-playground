@@ -8,8 +8,9 @@ const trail = getTrail("summit")!;
 
 export const metadata = createMetadata({
   title: trail.title,
-  description: trail.description,
+  description: trail.metaDescription,
   path: "/summit",
+  trail: "summit",
 });
 
 export default function SummitPage() {

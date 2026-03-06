@@ -1,4 +1,5 @@
 import Button from "@/components/ui/Button";
+import EmailCapture from "@/components/landing/EmailCapture";
 
 export default function CTASection() {
   return (
@@ -17,6 +18,7 @@ export default function CTASection() {
             View all trails
           </Button>
         </div>
+        <EmailCapture />
       </div>
     </section>
   );

@@ -8,8 +8,9 @@ const trail = getTrail("medium-trail")!;
 
 export const metadata = createMetadata({
   title: trail.title,
-  description: trail.description,
+  description: trail.metaDescription,
   path: "/medium-trail",
+  trail: "medium-trail",
 });
 
 export default function MediumTrailPage() {

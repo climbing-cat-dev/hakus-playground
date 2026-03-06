@@ -2,6 +2,7 @@ export interface Trail {
   id: string;
   title: string;
   description: string;
+  metaDescription: string;
   color: string;
   colorHex: string;
   terrain: string;
@@ -19,6 +20,8 @@ export const trails: Trail[] = [
     title: "Rangitoto",
     description:
       "Understanding AI — build your foundation. Learn what AI is, how to talk to it effectively, and use it responsibly.",
+    metaDescription:
+      "Trail 1: Rangitoto — learn what AI actually is, compare Claude vs ChatGPT vs Gemini, master the 8-part prompt framework, and understand AI safety. 5 free lessons for beginners.",
     color: "basecamp",
     colorHex: "#4CAF50",
     terrain: "Volcanic Island",
@@ -40,6 +43,8 @@ export const trails: Trail[] = [
     title: "Tongariro",
     description:
       "Claude Desktop Power User — connect AI to your world. Set up Claude Desktop, Projects, Connectors, and MCP servers.",
+    metaDescription:
+      "Trail 2: Tongariro — become a Claude Desktop power user. Set up Projects, connect 50+ tools via Connectors, configure MCP servers, and build your daily AI workflow. 5 free lessons.",
     color: "easy",
     colorHex: "#FF9800",
     terrain: "Alpine Crossing",
@@ -61,6 +66,8 @@ export const trails: Trail[] = [
     title: "Ruapehu",
     description:
       "Building with Claude Code — create real things. Use Claude Code in your IDE, learn Git, and build & deploy your first app.",
+    metaDescription:
+      "Trail 3: Ruapehu — build real apps with Claude Code. Set up your IDE, learn Git & GitHub, scaffold a Next.js app, deploy to Vercel with Supabase, and lock down security. 6 free lessons.",
     color: "medium",
     colorHex: "#7C4DFF",
     terrain: "Crater Lake",
@@ -83,6 +90,8 @@ export const trails: Trail[] = [
     title: "Aoraki",
     description:
       "Agentic Systems — reach the peak. Build multi-agent systems with RAG, orchestration, and shared memory.",
+    metaDescription:
+      "Trail 4: Aoraki — the summit of AI development. Build multi-agent systems, learn RAG fundamentals, create embedding pipelines, and deploy agentic systems. 4 advanced lessons.",
     color: "summit",
     colorHex: "#E91E63",
     terrain: "High Peak",

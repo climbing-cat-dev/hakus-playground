@@ -8,8 +8,9 @@ const trail = getTrail("basecamp")!;
 
 export const metadata = createMetadata({
   title: trail.title,
-  description: trail.description,
+  description: trail.metaDescription,
   path: "/basecamp",
+  trail: "basecamp",
 });
 
 export default function BasecampPage() {

@@ -27,8 +27,9 @@ export async function generateMetadata({
   if (!lesson) return {};
   return createMetadata({
     title: lesson.title,
-    description: lesson.description,
+    description: lesson.metaDescription,
     path: `/${TRAIL_ID}/${lessonSlug}`,
+    trail: TRAIL_ID,
   });
 }
 

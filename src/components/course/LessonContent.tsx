@@ -3,6 +3,7 @@ import { Lesson } from "@/content/data/lessons";
 import { getTrail } from "@/content/data/trails";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import LessonEndCTA from "@/components/course/LessonEndCTA";
 
 interface LessonContentProps {
   lesson: Lesson;
@@ -39,7 +40,9 @@ export default function LessonContent({
 
       <div className="prose-haku">{children}</div>
 
-      <nav className="mt-12 flex items-center justify-between border-t border-trail/20 pt-6">
+      <LessonEndCTA lesson={lesson} />
+
+      <nav className="mt-8 flex items-center justify-between border-t border-trail/20 pt-6">
         {prev ? (
           <Link
             href={`/${prev.trailId}/${prev.slug}`}

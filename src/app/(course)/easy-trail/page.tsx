@@ -8,8 +8,9 @@ const trail = getTrail("easy-trail")!;
 
 export const metadata = createMetadata({
   title: trail.title,
-  description: trail.description,
+  description: trail.metaDescription,
   path: "/easy-trail",
+  trail: "easy-trail",
 });
 
 export default function EasyTrailPage() {

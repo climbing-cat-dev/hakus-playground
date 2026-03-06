@@ -39,11 +39,22 @@ export const metadata: Metadata = {
     title: "Haku's Playground — Learn AI from Rangitoto to Aoraki",
     description: siteDescription,
     url: siteUrl,
+    images: [
+      {
+        url: `${siteUrl}/api/og?title=${encodeURIComponent("Learn AI from Rangitoto to Aoraki")}`,
+        width: 1200,
+        height: 630,
+        alt: "Haku's Playground — Learn AI from Rangitoto to Aoraki",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Haku's Playground — Learn AI from Rangitoto to Aoraki",
     description: siteDescription,
+    images: [
+      `${siteUrl}/api/og?title=${encodeURIComponent("Learn AI from Rangitoto to Aoraki")}`,
+    ],
   },
 };
 
