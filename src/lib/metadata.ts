@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-export const siteUrl = "https://hakus-playground.vercel.app";
+export const siteUrl = "https://playground.climbingcat.dev";
 export const siteName = "Haku's Playground";
 export const siteDescription =
   "A playful, climbing-cat-themed course that teaches non-technical people to use AI tools — from understanding AI basics through building agentic systems.";
